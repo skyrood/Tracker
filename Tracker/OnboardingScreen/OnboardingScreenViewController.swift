@@ -96,9 +96,9 @@ final class OnboardingScreenViewController: UIPageViewController, UIPageViewCont
     }
     
     private func navigateToTabBarView() {
-        let tabBarController = TabBarController()
-        tabBarController.modalPresentationStyle = .fullScreen
-        present(tabBarController, animated: true, completion: nil)
+        let tabBarViewController = TabBarViewController()
+        tabBarViewController.modalPresentationStyle = .fullScreen
+        present(tabBarViewController, animated: true, completion: nil)
     }
 }
 

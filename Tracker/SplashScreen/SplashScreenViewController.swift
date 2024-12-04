@@ -47,9 +47,9 @@ final class SplashScreenViewController: UIViewController {
     }
     
     private func navigateToTabBarController() {
-        let tabBarController = TabBarController()
-        tabBarController.modalPresentationStyle = .fullScreen
-        present(tabBarController, animated: true, completion: nil)
+        let tabViewBarController = TabBarViewController()
+        tabViewBarController.modalPresentationStyle = .fullScreen
+        present(tabViewBarController, animated: true, completion: nil)
         print("navigated to tab bar controller!")
     }
     

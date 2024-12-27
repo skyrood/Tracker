@@ -19,7 +19,8 @@ final class SplashScreenViewController: UIViewController {
         return view
     }()
     
-    private var onboardingScreenShown: Bool = false
+//    private var onboardingScreenShown: Bool = false
+    private var onboardingScreenShown: Bool = true
     
     // MARK: - Overrides Methods
     override func viewDidAppear(_ animated: Bool) {

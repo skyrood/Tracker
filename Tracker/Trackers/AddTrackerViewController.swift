@@ -93,6 +93,10 @@ final class AddTrackerViewController: UIViewController {
     
     @objc private func habitButtonTapped() {
         print("Habit button tapped")
+        let newHabitViewController = UINavigationController(rootViewController:         NewHabitViewController())
+        newHabitViewController.modalPresentationStyle = .pageSheet
+        newHabitViewController.view.layer.cornerRadius = 10
+        present(newHabitViewController, animated: true, completion: nil)
     }
     
     @objc private func eventButtonTapped() {

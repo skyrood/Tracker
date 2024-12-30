@@ -20,12 +20,11 @@ final class NewHabitViewController: UIViewController {
     }
     
     private lazy var tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        let tableView = UITableView(frame: .zero, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.clipsToBounds = true
         tableView.backgroundColor = UIColor(named: "White")
-        tableView.separatorStyle = .singleLine
-        tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        tableView.separatorStyle = .none
         return tableView
     }()
     
@@ -37,25 +36,6 @@ final class NewHabitViewController: UIViewController {
         label.font = .systemFont(ofSize: 16)
         label.textColor = UIColor(named: "Black")
         return label
-    }()
-    
-    private lazy var habitNameField: UITextField = {
-        let inputField = UITextField()
-        inputField.translatesAutoresizingMaskIntoConstraints = false
-        inputField.clipsToBounds = true
-        inputField.placeholder = "Введите название трекера"
-        inputField.font = .systemFont(ofSize: 17)
-        inputField.textColor = UIColor(named: "Black")
-        inputField.backgroundColor = UIColor(named: "InputBackground")
-        //        inputField.layer.cornerRadius = 16
-        inputField.layer.borderWidth = 0
-        inputField.delegate = self
-        
-        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: inputField.frame.height))
-        inputField.leftView = paddingView
-        inputField.leftViewMode = .always
-        
-        return inputField
     }()
     
     private lazy var habitNameLimitWarning: UILabel = {
@@ -83,7 +63,7 @@ final class NewHabitViewController: UIViewController {
         
         view.addSubview(titleLabel)
         view.addSubview(tableView)
-
+        
         setConstraints(for: titleLabel, topConstraint: 26)
         setConstraints(for: tableView)
     }
@@ -104,21 +84,10 @@ final class NewHabitViewController: UIViewController {
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
-    
-    private func setConstraints(for inputField: UITextField, in cell: UITableViewCell) {
-        NSLayoutConstraint.activate([
-            inputField.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor),
-            inputField.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor),
-            inputField.topAnchor.constraint(equalTo: cell.contentView.topAnchor),
-            inputField.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor),
-            inputField.heightAnchor.constraint(equalToConstant: 75)
-        ])
-    }
-    
 }
 
 // MARK: - UITextFieldDelegate
@@ -132,7 +101,7 @@ extension NewHabitViewController: UITextFieldDelegate {
         
         if updatedText.count <= 38 {
             trackerName = updatedText
-
+            
             if shouldShowWarningCell {
                 shouldShowWarningCell = false
                 tableView.performBatchUpdates {
@@ -164,13 +133,29 @@ extension NewHabitViewController: UITableViewDelegate {
                 return 30
             }
         } else if indexPath.section == 1 {
-            return 75
+            if indexPath.row == 0 {
+                return 75.5
+            } else if indexPath.row == 1 {
+                return 75
+            }
         } else if indexPath.section == 2 {
             return 150
         } else if indexPath.section == 3 {
             return 150
         }
+        
         return UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView()
+        headerView.backgroundColor = .clear
+        
+        return headerView
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0.01
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -212,45 +197,135 @@ extension NewHabitViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             if indexPath.row == 0 {
-                let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-                
-                cell.contentView.addSubview(habitNameField)
-                setConstraints(for: habitNameField, in: cell)
-
-                return cell
+                return habitNameFieldCell()
             } else if indexPath.row == 1 {
-                let cell = UITableViewCell(style: .default, reuseIdentifier: "warningCell")
-                cell.contentView.addSubview(habitNameLimitWarning)
-                NSLayoutConstraint.activate([
-                    habitNameLimitWarning.heightAnchor.constraint(equalToConstant: 30),
-                    habitNameLimitWarning.centerXAnchor.constraint(equalTo: cell.centerXAnchor)
-                ])
-                cell.selectionStyle = .none
-                
-                return cell
+                return charactersLimitWarningCell()
             }
-            
         } else if indexPath.section == 1 {
-            let cell = UITableViewCell(style: .default, reuseIdentifier: "ButtonCell")
-            
-            cell.textLabel?.text = indexPath.row == 0 ? "Категория" : "Расписание"
-            cell.textLabel?.font = .systemFont(ofSize: 17)
-            cell.textLabel?.textColor = UIColor(named: "Black")
-            cell.accessoryType = .disclosureIndicator
-            cell.backgroundColor = UIColor(named: "InputBackground")
-            cell.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-            
-            return cell
+            return categoryScheduleCells(indexPath)
         } else if indexPath.section == 2 {
-            let cell = UITableViewCell(style: .default, reuseIdentifier: "emojiCell")
-            cell.textLabel?.text = "Emoji grid placeholder"
-            return cell
+            return emojiCollectionCell()
         } else if indexPath.section == 3 {
-            let cell = UITableViewCell(style: .default, reuseIdentifier: "colorCell")
-            cell.textLabel?.text = "Color grid placeholder"
-            return cell
+            return colorCollectionCell()
         }
         
         return UITableViewCell()
+    }
+    
+    // MARK: - Private Methods For Setting Up Cells
+    private func habitNameFieldCell() -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
+        
+        let backgroundView = UIView()
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundView.clipsToBounds = true
+        backgroundView.backgroundColor = UIColor(named: "InputBackground")
+        backgroundView.layer.cornerRadius = 16
+        
+        cell.contentView.addSubview(backgroundView)
+        
+        NSLayoutConstraint.activate([
+            backgroundView.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor),
+            backgroundView.topAnchor.constraint(equalTo: cell.contentView.topAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor),
+        ])
+        
+        let habitNameField = UITextField()
+        habitNameField.translatesAutoresizingMaskIntoConstraints = false
+        habitNameField.clipsToBounds = true
+        habitNameField.placeholder = "Введите название трекера"
+        habitNameField.font = .systemFont(ofSize: 17)
+        habitNameField.textColor = UIColor(named: "Black")
+        habitNameField.backgroundColor = .clear
+        habitNameField.layer.borderWidth = 0
+        habitNameField.delegate = self
+        
+        let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: habitNameField.frame.height))
+        habitNameField.leftView = paddingView
+        habitNameField.rightView = paddingView
+        habitNameField.leftViewMode = .always
+        habitNameField.rightViewMode = .always
+        cell.contentView.addSubview(habitNameField)
+        
+        NSLayoutConstraint.activate([
+            habitNameField.leadingAnchor.constraint(equalTo: cell.contentView.leadingAnchor),
+            habitNameField.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor),
+            habitNameField.topAnchor.constraint(equalTo: cell.contentView.topAnchor),
+            habitNameField.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor),
+            habitNameField.heightAnchor.constraint(equalToConstant: 75)
+        ])
+        
+        return cell
+    }
+    
+    private func charactersLimitWarningCell() -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "warningCell")
+        
+        cell.contentView.addSubview(habitNameLimitWarning)
+        NSLayoutConstraint.activate([
+            habitNameLimitWarning.heightAnchor.constraint(equalToConstant: 30),
+            habitNameLimitWarning.centerXAnchor.constraint(equalTo: cell.centerXAnchor)
+        ])
+        cell.selectionStyle = .none
+        
+        return cell
+    }
+    
+    private func categoryScheduleCells(_ indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "ButtonCell")
+
+        if indexPath.row == 0 {
+            let backgroundView = UIView()
+            backgroundView.translatesAutoresizingMaskIntoConstraints = false
+            backgroundView.clipsToBounds = true
+            backgroundView.backgroundColor = UIColor(named: "InputBackground")
+            backgroundView.layer.cornerRadius = 16
+            
+            cell.contentView.addSubview(backgroundView)
+            
+            NSLayoutConstraint.activate([
+                backgroundView.topAnchor.constraint(equalTo: cell.contentView.topAnchor),
+                backgroundView.leadingAnchor.constraint(equalTo: cell.leadingAnchor),
+                backgroundView.trailingAnchor.constraint(equalTo: cell.trailingAnchor),
+                backgroundView.heightAnchor.constraint(equalToConstant: 150.5)
+            ])
+            
+            let separatorLineView = UIView()
+            separatorLineView.translatesAutoresizingMaskIntoConstraints = false
+            separatorLineView.clipsToBounds = true
+            separatorLineView.backgroundColor = UIColor(named: "Gray")
+            
+            cell.contentView.addSubview(separatorLineView)
+            
+            NSLayoutConstraint.activate([
+                separatorLineView.heightAnchor.constraint(equalToConstant: 0.5),
+                separatorLineView.topAnchor.constraint(equalTo: cell.contentView.topAnchor, constant: 75),
+                separatorLineView.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 16),
+                separatorLineView.trailingAnchor.constraint(equalTo: cell.trailingAnchor, constant: -16)
+            ])
+            
+        }
+        
+        cell.textLabel?.text = indexPath.row == 0 ? "Категория" : "Расписание"
+        cell.textLabel?.font = .systemFont(ofSize: 17)
+        cell.textLabel?.textColor = UIColor(named: "Black")
+        cell.accessoryType = .disclosureIndicator
+        cell.backgroundColor = .clear
+        cell.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        
+        return cell
+    }
+    
+    private func emojiCollectionCell() -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "emojiCell")
+        cell.textLabel?.text = "Emoji grid placeholder"
+        return cell
+    }
+    
+    private func colorCollectionCell() -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "colorCell")
+        cell.textLabel?.text = "Color grid placeholder"
+        return cell
     }
 }

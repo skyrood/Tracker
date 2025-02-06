@@ -139,7 +139,7 @@ extension NewHabitViewController: UITableViewDelegate {
                 return 75
             }
         } else if indexPath.section == 2 {
-            return 150
+            return 180
         } else if indexPath.section == 3 {
             return 150
         }
@@ -151,10 +151,44 @@ extension NewHabitViewController: UITableViewDelegate {
         let headerView = UIView()
         headerView.backgroundColor = .clear
         
+        if section == 2 {
+            let emojiLabel = UILabel()
+            emojiLabel.textColor = UIColor(named: "Black")
+            emojiLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
+            emojiLabel.translatesAutoresizingMaskIntoConstraints = false
+            emojiLabel.text = "Emoji"
+            
+            headerView.addSubview(emojiLabel)
+            
+            NSLayoutConstraint.activate([
+                emojiLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 10),
+                emojiLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 14),
+            ])
+        }
+        
+        if section == 3 {
+            let emojiLabel = UILabel()
+            emojiLabel.textColor = UIColor(named: "Black")
+            emojiLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
+            emojiLabel.translatesAutoresizingMaskIntoConstraints = false
+            emojiLabel.text = "Цвет"
+            
+            headerView.addSubview(emojiLabel)
+            
+            NSLayoutConstraint.activate([
+                emojiLabel.topAnchor.constraint(equalTo: headerView.topAnchor, constant: 10),
+                emojiLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 14),
+            ])
+        }
+        
         return headerView
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 2 || section == 3 {
+            return 50
+        }
+        
         return 0.01
     }
     
@@ -204,7 +238,7 @@ extension NewHabitViewController: UITableViewDataSource {
         } else if indexPath.section == 1 {
             return categoryScheduleCells(indexPath)
         } else if indexPath.section == 2 {
-            return emojiCollectionCell()
+            return EmojiCollectionTableViewCell()
         } else if indexPath.section == 3 {
             return colorCollectionCell()
         }
@@ -314,12 +348,6 @@ extension NewHabitViewController: UITableViewDataSource {
         cell.backgroundColor = .clear
         cell.layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         
-        return cell
-    }
-    
-    private func emojiCollectionCell() -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "emojiCell")
-        cell.textLabel?.text = "Emoji grid placeholder"
         return cell
     }
     

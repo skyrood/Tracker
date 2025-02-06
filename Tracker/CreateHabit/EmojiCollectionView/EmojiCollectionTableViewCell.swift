@@ -16,8 +16,6 @@ final class EmojiCollectionTableViewCell: UITableViewCell {
     // MARK: - Private Properties
     private lazy var emojiCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 5
     
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
@@ -81,8 +79,7 @@ extension EmojiCollectionTableViewCell: UICollectionViewDataSource {
         
         guard let cell else { return UICollectionViewCell() }
         
-        cell.emoji.text = emojis[indexPath.row]
-//        cell.emoji.font = .systemFont(ofSize: 34, weight: .regular)
+        cell.emojiView.text = emojis[indexPath.row]
         
         return cell
     }
@@ -90,11 +87,15 @@ extension EmojiCollectionTableViewCell: UICollectionViewDataSource {
 
 extension EmojiCollectionTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let emojiSize = emojiCollectionView.bounds.width / 6
+        let emojiSize = (emojiCollectionView.bounds.width - 25) / 6
         return CGSize(width: emojiSize, height: emojiSize )
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 5
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
 }

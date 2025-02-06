@@ -23,6 +23,7 @@ final class NewHabitViewController: UIViewController {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.clipsToBounds = true
+        tableView.showsVerticalScrollIndicator = false
         tableView.backgroundColor = UIColor(named: "White")
         tableView.separatorStyle = .none
         return tableView
@@ -133,15 +134,11 @@ extension NewHabitViewController: UITableViewDelegate {
                 return 30
             }
         } else if indexPath.section == 1 {
-            if indexPath.row == 0 {
-                return 75.5
-            } else if indexPath.row == 1 {
+            if indexPath.row == 0 || indexPath.row == 1 {
                 return 75
             }
-        } else if indexPath.section == 2 {
+        } else if indexPath.section == 2 || indexPath.section == 3 {
             return 180
-        } else if indexPath.section == 3 {
-            return 150
         }
         
         return UITableView.automaticDimension
@@ -240,7 +237,7 @@ extension NewHabitViewController: UITableViewDataSource {
         } else if indexPath.section == 2 {
             return EmojiCollectionTableViewCell()
         } else if indexPath.section == 3 {
-            return colorCollectionCell()
+            return ColorCollectionTableViewCell()
         }
         
         return UITableViewCell()

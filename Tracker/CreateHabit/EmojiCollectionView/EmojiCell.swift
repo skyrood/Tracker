@@ -8,7 +8,7 @@
 import UIKit
 
 final class EmojiCell: UICollectionViewCell {
-    let emoji: UILabel = {
+    let emojiView: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .center
@@ -21,12 +21,11 @@ final class EmojiCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        contentView.addSubview(emoji)
-        emoji.translatesAutoresizingMaskIntoConstraints = false
-        
+        contentView.addSubview(emojiView)
+
         NSLayoutConstraint.activate([
-            emoji.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            emoji.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            emojiView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            emojiView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
         
     }

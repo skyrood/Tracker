@@ -16,10 +16,12 @@ final class EmojiCollectionTableViewCell: UITableViewCell {
     // MARK: - Private Properties
     private lazy var emojiCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-    
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.isScrollEnabled = false
+        collectionView.allowsSelection = true
+        collectionView.allowsMultipleSelection = false
         collectionView.register(EmojiCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
         
         return collectionView
@@ -61,12 +63,22 @@ final class EmojiCollectionTableViewCell: UITableViewCell {
             emojiCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             emojiCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             emojiCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            ])
+        ])
     }
 }
 
 extension EmojiCollectionTableViewCell: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell {
+            cell.isSelected = true
+        }
+    }
     
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell {
+            cell.isSelected = false
+        }
+    }
 }
 
 extension EmojiCollectionTableViewCell: UICollectionViewDataSource {

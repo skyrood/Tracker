@@ -16,10 +16,12 @@ final class ColorCollectionTableViewCell: UITableViewCell {
     // MARK: - Private Properties
     private lazy var colorCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-    
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.isScrollEnabled = false
+        collectionView.allowsSelection = true
+        collectionView.allowsMultipleSelection = false
         collectionView.register(ColorCell.self, forCellWithReuseIdentifier: cellReuseIdentifier)
         
         return collectionView
@@ -76,12 +78,22 @@ final class ColorCollectionTableViewCell: UITableViewCell {
             colorCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             colorCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             colorCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            ])
+        ])
     }
 }
 
 extension ColorCollectionTableViewCell: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? ColorCell {
+            cell.isSelected = true
+        }
+    }
     
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? ColorCell {
+            cell.isSelected = false
+        }
+    }
 }
 
 extension ColorCollectionTableViewCell: UICollectionViewDataSource {

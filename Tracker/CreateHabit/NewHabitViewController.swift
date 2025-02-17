@@ -58,6 +58,8 @@ final class NewHabitViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "White")
+        navigationItem.hidesBackButton = true
+
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -270,9 +272,9 @@ extension NewHabitViewController: UITableViewDelegate {
     ) {
         if indexPath.section == 1 {
             if indexPath.row == 0 {
-                let categoryViewController = CategoryViewController()
+                let categoryListViewController = CategoryListViewController()
                 navigationController?.pushViewController(
-                    categoryViewController, animated: true)
+                    categoryListViewController, animated: true)
             } else if indexPath.row == 1 {
                 let ScheduleViewController = ScheduleViewController()
                 navigationController?.pushViewController(
@@ -440,7 +442,6 @@ extension NewHabitViewController: UITableViewDataSource {
                 separatorLineView.trailingAnchor.constraint(
                     equalTo: cell.trailingAnchor, constant: -16),
             ])
-            
         }
         
         cell.textLabel?.text = indexPath.row == 0 ? "Категория" : "Расписание"

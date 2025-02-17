@@ -42,6 +42,8 @@ final class AddTrackerViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor(named: "White")
+        navigationItem.hidesBackButton = true
+
         view.addSubview(titleLabel)
         view.addSubview(habitButton)
         view.addSubview(eventButton)

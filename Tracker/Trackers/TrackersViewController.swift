@@ -49,42 +49,11 @@ final class TrackersViewController: UIViewController {
         return label
     }()
     
-    private let searchBar: UISearchBar = {
-        let searchBar = UISearchBar()
-        searchBar.translatesAutoresizingMaskIntoConstraints = false
-        searchBar.layer.masksToBounds = true
-        searchBar.placeholder = "Поиск"
-        searchBar.searchBarStyle = .minimal
-        
-        if let textField = searchBar.value(forKey: "searchField") as? UITextField {
-            textField.layer.cornerRadius = 10
-            textField.layer.masksToBounds = true
-        }
-        
-        return searchBar
-    }()
-    
-//    private lazy var collectionView: UICollectionView = {
-//        let layout = UICollectionViewFlowLayout()
-//        layout.scrollDirection = .horizontal
-//        layout.itemSize = CGSize(width: 100, height: 70)
-//        layout.minimumLineSpacing = 10
-//        layout.minimumInteritemSpacing = 10
-//
-//        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-//        collectionView.translatesAutoresizingMaskIntoConstraints = false
-//        collectionView.backgroundColor = .black
-//        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-//
-//        return collectionView
-//    }()
-    
     // MARK: - Initializers
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         view.backgroundColor = UIColor(named: "White")
-        view.addSubview(label)
         
         if categories.isEmpty {
             showStartMessage()
@@ -92,17 +61,7 @@ final class TrackersViewController: UIViewController {
             showTrackers()
         }
         
-        view.addSubview(searchBar)
-        
         setUpNavigationBar()
-        
-        //        view.addSubview(collectionView)
-        
-        setConstraints(for: label, relativeTo: view, constant: 1)
-        setConstraints(for: searchBar)
-        //        setCollectionView(collectionView)
-        
-        searchBar.delegate = self
     }
     
     // MARK: - IB Actions
@@ -137,20 +96,28 @@ final class TrackersViewController: UIViewController {
     }
     
     private func setUpNavigationBar() {
+        title = "Крекеры"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
         let addTrackerButton = UIBarButtonItem(
-            image: UIImage(systemName: "plus"),
-            style: .plain,
+            barButtonSystemItem: .add,
             target: self,
             action: #selector(addTrackerButtonTapped)
         )
-        
         addTrackerButton.tintColor = UIColor(named: "Black")
 
         let datePicker = UIDatePicker()
+        datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
+        
+        let searchBar = UISearchController(searchResultsController: nil)
+        searchBar.searchResultsUpdater = self
+        searchBar.obscuresBackgroundDuringPresentation = false
+        searchBar.searchBar.placeholder = "Поиск"
         
         navigationItem.leftBarButtonItem = addTrackerButton
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+        navigationItem.searchController = searchBar
     }
     
     @objc private func addTrackerButtonTapped() {
@@ -202,5 +169,11 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (collectionView.frame.width - 30) / 2
         return CGSize(width: width, height: width)
+    }
+}
+
+extension TrackersViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+    
     }
 }

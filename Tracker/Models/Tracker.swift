@@ -5,9 +5,12 @@
 //  Created by Rodion Kim on 2024/12/04.
 //
 
+import UIKit
+
 struct Tracker {
     let id: UInt
-    let name: String
+    let title: String
     let emoji: String
-    let schedule: String
+    let color: UIColor
+    let schedule: Int
 }

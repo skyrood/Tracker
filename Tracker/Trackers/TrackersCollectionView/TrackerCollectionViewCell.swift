@@ -16,7 +16,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         let view = UIView()
         
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .selection18
         view.layer.cornerRadius = 16
         
         return view
@@ -148,23 +147,27 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-//    
-//    func configureButton(with tracker: Tracker, isCompleted: Bool, baseColor: UIColor) {
-//        self.tracker = tracker
-//        completeTrackerButtonColor = isCompleted ? baseColor.withAlphaComponent(0.3) : baseColor.withAlphaComponent(1.0)
-//        let image = isCompleted ? UIImage(systemName: "checkmark")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)) : UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 14, weight: .medium))
-//        completeTrackerButton.setImage(image, for: .normal)
-//    }
     
-    func configureButton(for tracker: Tracker, selectedDate: Date, completedTrackers: [TrackerRecord]) {
-        let isCompleted = completedTrackers.contains(where: {
+    func configureButton(for tracker: Tracker, selectedDate: Date, completedTrackers: Set<TrackerRecord>) {
+        let isCompleted = completedTrackers.contains{
             $0.trackerId == tracker.id &&
             Calendar.current.isDate($0.date, inSameDayAs: selectedDate)
-        })
+        }
+        
+        titleView.backgroundColor = tracker.color
         
         completeTrackerButtonColor = isCompleted ? tracker.color.withAlphaComponent(0.3) : tracker.color.withAlphaComponent(1.0)
-        let image = isCompleted ? UIImage(systemName: "checkmark")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)) : UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 14, weight: .medium))
+        let image = isCompleted ?
+        UIImage(systemName: "checkmark")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)) :
+        UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 14, weight: .medium))
+        
         completeTrackerButton.setImage(image, for: .normal)
+        
+        if Calendar.current.isDateInToday(selectedDate) || selectedDate < Date() {
+            completeTrackerButton.isEnabled = true
+        } else {
+            completeTrackerButton.isEnabled = false
+        }
     }
     
     @objc private func didTapCompleteTrackerButton(_ sender: UIButton) {

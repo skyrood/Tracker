@@ -21,19 +21,29 @@ final class TrackersViewController: UIViewController {
         TrackerCategory(
             name: "Fitness",
             trackers: [
-                Tracker(id: 1, title: "Morning Run", emoji: "🏃‍♂️", color: .selection1, schedule: Weekday.tuesday | Weekday.thursday)
+                Tracker(id: 1, title: "Morning Run", emoji: "🤮", color: .selection1, schedule: Weekday.monday | Weekday.tuesday | Weekday.thursday)
             ]
         ),
         TrackerCategory(
             name: "Productivity",
             trackers: [
-                Tracker(id: 2, title: "Read a Book", emoji: "❤️", color: .selection6, schedule: Weekday.monday),
-                Tracker(id: 3, title: "Code for an Hour and complete the sprint", emoji: "🤮", color: .selection11, schedule: Weekday.sunday)
+                Tracker(id: 2, title: "Read a Book", emoji: "💩", color: .selection6, schedule: Weekday.monday),
+                Tracker(id: 3, title: "Code for an Hour and complete the sprint", emoji: "☠️", color: .selection11, schedule: Weekday.sunday)
             ]
         )
     ]
     
-    private var completedTrackers: [TrackerRecord] = []
+    private var filteredCategories: [TrackerCategory] {
+        let weekdayBit = getWeekdayBit(from: selectedDate)
+        
+        return categories.compactMap { category in
+            let filteredTrackers = category.trackers.filter { $0.schedule & weekdayBit != 0 }
+            
+            return filteredTrackers.isEmpty ? nil : TrackerCategory(name: category.name, trackers: filteredTrackers)
+        }
+    }
+    
+    private var completedTrackers: Set<TrackerRecord> = []
     
     private lazy var label: UILabel = {
         let label = UILabel()
@@ -45,6 +55,16 @@ final class TrackersViewController: UIViewController {
         
         return label
     }()
+    
+    private lazy var startMessageContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.clipsToBounds = true
+        view.backgroundColor = .clear
+        
+        return view
+    }()
+
     
     private lazy var image: UIImageView = {
         let image = UIImageView()
@@ -62,7 +82,20 @@ final class TrackersViewController: UIViewController {
         label.font = UIFont.systemFont(ofSize: 12, weight: .regular)
         label.textAlignment = .center
         label.textColor = UIColor(named: "Black")
-        label.text = "Что будем отслеживать?"
+        label.numberOfLines = 2
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 6
+        paragraphStyle.alignment = .center
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: label.font ?? .systemFont(ofSize: 12),
+            .foregroundColor: UIColor.black,
+            .paragraphStyle: paragraphStyle
+        ]
+        
+        let labelText = categories.isEmpty ? "Что будем отслеживать?" : "Привычки и события можно\nобъединить по смыслу"
+        label.attributedText = NSAttributedString(string: labelText, attributes: attributes)
         
         return label
     }()
@@ -88,13 +121,12 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         view.backgroundColor = UIColor(named: "White")
         
-        if categories.isEmpty {
-            showStartMessage()
-        } else {
-            showTrackers()
-        }
-        
         setUpNavigationBar()
+        
+        showStartMessage()
+        showTrackersCollectionView()
+        
+        updateUI()
     }
     
     // MARK: - IB Actions
@@ -161,17 +193,38 @@ final class TrackersViewController: UIViewController {
         present(addTrackerViewController, animated: true, completion: nil)
     }
     
-    private func showStartMessage() {
-        print("hello dude!")
+    private func updateUI() {
+        let hasTrackers = !filteredCategories.isEmpty
         
-        view.addSubview(image)
-        view.addSubview(messageLabel)
-        
-        setConstraints(for: image)
-        setConstraints(for: messageLabel, relativeTo: image, constant: 88)
+        print("update triggered. hasTrackers: \(hasTrackers)")
+        startMessageContainerView.isHidden = hasTrackers
+        trackersCollectionView.isHidden = !hasTrackers
     }
     
-    private func showTrackers() {
+    private func showStartMessage() {
+        print("showing start message")
+        view.addSubview(startMessageContainerView)
+        
+        startMessageContainerView.addSubview(image)
+        startMessageContainerView.addSubview(messageLabel)
+        
+        NSLayoutConstraint.activate([
+            startMessageContainerView.heightAnchor.constraint(equalToConstant: 140),
+            startMessageContainerView.widthAnchor.constraint(equalToConstant: view.safeAreaLayoutGuide.layoutFrame.width),
+            startMessageContainerView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            startMessageContainerView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
+            
+            image.heightAnchor.constraint(equalToConstant: 80),
+            image.widthAnchor.constraint(equalToConstant: 80),
+            image.centerXAnchor.constraint(equalTo: startMessageContainerView.centerXAnchor),
+            image.topAnchor.constraint(equalTo: startMessageContainerView.topAnchor),
+            
+            messageLabel.centerXAnchor.constraint(equalTo: startMessageContainerView.centerXAnchor),
+            messageLabel.topAnchor.constraint(equalTo: image.bottomAnchor, constant: 16)
+        ])
+    }
+    
+    private func showTrackersCollectionView() {
         view.addSubview(trackersCollectionView)
         
         NSLayoutConstraint.activate([
@@ -180,12 +233,18 @@ final class TrackersViewController: UIViewController {
             trackersCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             trackersCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        
-        print("show collection of my beautiful trackers")
+    }
+    
+    private func getWeekdayBit(from date: Date) -> Int {
+        let weekdayIndex = Calendar.current.component(.weekday, from: date)
+        return 1 << ((weekdayIndex + 5) % 7)
     }
     
     @objc private func dateChanged(_ sender: UIDatePicker) {
         selectedDate = sender.date
+        trackersCollectionView.reloadData()
+        
+        updateUI()
     }
     
     @objc private func toggleCompletion(_ sender: UIButton) {
@@ -193,19 +252,22 @@ final class TrackersViewController: UIViewController {
               let indexPath = trackersCollectionView.indexPath(for: cell) else { return }
 
         let tracker = categories[indexPath.section].trackers[indexPath.row]
+        let record = TrackerRecord(trackerId: tracker.id, date: selectedDate)
         
-
-        if let index = completedTrackers.firstIndex(where: {
-            $0.trackerId == tracker.id && Calendar.current.isDate($0.date, inSameDayAs: selectedDate)
-        }) {
-            completedTrackers.remove(at: index)
+        if completedTrackers.contains(record) {
+            completedTrackers.remove(record)
         } else {
-            completedTrackers.append(TrackerRecord(trackerId: tracker.id, date: selectedDate))
+            completedTrackers.insert(record)
         }
-
-        print(completedTrackers)
         
         cell.configureButton(for: tracker, selectedDate: selectedDate, completedTrackers: completedTrackers)
+        
+        let completedCount = completedDaysCount(for: tracker)
+        cell.daysCountLabel.text = "\(completedCount) дней"
+    }
+    
+    func completedDaysCount(for tracker: Tracker) -> Int {
+        return completedTrackers.filter{ $0.trackerId == tracker.id }.count
     }
 }
 
@@ -217,10 +279,10 @@ extension TrackersViewController: UISearchBarDelegate {
 // MARK: - extension UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return categories.count
+        return filteredCategories.count
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return categories[section].trackers.count
+        return filteredCategories[section].trackers.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -228,13 +290,12 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         guard let cell = cell else { return UICollectionViewCell() }
         
-        let cellColor = categories[indexPath.section].trackers[indexPath.row].color
-        let tracker = categories[indexPath.section].trackers[indexPath.row]
+        let tracker = filteredCategories[indexPath.section].trackers[indexPath.row]
         
-        cell.emojiLabel.text = categories[indexPath.section].trackers[indexPath.row].emoji
-        cell.title = categories[indexPath.section].trackers[indexPath.row].title
-        cell.titleView.backgroundColor = cellColor
-        cell.daysCountLabel.text = "1 day!"
+        cell.emojiLabel.text = filteredCategories[indexPath.section].trackers[indexPath.row].emoji
+        cell.title = filteredCategories[indexPath.section].trackers[indexPath.row].title
+        let completedCount = completedDaysCount(for: tracker)
+        cell.daysCountLabel.text = "\(completedCount) дней"
         
         cell.configureButton(for: tracker, selectedDate: selectedDate, completedTrackers: completedTrackers)
 
@@ -248,13 +309,15 @@ extension TrackersViewController: UICollectionViewDataSource {
             return UICollectionReusableView()
         }
         
-        let header = collectionView.dequeueReusableSupplementaryView(
+        guard let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
             withReuseIdentifier: CategoryHeaderView.identifier,
             for: indexPath
-        ) as! CategoryHeaderView
+        ) as? CategoryHeaderView else {
+            return UICollectionReusableView()
+        }
         
-        let category = categories[indexPath.section]
+        let category = filteredCategories[indexPath.section]
         header.configure(with: category.name)
         
         return header

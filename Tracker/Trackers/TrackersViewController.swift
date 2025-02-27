@@ -15,6 +15,8 @@ final class TrackersViewController: UIViewController {
     // MARK: - Private Properties
     //    private var categories: [TrackerCategory] = []
     
+    private var selectedDate: Date = Date()
+    
     private var categories: [TrackerCategory] = [
         TrackerCategory(
             name: "Fitness",
@@ -31,8 +33,7 @@ final class TrackersViewController: UIViewController {
         )
     ]
     
-//    private var completedTrackers: [TrackerRecord] = []
-    private var completedTrackers: [UInt] = []
+    private var completedTrackers: [TrackerRecord] = []
     
     private lazy var label: UILabel = {
         let label = UILabel()
@@ -141,6 +142,7 @@ final class TrackersViewController: UIViewController {
         let datePicker = UIDatePicker()
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
+        datePicker.addTarget(self, action: #selector (dateChanged(_:)), for: .valueChanged)
         
         let searchBar = UISearchController(searchResultsController: nil)
         searchBar.searchResultsUpdater = self
@@ -181,6 +183,30 @@ final class TrackersViewController: UIViewController {
         
         print("show collection of my beautiful trackers")
     }
+    
+    @objc private func dateChanged(_ sender: UIDatePicker) {
+        selectedDate = sender.date
+    }
+    
+    @objc private func toggleCompletion(_ sender: UIButton) {
+        guard let cell = sender.superview?.superview as? TrackerCollectionViewCell,
+              let indexPath = trackersCollectionView.indexPath(for: cell) else { return }
+
+        let tracker = categories[indexPath.section].trackers[indexPath.row]
+        
+
+        if let index = completedTrackers.firstIndex(where: {
+            $0.trackerId == tracker.id && Calendar.current.isDate($0.date, inSameDayAs: selectedDate)
+        }) {
+            completedTrackers.remove(at: index)
+        } else {
+            completedTrackers.append(TrackerRecord(trackerId: tracker.id, date: selectedDate))
+        }
+
+        print(completedTrackers)
+        
+        cell.configureButton(for: tracker, selectedDate: selectedDate, completedTrackers: completedTrackers)
+    }
 }
 
 // MARK: - extension UISearchBarDelegate
@@ -204,25 +230,15 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         let cellColor = categories[indexPath.section].trackers[indexPath.row].color
         let tracker = categories[indexPath.section].trackers[indexPath.row]
-        let isCompleted = false
         
         cell.emojiLabel.text = categories[indexPath.section].trackers[indexPath.row].emoji
         cell.title = categories[indexPath.section].trackers[indexPath.row].title
         cell.titleView.backgroundColor = cellColor
-        cell.completeTrackerButtonColor = categories[indexPath.section].trackers[indexPath.row].color
         cell.daysCountLabel.text = "1 day!"
         
-        cell.configureButton(with: tracker, isCompleted: isCompleted, baseColor: cellColor)
+        cell.configureButton(for: tracker, selectedDate: selectedDate, completedTrackers: completedTrackers)
 
-        cell.onCompleteButtonTapped = { [weak self] in
-            guard let self else { return }
-            
-            print("Complete button tapped for \(tracker.title)\nisCompleted: \(isCompleted)")
-            
-            cell.configureButton(with: tracker, isCompleted: !isCompleted, baseColor: cellColor)
-            
-//            collectionView.reloadItems(at: [indexPath])
-        }
+        cell.completeTrackerButton.addTarget(self, action: #selector(toggleCompletion(_:)), for: .touchUpInside)
         
         return cell
     }

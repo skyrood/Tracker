@@ -102,7 +102,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         button.contentVerticalAlignment = .center
         button.contentEdgeInsets = .zero
         button.tintColor = .white
-        button.addTarget(self, action: #selector (didTapCompleteTrackerButton), for: .touchUpInside)
         
         return button
     }()
@@ -149,10 +148,21 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+//    
+//    func configureButton(with tracker: Tracker, isCompleted: Bool, baseColor: UIColor) {
+//        self.tracker = tracker
+//        completeTrackerButtonColor = isCompleted ? baseColor.withAlphaComponent(0.3) : baseColor.withAlphaComponent(1.0)
+//        let image = isCompleted ? UIImage(systemName: "checkmark")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)) : UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 14, weight: .medium))
+//        completeTrackerButton.setImage(image, for: .normal)
+//    }
     
-    func configureButton(with tracker: Tracker, isCompleted: Bool, baseColor: UIColor) {
-        self.tracker = tracker
-        completeTrackerButtonColor = isCompleted ? baseColor.withAlphaComponent(0.3) : baseColor.withAlphaComponent(1.0)
+    func configureButton(for tracker: Tracker, selectedDate: Date, completedTrackers: [TrackerRecord]) {
+        let isCompleted = completedTrackers.contains(where: {
+            $0.trackerId == tracker.id &&
+            Calendar.current.isDate($0.date, inSameDayAs: selectedDate)
+        })
+        
+        completeTrackerButtonColor = isCompleted ? tracker.color.withAlphaComponent(0.3) : tracker.color.withAlphaComponent(1.0)
         let image = isCompleted ? UIImage(systemName: "checkmark")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)) : UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 14, weight: .medium))
         completeTrackerButton.setImage(image, for: .normal)
     }

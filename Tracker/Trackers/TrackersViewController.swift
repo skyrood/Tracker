@@ -8,31 +8,26 @@
 import UIKit
 
 final class TrackersViewController: UIViewController {
-    // MARK: - IB Outlets
     
-    // MARK: - Public Properties
-    
-    // MARK: - Private Properties
-    //    private var categories: [TrackerCategory] = []
-    
+    // MARK: - Private Properties    
     private var selectedDate: Date = Date()
     
     private var categories: [TrackerCategory] = [
         TrackerCategory(
             name: "Fitness",
             trackers: [
-                Tracker(id: 1, title: "Morning Run", emoji: "🤮", color: .selection1, schedule: Weekday.monday | Weekday.tuesday | Weekday.thursday)
+                Tracker(id: 1, name: "Morning Run", emoji: "🤮", color: .selection1, schedule: Weekday.monday | Weekday.tuesday | Weekday.thursday)
             ]
         ),
         TrackerCategory(
             name: "Productivity",
             trackers: [
-                Tracker(id: 2, title: "Read a Book", emoji: "💩", color: .selection6, schedule: Weekday.monday),
-                Tracker(id: 3, title: "Code for an Hour and complete the sprint", emoji: "☠️", color: .selection11, schedule: Weekday.sunday)
+                Tracker(id: 2, name: "Read a Book", emoji: "💩", color: .selection6, schedule: Weekday.monday),
+                Tracker(id: 3, name: "Code for an Hour and complete the sprint", emoji: "☠️", color: .selection11, schedule: Weekday.sunday)
             ]
         )
     ]
-    
+        
     private var filteredCategories: [TrackerCategory] {
         let weekdayBit = getWeekdayBit(from: selectedDate)
         
@@ -115,8 +110,6 @@ final class TrackersViewController: UIViewController {
         return collectionView
     }()
     
-    // MARK: - Initializers
-    
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         view.backgroundColor = UIColor(named: "White")
@@ -128,10 +121,6 @@ final class TrackersViewController: UIViewController {
         
         updateUI()
     }
-    
-    // MARK: - IB Actions
-    
-    // MARK: - Public Methods
     
     // MARK: - Private Methods
     private func setConstraints(for label: UILabel, relativeTo relativeView: UIView, constant: Int) {
@@ -161,7 +150,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func setUpNavigationBar() {
-        title = "Крекеры"
+        title = "Трекеры"
         navigationController?.navigationBar.prefersLargeTitles = true
         
         let addTrackerButton = UIBarButtonItem(
@@ -186,24 +175,14 @@ final class TrackersViewController: UIViewController {
         navigationItem.searchController = searchBar
     }
     
-    @objc private func addTrackerButtonTapped() {
-        let addTrackerViewController = AddTrackerViewController()
-        addTrackerViewController.categoryList = categories.map { $0.name }
-        addTrackerViewController.modalPresentationStyle = .pageSheet
-        addTrackerViewController.view.layer.cornerRadius = 10
-        present(addTrackerViewController, animated: true, completion: nil)
-    }
-    
     private func updateUI() {
         let hasTrackers = !filteredCategories.isEmpty
         
-        print("update triggered. hasTrackers: \(hasTrackers)")
         startMessageContainerView.isHidden = hasTrackers
         trackersCollectionView.isHidden = !hasTrackers
     }
     
     private func showStartMessage() {
-        print("showing start message")
         view.addSubview(startMessageContainerView)
         
         startMessageContainerView.addSubview(image)
@@ -241,6 +220,53 @@ final class TrackersViewController: UIViewController {
         return 1 << ((weekdayIndex + 5) % 7)
     }
     
+    private func getMaxTrackerID() -> UInt {
+        return categories
+            .flatMap(\.trackers)
+            .map(\.id)
+            .max() ?? 0
+    }
+    
+    private func completedDaysCount(for tracker: Tracker) -> Int {
+        return completedTrackers.filter{ $0.trackerId == tracker.id }.count
+    }
+    
+    private func addNewTracker(_ newTracker: Tracker, toCategory categoryName: String) {
+        var updatedCategories: [TrackerCategory] = []
+        var categoryExists = false
+        for category in categories {
+            if category.name == categoryName {
+                let updatedTrackers = category.trackers + [newTracker]
+                let updatedCategory = TrackerCategory(name: category.name, trackers: updatedTrackers)
+                updatedCategories.append(updatedCategory)
+                categoryExists = true
+            } else {
+                updatedCategories.append(category)
+            }
+        }
+        
+        if !categoryExists {
+            let newCategory = TrackerCategory(name: categoryName, trackers: [newTracker])
+            updatedCategories.append(newCategory)
+        }
+        
+        categories = updatedCategories
+        trackersCollectionView.reloadData()
+    }
+    
+    @objc private func addTrackerButtonTapped() {
+        let addTrackerViewController = AddTrackerViewController()
+        addTrackerViewController.categoryList = categories.map { $0.name }
+        addTrackerViewController.maxTrackerID = getMaxTrackerID()
+        addTrackerViewController.passHabitToTrackersList = { [weak self] newHabit, categoryName in
+            self?.addNewTracker(newHabit, toCategory: categoryName)
+            self?.dismiss(animated: true)
+        }
+        addTrackerViewController.modalPresentationStyle = .pageSheet
+        addTrackerViewController.view.layer.cornerRadius = 10
+        present(addTrackerViewController, animated: true, completion: nil)
+    }
+    
     @objc private func dateChanged(_ sender: UIDatePicker) {
         selectedDate = sender.date
         trackersCollectionView.reloadData()
@@ -266,10 +292,6 @@ final class TrackersViewController: UIViewController {
         let completedCount = completedDaysCount(for: tracker)
         cell.daysCountLabel.text = "\(completedCount) дней"
     }
-    
-    func completedDaysCount(for tracker: Tracker) -> Int {
-        return completedTrackers.filter{ $0.trackerId == tracker.id }.count
-    }
 }
 
 // MARK: - extension UISearchBarDelegate
@@ -294,7 +316,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         let tracker = filteredCategories[indexPath.section].trackers[indexPath.row]
         
         cell.emojiLabel.text = filteredCategories[indexPath.section].trackers[indexPath.row].emoji
-        cell.title = filteredCategories[indexPath.section].trackers[indexPath.row].title
+        cell.title = filteredCategories[indexPath.section].trackers[indexPath.row].name
         let completedCount = completedDaysCount(for: tracker)
         cell.daysCountLabel.text = "\(completedCount) дней"
         

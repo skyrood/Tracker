@@ -9,7 +9,7 @@ import UIKit
 
 struct Tracker {
     let id: UInt
-    let title: String
+    let name: String
     let emoji: String
     let color: UIColor
     let schedule: Int

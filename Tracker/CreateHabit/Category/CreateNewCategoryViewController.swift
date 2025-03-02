@@ -8,19 +8,18 @@
 import UIKit
 
 final class CreateNewCategoryViewController: UIViewController {
-    // MARK: - IB Outlets
-    
+
     // MARK: - Public Properties
     var categoryName: String = ""
     
     var onCategoryCreated: ((String) -> Void)?
     
     // MARK: - Private Properties
-    private var label: UILabel = UILabel()
+    private var titleLabel: UILabel = UILabel()
     
     private var categoryNameTextField: UITextField = UITextField()
     
-    private var createCategorybutton: UIButton = UIButton(type: .system)
+    private var createCategoryButton: UIButton = UIButton(type: .system)
     
     private lazy var categoryNameFieldWarningMessage: UILabel = {
         let label = UILabel()
@@ -34,43 +33,37 @@ final class CreateNewCategoryViewController: UIViewController {
     }()
     
     private var shouldShowWarningCell = false
-    
-    // MARK: - Initializers
-    
+
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "White")
         navigationItem.hidesBackButton = true
         
-        setupCreateCategoryLabel()
+        setupTitleLabel()
         setupCategoryNameTextField()
         setupCategoryNameFieldWarningMessage()
         setupCreateCagegoryButton()
         
         toggleWarningMessage()
         
-        createCategorybutton.isEnabled = false
-        createCategorybutton.alpha = 0.3
+        createCategoryButton.isEnabled = false
+        createCategoryButton.alpha = 0.3
     }
-    
-    // MARK: - IB Actions
-    
-    // MARK: - Public Methods
-    
+
     // MARK: - Private Methods
-    private func setupCreateCategoryLabel() {
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.clipsToBounds = true
-        label.font = UIFont.systemFont(ofSize: 16)
-        label.textColor = UIColor(named: "Black")
-        label.text = "Новая категория"
+    private func setupTitleLabel() {
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.clipsToBounds = true
+        titleLabel.font = UIFont.systemFont(ofSize: 16)
+        titleLabel.textColor = UIColor(named: "Black")
+        titleLabel.text = "Новая категория"
         
-        view.addSubview(label)
+        view.addSubview(titleLabel)
         
         NSLayoutConstraint.activate([
-            label.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 26),
+            titleLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 26),
         ])
     }
     
@@ -98,7 +91,7 @@ final class CreateNewCategoryViewController: UIViewController {
         view.addSubview(categoryNameTextField)
         
         NSLayoutConstraint.activate([
-            categoryNameTextField.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 38),
+            categoryNameTextField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 38),
             categoryNameTextField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             categoryNameTextField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             categoryNameTextField.heightAnchor.constraint(equalToConstant: 75),
@@ -117,22 +110,26 @@ final class CreateNewCategoryViewController: UIViewController {
     }
     
     private func setupCreateCagegoryButton() {
-        createCategorybutton.translatesAutoresizingMaskIntoConstraints = false
-        createCategorybutton.setTitle("Готово", for: .normal)
-        createCategorybutton.setTitleColor(.white, for: .normal)
-        createCategorybutton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        createCategorybutton.backgroundColor = .black
-        createCategorybutton.layer.cornerRadius = 16
-        createCategorybutton.addTarget(self, action: #selector(createCategoryButtonTapped), for: .touchUpInside)
+        createCategoryButton.translatesAutoresizingMaskIntoConstraints = false
+        createCategoryButton.setTitle("Готово", for: .normal)
+        createCategoryButton.setTitleColor(.white, for: .normal)
+        createCategoryButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        createCategoryButton.backgroundColor = .black
+        createCategoryButton.layer.cornerRadius = 16
+        createCategoryButton.addTarget(self, action: #selector(createCategoryButtonTapped), for: .touchUpInside)
         
-        view.addSubview(createCategorybutton)
+        view.addSubview(createCategoryButton)
         
         NSLayoutConstraint.activate([
-            createCategorybutton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            createCategorybutton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            createCategorybutton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            createCategorybutton.heightAnchor.constraint(equalToConstant: 60),
+            createCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            createCategoryButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            createCategoryButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            createCategoryButton.heightAnchor.constraint(equalToConstant: 60),
         ])
+    }
+    
+    private func toggleWarningMessage() {
+        categoryNameFieldWarningMessage.isHidden = !shouldShowWarningCell
     }
     
     @objc private func createCategoryButtonTapped() {
@@ -144,15 +141,12 @@ final class CreateNewCategoryViewController: UIViewController {
     
     @objc private func categoryNameTextFieldDidChange() {
         let hasText = !(categoryNameTextField.text?.isEmpty ?? true)
-        createCategorybutton.isEnabled = hasText
-        createCategorybutton.alpha = hasText ? 1 : 0.3
-    }
-    
-    private func toggleWarningMessage() {
-        categoryNameFieldWarningMessage.isHidden = !shouldShowWarningCell
+        createCategoryButton.isEnabled = hasText
+        createCategoryButton.alpha = hasText ? 1 : 0.3
     }
 }
 
+// MARK: - extension UITextFieldDelegate
 extension CreateNewCategoryViewController: UITextFieldDelegate {
     func textField(
         _ textField: UITextField, shouldChangeCharactersIn range: NSRange,

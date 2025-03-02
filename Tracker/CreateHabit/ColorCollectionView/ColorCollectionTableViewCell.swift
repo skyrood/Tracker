@@ -8,10 +8,13 @@
 import UIKit
 
 final class ColorCollectionTableViewCell: UITableViewCell {
-    // MARK: - IB Outlets
     
     // MARK: - Public Properties
     let cellReuseIdentifier = "ColorCollectionTableViewCell"
+    
+    var selectedColor: String?
+    
+    var onColorSelected: ((String) -> Void)?
     
     // MARK: - Private Properties
     private lazy var colorCollectionView: UICollectionView = {
@@ -47,9 +50,7 @@ final class ColorCollectionTableViewCell: UITableViewCell {
         "Selection 17",
         "Selection 18",
     ]
-    
-    // MARK: - Initializers
-    
+
     // MARK: - Overrides Methods
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: cellReuseIdentifier)
@@ -59,11 +60,7 @@ final class ColorCollectionTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - IB Actions
-    
-    // MARK: - Public Methods
-    
+
     // MARK: - Private Methods
     private func setupColorCollectionView() {
         contentView.addSubview(colorCollectionView)
@@ -82,20 +79,25 @@ final class ColorCollectionTableViewCell: UITableViewCell {
     }
 }
 
+// MARK: - extension UICollectionViewDelegate
 extension ColorCollectionTableViewCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? ColorCell {
             cell.isSelected = true
+            selectedColor = colors[indexPath.row]
+            onColorSelected?(colors[indexPath.row])
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? ColorCell {
             cell.isSelected = false
+            selectedColor = nil
         }
     }
 }
 
+// MARK: - extension UICollectionViewDataSource
 extension ColorCollectionTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return colors.count
@@ -112,6 +114,7 @@ extension ColorCollectionTableViewCell: UICollectionViewDataSource {
     }
 }
 
+// MARK: - extension UICollectionViewDelegateFlowLayout
 extension ColorCollectionTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let emojiSize = (colorCollectionView.bounds.width - 25) / 6

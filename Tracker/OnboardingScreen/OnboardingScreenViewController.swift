@@ -102,7 +102,7 @@ final class OnboardingScreenViewController: UIPageViewController, UIPageViewCont
     }
 }
 
-// MARK: - UIPageViewControllerDataSource
+// MARK: - extension UIPageViewControllerDataSource
 extension OnboardingScreenViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard let currentIndex = pages.firstIndex(of: viewController), currentIndex > 0 else {

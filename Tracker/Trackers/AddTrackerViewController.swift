@@ -8,11 +8,12 @@
 import UIKit
 
 final class AddTrackerViewController: UIViewController {
-    // MARK: - IB Outlets
-    
+   
     // MARK: - Public Properties
-    
     var categoryList: [String] = []
+    var maxTrackerID: UInt = 0
+    
+    var passHabitToTrackersList: ((Tracker, String) -> Void)?
     
     // MARK: - Private Properties
     private lazy var titleLabel: UILabel = {
@@ -37,8 +38,6 @@ final class AddTrackerViewController: UIViewController {
         return button
     }()
     
-    // MARK: - Initializers
-    
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,10 +55,6 @@ final class AddTrackerViewController: UIViewController {
         setConstraints(for: eventButton)
         setTopConstraint(for: eventButton, relativeTo: habitButton.bottomAnchor, constant: 16)
     }
-    
-    // MARK: - IB Actions
-    
-    // MARK: - Public Methods
     
     // MARK: - Private Methods
     private func createButton(title: String) -> UIButton {
@@ -99,6 +94,11 @@ final class AddTrackerViewController: UIViewController {
         print("Habit button tapped")
         let newHabitViewController = NewHabitViewController()
         newHabitViewController.categoryList = categoryList
+        newHabitViewController.maxTrackerID = maxTrackerID
+        newHabitViewController.onHabitCreated = { [weak self] newHabit, categoryName in
+            self?.passHabitToTrackersList?(newHabit, categoryName)
+            self?.dismiss(animated: true)
+        }
         newHabitViewController.modalPresentationStyle = .pageSheet
         newHabitViewController.view.layer.cornerRadius = 10
         present(newHabitViewController, animated: true, completion: nil)

@@ -8,10 +8,8 @@
 import UIKit
 
 final class CategoryListViewController: UIViewController {
-    // MARK: - IB Outlets
-    
+
     // MARK: - Public Properties
-    
     var categoryList: [String] = [] {
         didSet {
             categoryListTableView.reloadData()
@@ -39,8 +37,6 @@ final class CategoryListViewController: UIViewController {
     private var cellHeight = 75.0
     
     private var categoryListTableViewHeight: NSLayoutConstraint?
-    
-    // MARK: - Initializers
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
@@ -70,10 +66,6 @@ final class CategoryListViewController: UIViewController {
         
         toggleButtonsVisibility()
     }
-    
-    // MARK: - IB Actions
-    
-    // MARK: - Public Methods
     
     // MARK: - Private Methods
     private func setupCategoryListLabel() {
@@ -218,6 +210,7 @@ final class CategoryListViewController: UIViewController {
     }
 }
 
+// MARK: - extension UITableViewDelegate
 extension CategoryListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return cellHeight
@@ -238,6 +231,7 @@ extension CategoryListViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - extension UITableViewDataSource
 extension CategoryListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return categoryList.count

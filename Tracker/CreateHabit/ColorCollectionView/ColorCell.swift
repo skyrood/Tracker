@@ -29,7 +29,6 @@ final class ColorCell: UICollectionViewCell {
             colorView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             colorView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
         ])
-        
     }
     
     required init?(coder: NSCoder) {

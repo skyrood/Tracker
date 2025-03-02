@@ -8,11 +8,14 @@
 import UIKit
 
 final class EmojiCollectionTableViewCell: UITableViewCell {
-    // MARK: - IB Outlets
     
     // MARK: - Public Properties
     let cellReuseIdentifier = "EmojiCollectionTableViewCell"
     
+    var selectedEmoji: String?
+    
+    var onEmojiSelected: ((String) -> Void)?
+        
     // MARK: - Private Properties
     private lazy var emojiCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -32,9 +35,7 @@ final class EmojiCollectionTableViewCell: UITableViewCell {
         "😇", "😡", "🥶", "🤔", "🙌", "🍔",
         "🥦", "🏓", "🥇", "🎸", "🏝", "😪",
     ]
-    
-    // MARK: - Initializers
-    
+
     // MARK: - Overrides Methods
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: cellReuseIdentifier)
@@ -44,10 +45,6 @@ final class EmojiCollectionTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - IB Actions
-    
-    // MARK: - Public Methods
     
     // MARK: - Private Methods
     private func setupEmojiCollectionView() {
@@ -67,20 +64,22 @@ final class EmojiCollectionTableViewCell: UITableViewCell {
     }
 }
 
+// MARK: - extension UICollectionViewDelegate
 extension EmojiCollectionTableViewCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell {
-            cell.isSelected = true
-        }
+        let selectedEmoji = emojis[indexPath.row]
+        onEmojiSelected?(selectedEmoji)
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell {
             cell.isSelected = false
+            selectedEmoji = nil
         }
     }
 }
 
+// MARK: - extension UICollectionViewDataSource
 extension EmojiCollectionTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return emojis.count
@@ -97,6 +96,7 @@ extension EmojiCollectionTableViewCell: UICollectionViewDataSource {
     }
 }
 
+// MARK: - extension UICollectionViewDelegateFlowLayout
 extension EmojiCollectionTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let emojiSize = (emojiCollectionView.bounds.width - 25) / 6

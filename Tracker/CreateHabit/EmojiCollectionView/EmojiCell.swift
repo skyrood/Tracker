@@ -8,6 +8,7 @@
 import UIKit
 
 final class EmojiCell: UICollectionViewCell {
+    
     let emojiView: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -28,7 +29,6 @@ final class EmojiCell: UICollectionViewCell {
             emojiView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             emojiView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
-        
     }
     
     required init?(coder: NSCoder) {

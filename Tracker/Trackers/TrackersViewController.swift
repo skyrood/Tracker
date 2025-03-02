@@ -188,6 +188,7 @@ final class TrackersViewController: UIViewController {
     
     @objc private func addTrackerButtonTapped() {
         let addTrackerViewController = AddTrackerViewController()
+        addTrackerViewController.categoryList = categories.map { $0.name }
         addTrackerViewController.modalPresentationStyle = .pageSheet
         addTrackerViewController.view.layer.cornerRadius = 10
         present(addTrackerViewController, animated: true, completion: nil)

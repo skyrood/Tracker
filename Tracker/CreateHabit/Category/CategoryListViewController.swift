@@ -12,6 +12,13 @@ final class CategoryListViewController: UIViewController {
     
     // MARK: - Public Properties
     
+    var categoryList: [String] = [] {
+        didSet {
+            categoryListTableView.reloadData()
+            updateCategoryListTableViewHeight()
+        }
+    }
+    
     // MARK: - Private Properties
     private lazy var label: UILabel = UILabel()
     
@@ -20,14 +27,12 @@ final class CategoryListViewController: UIViewController {
     private lazy var messageLabel: UILabel = UILabel()
     
     private lazy var addCategoryButton: UIButton = UIButton()
-    
-    private var categoryList: [String] = ["Flowers", "Wodka", "Sex", "Rock'n'Roll"]
-    
-    private lazy var categoryListView: UITableView = UITableView()
+        
+    private lazy var categoryListTableView: UITableView = UITableView()
     
     private var cellHeight = 75.0
     
-    private var categoryListHeight: NSLayoutConstraint?
+    private var categoryListTableViewHeight: NSLayoutConstraint?
     
     // MARK: - Initializers
     
@@ -45,13 +50,8 @@ final class CategoryListViewController: UIViewController {
             setupMessageLabel()
         } else {
             setupCategoryListView()
+            updateCategoryListTableViewHeight()
         }
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        categoryListHeight?.constant = categoryListView.contentSize.height + 29
-        categoryListView.layoutIfNeeded()
     }
     
     // MARK: - IB Actions
@@ -63,7 +63,9 @@ final class CategoryListViewController: UIViewController {
 //            self?.categoryListView.reloadData()
 //        }
         
-        navigationController?.pushViewController(createCategoryViewController, animated: true)
+        createCategoryViewController.modalPresentationStyle = .pageSheet
+        createCategoryViewController.view.layer.cornerRadius = 10
+        present(createCategoryViewController, animated: true, completion: nil)
     }
     
     // MARK: - Public Methods
@@ -131,25 +133,25 @@ final class CategoryListViewController: UIViewController {
     }
     
     private func setupCategoryListView() {
-        categoryListView.translatesAutoresizingMaskIntoConstraints = false
-        categoryListView.clipsToBounds = true
-        categoryListView.backgroundColor = UIColor(named: "InputBackground")
-        categoryListView.layer.cornerRadius = 16
-        categoryListView.separatorStyle = .none
-        categoryListView.delegate = self
-        categoryListView.dataSource = self
-        categoryListView.register(UITableViewCell.self, forCellReuseIdentifier: "CategoryListTableViewCell")
+        categoryListTableView.translatesAutoresizingMaskIntoConstraints = false
+        categoryListTableView.clipsToBounds = true
+        categoryListTableView.backgroundColor = UIColor(named: "InputBackground")
+        categoryListTableView.layer.cornerRadius = 16
+        categoryListTableView.separatorStyle = .none
+        categoryListTableView.delegate = self
+        categoryListTableView.dataSource = self
+        categoryListTableView.register(UITableViewCell.self, forCellReuseIdentifier: "CategoryListTableViewCell")
         
-        view.addSubview(categoryListView)
+        view.addSubview(categoryListTableView)
                         
         NSLayoutConstraint.activate([
-            categoryListView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            categoryListView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            categoryListView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 38),
+            categoryListTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            categoryListTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            categoryListTableView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 38),
         ])
         
-        categoryListHeight = categoryListView.heightAnchor.constraint(equalToConstant: 10)
-        categoryListHeight?.isActive = true
+        categoryListTableViewHeight = categoryListTableView.heightAnchor.constraint(equalToConstant: 0)
+        categoryListTableViewHeight?.isActive = true
     }
     
     private func setupAddCategoryButton() {
@@ -171,6 +173,12 @@ final class CategoryListViewController: UIViewController {
             addCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
     }
+    
+    private func updateCategoryListTableViewHeight() {
+        let tableViewHeight: CGFloat = cellHeight * CGFloat(categoryList.count)
+        categoryListTableViewHeight?.constant = tableViewHeight
+        view.layoutIfNeeded()
+    }
 }
 
 extension CategoryListViewController: UITableViewDelegate {
@@ -185,7 +193,7 @@ extension CategoryListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = categoryListView.dequeueReusableCell(withIdentifier: "CategoryListTableViewCell", for: indexPath)
+        let cell = categoryListTableView.dequeueReusableCell(withIdentifier: "CategoryListTableViewCell", for: indexPath)
         cell.textLabel?.text = categoryList[indexPath.row]
         cell.backgroundColor = .clear
         cell.selectionStyle = .none

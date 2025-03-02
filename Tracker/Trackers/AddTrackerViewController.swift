@@ -12,6 +12,8 @@ final class AddTrackerViewController: UIViewController {
     
     // MARK: - Public Properties
     
+    var categoryList: [String] = []
+    
     // MARK: - Private Properties
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
@@ -95,7 +97,8 @@ final class AddTrackerViewController: UIViewController {
     
     @objc private func habitButtonTapped() {
         print("Habit button tapped")
-        let newHabitViewController = UINavigationController(rootViewController:         NewHabitViewController())
+        let newHabitViewController = NewHabitViewController()
+        newHabitViewController.categoryList = categoryList
         newHabitViewController.modalPresentationStyle = .pageSheet
         newHabitViewController.view.layer.cornerRadius = 10
         present(newHabitViewController, animated: true, completion: nil)

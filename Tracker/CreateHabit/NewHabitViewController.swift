@@ -11,6 +11,7 @@ final class NewHabitViewController: UIViewController {
     // MARK: - IB Outlets
     
     // MARK: - Public Properties
+    var categoryList: [String] = []
     
     // MARK: - Private Properties
     private var trackerName: String = "" {
@@ -273,12 +274,15 @@ extension NewHabitViewController: UITableViewDelegate {
         if indexPath.section == 1 {
             if indexPath.row == 0 {
                 let categoryListViewController = CategoryListViewController()
-                navigationController?.pushViewController(
-                    categoryListViewController, animated: true)
+                categoryListViewController.categoryList = categoryList
+                categoryListViewController.modalPresentationStyle = .pageSheet
+                categoryListViewController.view.layer.cornerRadius = 10
+                present(categoryListViewController, animated: true, completion: nil)
             } else if indexPath.row == 1 {
-                let ScheduleViewController = ScheduleViewController()
-                navigationController?.pushViewController(
-                    ScheduleViewController, animated: true)
+                let scheduleViewController = ScheduleViewController()
+                scheduleViewController.modalPresentationStyle = .pageSheet
+                scheduleViewController.view.layer.cornerRadius = 10
+                present(scheduleViewController, animated: true, completion: nil)
             }
         }
         

@@ -19,12 +19,18 @@ final class CategoryListViewController: UIViewController {
         }
     }
     
+    var selectedCategory: String?
+    
+    var onCategorySelected: ((String) -> Void)?
+    
     // MARK: - Private Properties
     private lazy var label: UILabel = UILabel()
     
     private lazy var logoImage: UIImageView = UIImageView()
     
     private lazy var messageLabel: UILabel = UILabel()
+    
+    private lazy var createNewCategoryButton: UIButton = UIButton()
     
     private lazy var addCategoryButton: UIButton = UIButton()
         
@@ -43,7 +49,16 @@ final class CategoryListViewController: UIViewController {
         navigationItem.hidesBackButton = true
         
         setupCategoryListLabel()
-        setupAddCategoryButton()
+        setupCategoryButton(for: createNewCategoryButton,
+                            buttonText: "Добавить категорию",
+                            using: #selector(createNewCategoryButtonTapped))
+        setupCategoryButton(for: addCategoryButton,
+                            buttonText: "Готово",
+                            using: #selector(addCategoryButtonTapped))
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         if categoryList.isEmpty {
             setupLogo()
@@ -52,21 +67,11 @@ final class CategoryListViewController: UIViewController {
             setupCategoryListView()
             updateCategoryListTableViewHeight()
         }
+        
+        toggleButtonsVisibility()
     }
     
     // MARK: - IB Actions
-    @objc private func addCategoryButtonTapped() {
-        let createCategoryViewController = CreateCategoryViewController()
-        
-//        createCategoryViewController.onNewCategoryAdded = { [ weak self ] newCategory in
-//            self?.categoryList.append(newCategory)
-//            self?.categoryListView.reloadData()
-//        }
-        
-        createCategoryViewController.modalPresentationStyle = .pageSheet
-        createCategoryViewController.view.layer.cornerRadius = 10
-        present(createCategoryViewController, animated: true, completion: nil)
-    }
     
     // MARK: - Public Methods
     
@@ -154,23 +159,23 @@ final class CategoryListViewController: UIViewController {
         categoryListTableViewHeight?.isActive = true
     }
     
-    private func setupAddCategoryButton() {
-        addCategoryButton.translatesAutoresizingMaskIntoConstraints = false
-        addCategoryButton.clipsToBounds = true
-        addCategoryButton.setTitle("Добавить категорию", for: .normal)
-        addCategoryButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        addCategoryButton.backgroundColor = UIColor(named: "Black")
-        addCategoryButton.setTitleColor(.white, for: .normal)
-        addCategoryButton.layer.cornerRadius = 16
-        addCategoryButton.addTarget(self, action: #selector (addCategoryButtonTapped), for: .touchUpInside)
+    private func setupCategoryButton(for button: UIButton, buttonText: String, using action: Selector) {
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.clipsToBounds = true
+        button.setTitle(buttonText, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        button.backgroundColor = UIColor(named: "Black")
+        button.setTitleColor(.white, for: .normal)
+        button.layer.cornerRadius = 16
+        button.addTarget(self, action: action, for: .touchUpInside)
         
-        view.addSubview(addCategoryButton)
+        view.addSubview(button)
         
         NSLayoutConstraint.activate([
-            addCategoryButton.heightAnchor.constraint(equalToConstant: 60),
-            addCategoryButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            addCategoryButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            addCategoryButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+            button.heightAnchor.constraint(equalToConstant: 60),
+            button.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            button.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            button.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
     }
     
@@ -179,11 +184,57 @@ final class CategoryListViewController: UIViewController {
         categoryListTableViewHeight?.constant = tableViewHeight
         view.layoutIfNeeded()
     }
+    
+    private func toggleButtonsVisibility() {
+        if selectedCategory == nil {
+            createNewCategoryButton.isHidden = false
+            addCategoryButton.isHidden = true
+        } else {
+            createNewCategoryButton.isHidden = true
+            addCategoryButton.isHidden = false
+        }
+    }
+    
+    @objc private func createNewCategoryButtonTapped() {
+        let createNewCategoryViewController = CreateNewCategoryViewController()
+        
+        createNewCategoryViewController.onCategoryCreated = { [ weak self ] categoryName in
+            self?.categoryList.append(categoryName)
+            self?.selectedCategory = categoryName
+            self?.categoryListTableView.reloadData()
+            self?.toggleButtonsVisibility()
+        }
+        
+        createNewCategoryViewController.modalPresentationStyle = .pageSheet
+        createNewCategoryViewController.view.layer.cornerRadius = 10
+        present(createNewCategoryViewController, animated: true, completion: nil)
+    }
+    
+    @objc private func addCategoryButtonTapped() {
+        guard let selectedCategoryName = selectedCategory else { return }
+        
+        onCategorySelected?(selectedCategoryName)
+        dismiss(animated: true)
+    }
 }
 
 extension CategoryListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return cellHeight
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedCategoryName = categoryList[indexPath.row]
+        
+        if selectedCategory == selectedCategoryName {
+            selectedCategory = nil
+        } else {
+            selectedCategory = selectedCategoryName
+        }
+        
+        toggleButtonsVisibility()
+        
+        categoryListTableView.reloadData()
     }
 }
 
@@ -197,12 +248,19 @@ extension CategoryListViewController: UITableViewDataSource {
         cell.textLabel?.text = categoryList[indexPath.row]
         cell.backgroundColor = .clear
         cell.selectionStyle = .none
+        
+        cell.contentView.subviews.forEach { subview in
+            if subview.tag == 999 {
+                subview.removeFromSuperview()
+            }
+        }
 
         if indexPath.row < categoryList.count - 1 {
             let separatorLineView = UIView()
             separatorLineView.translatesAutoresizingMaskIntoConstraints = false
             separatorLineView.clipsToBounds = true
             separatorLineView.backgroundColor = UIColor(named: "Gray")
+            separatorLineView.tag = 999
 
             cell.contentView.addSubview(separatorLineView)
             
@@ -215,6 +273,12 @@ extension CategoryListViewController: UITableViewDataSource {
                 separatorLineView.trailingAnchor.constraint(
                     equalTo: cell.trailingAnchor, constant: -16),
             ])
+        }
+        
+        if categoryList[indexPath.row] == selectedCategory {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
         }
         
         return cell

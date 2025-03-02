@@ -13,12 +13,18 @@ final class NewHabitViewController: UIViewController {
     // MARK: - Public Properties
     var categoryList: [String] = []
     
+    var newHabit: Tracker?
+    
     // MARK: - Private Properties
     private var trackerName: String = "" {
         didSet {
             print("Tracker name updated to \(trackerName)")
         }
     }
+    
+    private var categoryName: String? = ""
+    private var color: UIColor?
+    private var emoji: String?
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -275,8 +281,22 @@ extension NewHabitViewController: UITableViewDelegate {
             if indexPath.row == 0 {
                 let categoryListViewController = CategoryListViewController()
                 categoryListViewController.categoryList = categoryList
+                
+                if categoryName != nil {
+                    categoryListViewController.selectedCategory = categoryName
+                }
+
+                categoryListViewController.onCategorySelected = { [weak self] category in
+                    self?.categoryName = category
+                    if self?.categoryList.contains(category) == false {
+                        self?.categoryList.append(category)
+                    }
+                    tableView.reloadData()
+                }
+                
                 categoryListViewController.modalPresentationStyle = .pageSheet
                 categoryListViewController.view.layer.cornerRadius = 10
+                
                 present(categoryListViewController, animated: true, completion: nil)
             } else if indexPath.row == 1 {
                 let scheduleViewController = ScheduleViewController()
@@ -409,7 +429,7 @@ extension NewHabitViewController: UITableViewDataSource {
     -> UITableViewCell
     {
         let cell = UITableViewCell(
-            style: .default, reuseIdentifier: "ButtonCell")
+            style: .subtitle, reuseIdentifier: "ButtonCell")
         
         if indexPath.row == 0 {
             let backgroundView = UIView()
@@ -427,7 +447,7 @@ extension NewHabitViewController: UITableViewDataSource {
                     equalTo: cell.leadingAnchor),
                 backgroundView.trailingAnchor.constraint(
                     equalTo: cell.trailingAnchor),
-                backgroundView.heightAnchor.constraint(equalToConstant: 150.5),
+                backgroundView.heightAnchor.constraint(equalToConstant: 150),
             ])
             
             let separatorLineView = UIView()
@@ -448,9 +468,23 @@ extension NewHabitViewController: UITableViewDataSource {
             ])
         }
         
-        cell.textLabel?.text = indexPath.row == 0 ? "Категория" : "Расписание"
         cell.textLabel?.font = .systemFont(ofSize: 17)
         cell.textLabel?.textColor = UIColor(named: "Black")
+        
+        if indexPath.row == 0 {
+            cell.textLabel?.text = "Категория"
+            
+            if categoryName != nil {
+                cell.detailTextLabel?.text = categoryName
+                cell.detailTextLabel?.font = .systemFont(ofSize: 17)
+                cell.detailTextLabel?.textColor = .gray
+            }
+        }
+        
+        if indexPath.row == 1 {
+            cell.textLabel?.text = "Расписание"
+        }
+    
         cell.accessoryType = .disclosureIndicator
         cell.backgroundColor = .clear
         cell.layoutMargins = UIEdgeInsets(

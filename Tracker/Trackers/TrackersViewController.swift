@@ -22,8 +22,8 @@ final class TrackersViewController: UIViewController {
         TrackerCategory(
             name: "Productivity",
             trackers: [
-                Tracker(id: 2, name: "Read a Book", emoji: "💩", color: .selection6, schedule: [ Weekday.monday ]),
-                Tracker(id: 3, name: "Code for an Hour and complete the sprint", emoji: "☠️", color: .selection11, schedule: [ Weekday.sunday ])
+                Tracker(id: 2, name: "Read a Book", emoji: "💩", color: .selection6, schedule: [ Weekday.monday, Weekday.wednesday]),
+                Tracker(id: 3, name: "Code for an Hour and complete the sprint", emoji: "☠️", color: .selection12, schedule: [ Weekday.wednesday, Weekday.sunday ])
             ]
         )
     ]
@@ -230,8 +230,8 @@ final class TrackersViewController: UIViewController {
     @objc private func toggleCompletion(_ sender: UIButton) {
         guard let cell = sender.superview?.superview as? TrackerCollectionViewCell,
               let indexPath = trackersCollectionView.indexPath(for: cell) else { return }
-
-        let tracker = categories[indexPath.section].trackers[indexPath.row]
+        
+        let tracker = filteredCategories[indexPath.section].trackers[indexPath.item]
         let record = TrackerRecord(trackerId: tracker.id, date: selectedDate)
         
         if completedTrackers.contains(record) {

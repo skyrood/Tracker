@@ -17,7 +17,7 @@ struct TrackerRecord: Hashable {
     }
     
     static func == (lhs: Self, rhs: Self) -> Bool {
-        return lhs.trackerId == rhs.trackerId
+        lhs.trackerId == rhs.trackerId
         && Calendar.current.isDate(lhs.date, inSameDayAs: rhs.date)
     }
 }

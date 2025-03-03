@@ -8,6 +8,10 @@
 import UIKit
 
 final class CreateNewCategoryViewController: UIViewController {
+    // MARK: - Constants
+    private enum Constants {
+        static let categoryNameMaxLength = 38
+    }
 
     // MARK: - Public Properties
     var categoryName: String = ""
@@ -159,7 +163,7 @@ extension CreateNewCategoryViewController: UITextFieldDelegate {
         let updatedText = currentText.replacingCharacters(
             in: stringRange, with: string)
         
-        if updatedText.count <= 38 {
+        if updatedText.count <= Constants.categoryNameMaxLength {
             categoryName = updatedText
             
             if shouldShowWarningCell {

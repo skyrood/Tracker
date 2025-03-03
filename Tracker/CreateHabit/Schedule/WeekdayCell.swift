@@ -8,7 +8,7 @@
 import UIKit
 
 final class WeekdayCell: UITableViewCell {
-    var toggleHandler: ((Int, Bool) -> Void)?
+    var toggleHandler: ((Weekday, Bool) -> Void)?
     
     let toggleSwitch: UISwitch = {
         let toggle = UISwitch()
@@ -25,7 +25,7 @@ final class WeekdayCell: UITableViewCell {
         return label
     }()
 
-    private var weekdayFlag: Int = 0
+    private var weekdayFlag: Weekday = []
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -44,17 +44,15 @@ final class WeekdayCell: UITableViewCell {
         toggleSwitch.addTarget(self, action: #selector(switchToggled), for: .valueChanged)
     }
     
-    
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(with weekday: String, flag: Int, isSelected: Bool) {
+    func configure(with weekday: String, flag: Weekday, isSelected: Bool) {
         weekdayLabel.text = weekday
         weekdayFlag = flag
         toggleSwitch.isOn = isSelected
-        
-        print("WeekdayCell: \(weekday), flag: \(flag), isSelected: \(isSelected)")
     }
     
     @objc private func switchToggled() {

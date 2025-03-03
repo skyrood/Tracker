@@ -9,18 +9,24 @@ import UIKit
 
 final class NewHabitViewController: UIViewController {
     
+    // MARK: - Constants
+    private enum Constants {
+        static let trackerNameMaxLength: Int = 38
+    }
+    
     // MARK: - Public Properties
     var categoryList: [String] = []
     var maxTrackerID: UInt = 0
+    var trackerName: String?
+    
+    var onHabitCreated: ((Tracker, String) -> Void)?
     
     // MARK: - Private Properties
-    var trackerName: String?
     private var categoryName: String? = ""
     private var color: String?
     private var emoji: String?
-    private var selectedWeekdays: Int?
+    private var selectedWeekdays: Weekday?
     
-    var onHabitCreated: ((Tracker, String) -> Void)?
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -47,14 +53,13 @@ final class NewHabitViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         
-        label.text = "Ограничение 38 символов"
+        label.text = "Ограничение \(Constants.trackerNameMaxLength) символов"
         label.font = .systemFont(ofSize: 17)
         label.textColor = UIColor(named: "Red")
         return label
     }()
     
     private var cancelButton: UIButton = UIButton()
-    
     private var createButton: UIButton = UIButton()
     
     private var shouldShowWarningCell = false
@@ -77,36 +82,6 @@ final class NewHabitViewController: UIViewController {
         setConstraints(for: tableView)
         setupTableFooterButtons()
         updateCreateButtonState()
-    }
-    
-    // MARK: - IB Actions
-    @objc func cancelButtonTapped() {
-        self.dismiss(animated: true)
-    }
-    
-    @objc func createButtonTapped() {
-        print("Create button tapped")
-        
-        guard let category = categoryName,
-              let schedule = selectedWeekdays,
-              let emoji = emoji,
-              let colorName = color,
-              let trackerName = trackerName else {
-            print("Error: Missing required fields")
-            return
-        }
-        
-        maxTrackerID += 1
-        
-        let newTracker: Tracker = Tracker(
-            id: maxTrackerID,
-            name: trackerName,
-            emoji: emoji,
-            color: UIColor(named: colorName) ?? .gray,
-            schedule: schedule
-        )
-        
-        onHabitCreated?(newTracker, category)
     }
     
     // MARK: - Private Methods
@@ -191,10 +166,10 @@ final class NewHabitViewController: UIViewController {
         ]
         
         let selectedDays = days
-            .filter { selectedWeekdays & $0.0 != 0 } // Keep only selected days
-            .map { $0.1 } // Get the short names
+            .filter { selectedWeekdays.contains($0.0) }
+            .map { $0.1 }
         
-        return selectedDays.joined(separator: ", ") // Create a comma-separated string
+        return selectedDays.joined(separator: ", ")
     }
     
     private func updateCreateButtonState() {
@@ -210,6 +185,35 @@ final class NewHabitViewController: UIViewController {
         
         createButton.isEnabled = true
         createButton.alpha = 1.0
+    }
+    
+    @objc func cancelButtonTapped() {
+        self.dismiss(animated: true)
+    }
+    
+    @objc func createButtonTapped() {
+        print("Create button tapped")
+        
+        guard let category = categoryName,
+              let schedule = selectedWeekdays,
+              let emoji = emoji,
+              let colorName = color,
+              let trackerName = trackerName else {
+            print("Error: Missing required fields")
+            return
+        }
+        
+        maxTrackerID += 1
+        
+        let newTracker: Tracker = Tracker(
+            id: maxTrackerID,
+            name: trackerName,
+            emoji: emoji,
+            color: UIColor(named: colorName) ?? .gray,
+            schedule: schedule
+        )
+        
+        onHabitCreated?(newTracker, category)
     }
 }
 
@@ -228,7 +232,7 @@ extension NewHabitViewController: UITextFieldDelegate {
         
         updateCreateButtonState()
         
-        if updatedText.count <= 38 {
+        if updatedText.count <= Constants.trackerNameMaxLength {
             trackerName = updatedText
             
             if shouldShowWarningCell {
@@ -356,7 +360,7 @@ extension NewHabitViewController: UITableViewDelegate {
                 present(categoryListViewController, animated: true, completion: nil)
             } else if indexPath.row == 1 {
                 let createScheduleViewController = CreatecreateScheduleViewController()
-                createScheduleViewController.selectedWeekdays = selectedWeekdays ?? 0
+                createScheduleViewController.selectedWeekdays = selectedWeekdays ?? []
                 createScheduleViewController.onScheduleCreated = { [weak self] selectedDays in
                     self?.selectedWeekdays = selectedDays
                     self?.updateCreateButtonState()
@@ -580,7 +584,7 @@ extension NewHabitViewController: UITableViewDataSource {
     private func colorCollectionCell() -> UITableViewCell {
         let cell = UITableViewCell(
             style: .default, reuseIdentifier: "colorCell")
-        cell.textLabel?.text = "Color grid placeholder"
+        
         return cell
     }
 }

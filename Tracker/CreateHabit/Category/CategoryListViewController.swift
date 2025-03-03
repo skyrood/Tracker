@@ -24,19 +24,20 @@ final class CategoryListViewController: UIViewController {
     // MARK: - Private Properties
     private lazy var label: UILabel = UILabel()
     
-    private lazy var logoImage: UIImageView = UIImageView()
-    
-    private lazy var messageLabel: UILabel = UILabel()
-    
     private lazy var createNewCategoryButton: UIButton = UIButton()
     
     private lazy var addCategoryButton: UIButton = UIButton()
         
     private lazy var categoryListTableView: UITableView = UITableView()
     
+    private var emptyStateView: EmptyStateView?
+    
     private var cellHeight = 75.0
     
     private var categoryListTableViewHeight: NSLayoutConstraint?
+    
+    private let emptyStateImage: UIImage? = UIImage(named: "TrackersEmpty")
+    private let emptyStateMessage: String = "Привычки и события можно объединить по смыслу"
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
@@ -57,8 +58,7 @@ final class CategoryListViewController: UIViewController {
         super.viewWillAppear(animated)
         
         if categoryList.isEmpty {
-            setupLogo()
-            setupMessageLabel()
+            setupEmptyStateView()
         } else {
             setupCategoryListView()
             updateCategoryListTableViewHeight()
@@ -83,49 +83,15 @@ final class CategoryListViewController: UIViewController {
         ])
     }
     
-    private func setupLogo() {
-        logoImage.translatesAutoresizingMaskIntoConstraints = false
-        logoImage.clipsToBounds = true
-        logoImage.image = UIImage(named: "TrackersEmpty")
+    private func setupEmptyStateView() {
+        emptyStateView = EmptyStateView(image: emptyStateImage, message: emptyStateMessage)
+        guard let emptyStateView = emptyStateView else { return }
         
-        view.addSubview(logoImage)
-        
-        NSLayoutConstraint.activate([
-            logoImage.heightAnchor.constraint(equalToConstant: 80),
-            logoImage.widthAnchor.constraint(equalToConstant: 80),
-            logoImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            logoImage.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor, constant: -view.frame.height * 0.07),
-        ])
-    }
-    
-    private func setupMessageLabel() {
-        messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        messageLabel.clipsToBounds = true
-        messageLabel.font = UIFont.systemFont(ofSize: 12, weight: .regular)
-        messageLabel.textColor = UIColor(named: "Black")
-        messageLabel.numberOfLines = 2
-        
-        let attributedString = NSMutableAttributedString(string: "Привычки и события можно объединить по смыслу")
-
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 4
-        paragraphStyle.alignment = .center
-
-        attributedString.addAttribute(
-            .paragraphStyle,
-            value: paragraphStyle,
-            range: NSRange(location: 0, length: attributedString.length)
-        )
-        
-        messageLabel.attributedText = attributedString
-        
-        view.addSubview(messageLabel)
+        view.addSubview(emptyStateView)
         
         NSLayoutConstraint.activate([
-            messageLabel.topAnchor.constraint(equalTo: logoImage.bottomAnchor, constant: 1),
-            messageLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            messageLabel.widthAnchor.constraint(equalToConstant: 230),
-            messageLabel.heightAnchor.constraint(equalToConstant: 60),
+            emptyStateView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            emptyStateView.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
         ])
     }
     

@@ -10,9 +10,9 @@ import UIKit
 final class CreatecreateScheduleViewController: UIViewController {
 
     // MARK: - Public Properties
-    var onScheduleCreated: ((Int) -> Void)?
+    var onScheduleCreated: ((Weekday) -> Void)?
     
-    var selectedWeekdays: Int = 0
+    var selectedWeekdays: Weekday = []
     
     // MARK: - Private Properties
     private var titleLabel: UILabel = UILabel()
@@ -91,14 +91,12 @@ final class CreatecreateScheduleViewController: UIViewController {
         scheduleTableViewHeightConstraint.isActive = true
     }
     
-    private func toggleWeekday(_ weekday: Int, isOn: Bool) {
+    private func toggleWeekday(_ weekday: Weekday, isOn: Bool) {
         if isOn {
-            selectedWeekdays |= weekday
+            selectedWeekdays.insert(weekday)
         } else {
-            selectedWeekdays &= ~weekday
+            selectedWeekdays.remove(weekday)
         }
-        
-        print("Selected weekdays: \(selectedWeekdays)")
     }
     
     private func updateScheduleTableViewHeight() {
@@ -108,8 +106,8 @@ final class CreatecreateScheduleViewController: UIViewController {
         scheduleTableViewHeightConstraint.constant = min(contentHeight, maxHeight)
     }
 
-    private func isWeekdaySelected(_ weekday: Int) -> Bool {
-        return (selectedWeekdays & weekday) != 0
+    private func isWeekdaySelected(_ weekday: Weekday) -> Bool {
+        selectedWeekdays.contains(weekday)
     }
     
     @objc private func createScheduleButtonTapped() {

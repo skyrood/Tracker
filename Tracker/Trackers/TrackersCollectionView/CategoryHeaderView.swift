@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CategoryHeaderView: UICollectionReusableView {
+final class CategoryHeaderView: UICollectionReusableView {
     static let identifier = "CategoryHeaderView"
     
     private let titleLabel: UILabel = {
@@ -28,6 +28,7 @@ class CategoryHeaderView: UICollectionReusableView {
         ])
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

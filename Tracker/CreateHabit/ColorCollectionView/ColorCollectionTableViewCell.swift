@@ -57,6 +57,7 @@ final class ColorCollectionTableViewCell: UITableViewCell {
         setupColorCollectionView()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -100,7 +101,7 @@ extension ColorCollectionTableViewCell: UICollectionViewDelegate {
 // MARK: - extension UICollectionViewDataSource
 extension ColorCollectionTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return colors.count
+        colors.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

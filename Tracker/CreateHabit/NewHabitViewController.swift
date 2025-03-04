@@ -22,7 +22,7 @@ final class NewHabitViewController: UIViewController {
     var onHabitCreated: ((Tracker, String) -> Void)?
     
     // MARK: - Private Properties
-    private var categoryName: String? = ""
+    private var categoryName: String?
     private var color: String?
     private var emoji: String?
     private var selectedWeekdays: Weekday?

@@ -14,7 +14,7 @@ final class CreateNewCategoryViewController: UIViewController {
     }
 
     // MARK: - Public Properties
-    var categoryName: String = ""
+    var categoryName: String?
     
     var onCategoryCreated: ((String) -> Void)?
     
@@ -30,7 +30,7 @@ final class CreateNewCategoryViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         
-        label.text = "Ограничение 38 символов"
+        label.text = "Ограничение \(Constants.categoryNameMaxLength) символов"
         label.font = .systemFont(ofSize: 17)
         label.textColor = UIColor(named: "Red")
         return label

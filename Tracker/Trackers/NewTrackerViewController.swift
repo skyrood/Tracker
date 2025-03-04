@@ -21,7 +21,7 @@ final class NewTrackerViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         label.text = "Создание трекера"
-        label.font = .systemFont(ofSize: 16)
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = UIColor(named: "Black")
         return label
     }()
@@ -62,6 +62,7 @@ final class NewTrackerViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.clipsToBounds = true
         button.setTitle(title, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = UIColor(named: "Black")
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 16

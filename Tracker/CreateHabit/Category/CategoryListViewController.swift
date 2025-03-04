@@ -71,7 +71,7 @@ final class CategoryListViewController: UIViewController {
     private func setupCategoryListLabel() {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textColor = UIColor(named: "Black")
         label.text = "Категория"
         

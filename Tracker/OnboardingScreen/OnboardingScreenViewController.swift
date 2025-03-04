@@ -24,7 +24,7 @@ final class OnboardingScreenViewController: UIPageViewController, UIPageViewCont
         button.layer.cornerRadius = 16
         button.backgroundColor = UIColor(named: "Black")
         button.setTitle("Вот это технологии!", for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.setTitleColor(UIColor(named: "White"), for: .normal)
         button.addTarget(self, action: #selector(onboardButtonTapped), for: .touchUpInside)
         

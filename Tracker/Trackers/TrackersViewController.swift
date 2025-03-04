@@ -39,17 +39,6 @@ final class TrackersViewController: UIViewController {
     }
     
     private var completedTrackers: Set<TrackerRecord> = []
-    
-    private lazy var label: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.clipsToBounds = true
-        label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
-        label.textColor = UIColor(named: "Black")
-        label.text = "Kрекеры"
-        
-        return label
-    }()
 
     private var emptyStateView: EmptyStateView?
     
@@ -85,42 +74,19 @@ final class TrackersViewController: UIViewController {
     }
     
     // MARK: - Private Methods
-    private func setConstraints(for label: UILabel, relativeTo relativeView: UIView, constant: Int) {
-        NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            label.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            label.topAnchor.constraint(equalTo: relativeView.safeAreaLayoutGuide.topAnchor, constant: CGFloat(constant))
-        ])
-    }
-    
-    private func setConstraints(for image: UIImageView) {
-        NSLayoutConstraint.activate([
-            image.heightAnchor.constraint(equalToConstant: 80),
-            image.widthAnchor.constraint(equalToConstant: 80),
-            image.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            image.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
-        ])
-    }
-    
-    private func setConstraints(for searchBar: UISearchBar) {
-        NSLayoutConstraint.activate([
-            searchBar.topAnchor.constraint(equalTo: label.safeAreaLayoutGuide.bottomAnchor, constant: 10),
-            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 6),
-            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -6),
-            searchBar.heightAnchor.constraint(equalToConstant: 36)
-        ])
-    }
-    
     private func setUpNavigationBar() {
         title = "Трекеры"
         navigationController?.navigationBar.prefersLargeTitles = true
-        
-        let addTrackerButton = UIBarButtonItem(
-            barButtonSystemItem: .add,
-            target: self,
-            action: #selector(addTrackerButtonTapped)
-        )
-        addTrackerButton.tintColor = UIColor(named: "Black")
+
+        let addButton = UIButton(type: .system)
+        let plusImage = UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold))
+
+        addButton.setImage(plusImage, for: .normal)
+        addButton.tintColor = .black
+        addButton.addTarget(self, action: #selector(addTrackerButtonTapped), for: .touchUpInside)
+
+        let addTrackerButton = UIBarButtonItem(customView: addButton)
+        navigationItem.rightBarButtonItem = addTrackerButton
         
         let datePicker = UIDatePicker()
         datePicker.preferredDatePickerStyle = .compact

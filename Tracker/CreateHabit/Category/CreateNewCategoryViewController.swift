@@ -59,7 +59,7 @@ final class CreateNewCategoryViewController: UIViewController {
     private func setupTitleLabel() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.clipsToBounds = true
-        titleLabel.font = UIFont.systemFont(ofSize: 16)
+        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         titleLabel.textColor = UIColor(named: "Black")
         titleLabel.text = "Новая категория"
         

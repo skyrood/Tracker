@@ -32,7 +32,7 @@ final class EmptyStateView: UIView {
         
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         messageLabel.clipsToBounds = true
-        messageLabel.font = UIFont.systemFont(ofSize: 12, weight: .regular)
+        messageLabel.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         messageLabel.textColor = UIColor(named: "Black")
         messageLabel.numberOfLines = 2
         messageLabel.textAlignment = .center

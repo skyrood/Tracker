@@ -43,7 +43,7 @@ final class NewHabitViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         label.text = "Новая привычка"
-        label.font = .systemFont(ofSize: 16)
+        label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = UIColor(named: "Black")
         return label
     }()
@@ -110,8 +110,12 @@ final class NewHabitViewController: UIViewController {
         let footerView = UIView()
         footerView.backgroundColor = .clear
         
-        //        let cancelButton = UIButton(type: .system)
-        cancelButton.setTitle("Отменить", for: .normal)
+        let font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        let attributes: [NSAttributedString.Key: Any] = [.font: font]
+        let cancelButtonTitle = NSAttributedString(string: "Отменить", attributes: attributes)
+        let createButtonTitle = NSAttributedString(string: "Создать", attributes: attributes)
+        
+        cancelButton.setAttributedTitle(cancelButtonTitle, for: .normal)
         cancelButton.setTitleColor(.red, for: .normal)
         cancelButton.layer.borderWidth = 1
         cancelButton.layer.borderColor = UIColor.red.cgColor
@@ -120,8 +124,7 @@ final class NewHabitViewController: UIViewController {
         cancelButton.addTarget(
             self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         
-        //        let createButton = UIButton(type: .system)
-        createButton.setTitle("Создать", for: .normal)
+        createButton.setAttributedTitle(createButtonTitle, for: .normal)
         createButton.setTitleColor(.white, for: .normal)
         createButton.backgroundColor = .black
         createButton.layer.cornerRadius = 16

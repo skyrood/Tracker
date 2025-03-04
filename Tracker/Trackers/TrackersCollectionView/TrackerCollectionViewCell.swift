@@ -143,16 +143,6 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             daysCountLabel.heightAnchor.constraint(equalToConstant: 18)
         ])
     }
-//    
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
-//        tracker = nil
-//        titleLabel.text = nil
-//        emojiLabel.text = nil
-//        titleView.backgroundColor = nil
-//        completeTrackerButton.setImage(nil, for: .normal)
-//        completeTrackerButton.isEnabled = false
-//    }
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {
@@ -170,7 +160,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         completeTrackerButtonColor = isCompleted ? tracker.color.withAlphaComponent(0.3) : tracker.color.withAlphaComponent(1.0)
         let image = isCompleted ?
                     UIImage(systemName: "checkmark")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)) :
-                    UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 14, weight: .medium))
+        UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 14, weight: .bold))
         
         completeTrackerButton.setImage(image, for: .normal)
         

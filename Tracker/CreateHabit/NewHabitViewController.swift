@@ -172,6 +172,10 @@ final class NewHabitViewController: UIViewController {
             .filter { selectedWeekdays.contains($0.0) }
             .map { $0.1 }
         
+        if selectedDays.count == days.count {
+            return "Каждый день"
+        }
+        
         return selectedDays.joined(separator: ", ")
     }
     

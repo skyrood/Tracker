@@ -12,7 +12,7 @@ final class CreateNewCategoryViewController: UIViewController {
     private enum Constants {
         static let categoryNameMaxLength = 38
     }
-
+    
     // MARK: - Public Properties
     var categoryName: String?
     
@@ -37,7 +37,7 @@ final class CreateNewCategoryViewController: UIViewController {
     }()
     
     private var shouldShowWarningCell = false
-
+    
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,7 +57,7 @@ final class CreateNewCategoryViewController: UIViewController {
         createCategoryButton.isEnabled = false
         createCategoryButton.alpha = 0.3
     }
-
+    
     // MARK: - Private Methods
     private func setupTitleLabel() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -187,6 +187,11 @@ extension CreateNewCategoryViewController: UITextFieldDelegate {
             
             return false
         }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
 

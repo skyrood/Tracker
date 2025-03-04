@@ -63,7 +63,7 @@ final class NewHabitViewController: UIViewController {
     private var createButton: UIButton = UIButton()
     
     private var shouldShowWarningCell = false
-
+    
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -269,6 +269,11 @@ extension NewHabitViewController: UITextFieldDelegate {
             
             return false
         }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
 

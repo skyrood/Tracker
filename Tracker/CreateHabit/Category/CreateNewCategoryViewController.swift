@@ -44,6 +44,9 @@ final class CreateNewCategoryViewController: UIViewController {
         view.backgroundColor = UIColor(named: "White")
         navigationItem.hidesBackButton = true
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+        
         setupTitleLabel()
         setupCategoryNameTextField()
         setupCategoryNameFieldWarningMessage()
@@ -147,6 +150,10 @@ final class CreateNewCategoryViewController: UIViewController {
         let hasText = !(categoryNameTextField.text?.isEmpty ?? true)
         createCategoryButton.isEnabled = hasText
         createCategoryButton.alpha = hasText ? 1 : 0.3
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
 

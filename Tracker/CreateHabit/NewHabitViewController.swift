@@ -70,6 +70,9 @@ final class NewHabitViewController: UIViewController {
         view.backgroundColor = UIColor(named: "White")
         navigationItem.hidesBackButton = true
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+        
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(EmojiCollectionTableViewCell.self, forCellReuseIdentifier: "EmojiCollectionTableViewCell")
@@ -221,6 +224,10 @@ final class NewHabitViewController: UIViewController {
         )
         
         onHabitCreated?(newTracker, category)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
 

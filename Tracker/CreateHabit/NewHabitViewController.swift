@@ -71,6 +71,7 @@ final class NewHabitViewController: UIViewController {
         navigationItem.hidesBackButton = true
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
         
         tableView.dataSource = self

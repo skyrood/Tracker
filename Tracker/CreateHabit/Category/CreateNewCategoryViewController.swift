@@ -45,6 +45,7 @@ final class CreateNewCategoryViewController: UIViewController {
         navigationItem.hidesBackButton = true
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
         
         setupTitleLabel()

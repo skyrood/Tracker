@@ -10,6 +10,7 @@ import UIKit
 final class CategoryListViewController: UIViewController {
 
     // MARK: - Public Properties
+    
     var categoryList: [String] = [] {
         didSet {
             categoryListTableView.reloadData()
@@ -22,6 +23,8 @@ final class CategoryListViewController: UIViewController {
     var onCategorySelected: ((String) -> Void)?
     
     // MARK: - Private Properties
+    private let categoryStore = TrackerCategoryStore()
+
     private lazy var label: UILabel = UILabel()
     
     private lazy var createNewCategoryButton: UIButton = UIButton()
@@ -44,6 +47,19 @@ final class CategoryListViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "White")
         navigationItem.hidesBackButton = true
+//        
+//        do {
+//            try categoryStore.getOrCreateCategory(named: "Alcoholism")
+//            for category in categoryStore.categories {
+//                print("Category: \(category)")
+//            }
+//            print("number of categories: \(categoryStore.categories.count)")
+//        } catch {
+//            print("Error: \(error)")
+//        }
+        
+        categoryStore.delegate = self
+        categoryList = categoryStore.categories.map { $0.name }
         
         setupCategoryListLabel()
         setupCategoryButton(for: createNewCategoryButton,
@@ -242,5 +258,14 @@ extension CategoryListViewController: UITableViewDataSource {
         }
         
         return cell
+    }
+}
+
+// MARK: - extention TrackerCategoryStoreDelegate
+extension CategoryListViewController: TrackerCategoryStoreDelegate {
+    func store(_ store: TrackerCategoryStore) {
+        categoryList = store.categories.map { $0.name }
+        print("categories: ", categoryList)
+        categoryListTableView.reloadData()
     }
 }

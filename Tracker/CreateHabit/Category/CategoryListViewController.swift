@@ -23,7 +23,7 @@ final class CategoryListViewController: UIViewController {
     var onCategorySelected: ((String) -> Void)?
     
     // MARK: - Private Properties
-    private let categoryStore = TrackerCategoryStore()
+//    private let categoryStore = TrackerCategoryStore()
 
     private lazy var label: UILabel = UILabel()
     
@@ -58,8 +58,8 @@ final class CategoryListViewController: UIViewController {
 //            print("Error: \(error)")
 //        }
         
-        categoryStore.delegate = self
-        categoryList = categoryStore.categories.map { $0.name }
+//        categoryStore.delegate = self
+//        categoryList = categoryStore.categories.map { $0.name }
         
         setupCategoryListLabel()
         setupCategoryButton(for: createNewCategoryButton,
@@ -261,11 +261,3 @@ extension CategoryListViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - extention TrackerCategoryStoreDelegate
-extension CategoryListViewController: TrackerCategoryStoreDelegate {
-    func store(_ store: TrackerCategoryStore) {
-        categoryList = store.categories.map { $0.name }
-        print("categories: ", categoryList)
-        categoryListTableView.reloadData()
-    }
-}

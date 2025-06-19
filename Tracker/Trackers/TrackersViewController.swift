@@ -9,8 +9,12 @@ import UIKit
 
 final class TrackersViewController: UIViewController {
     
-    // MARK: - Private Properties    
+    // MARK: - Private Properties
+    private let categoryStore = TrackerCategoryStore()
+    
     private var selectedDate: Date = Date()
+    
+    private var categoryList: [String] = []
     
     private var categories: [TrackerCategory] = [
         TrackerCategory(
@@ -64,6 +68,12 @@ final class TrackersViewController: UIViewController {
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         view.backgroundColor = UIColor(named: "White")
+        
+        categoryStore.delegate = self
+        categoryList = categoryStore.categories.map { $0.name }
+        for category in categoryStore.categories {
+            print("category: \(category.name)")
+        }
         
         setUpNavigationBar()
         
@@ -175,7 +185,8 @@ final class TrackersViewController: UIViewController {
     
     @objc private func addTrackerButtonTapped() {
         let newTrackerViewController = NewTrackerViewController()
-        newTrackerViewController.categoryList = categories.map { $0.name }
+//        newTrackerViewController.categoryList = categories.map { $0.name }
+        newTrackerViewController.categoryList = categoryList
         newTrackerViewController.maxTrackerID = getMaxTrackerID()
         newTrackerViewController.passHabitToTrackersList = { [weak self] newHabit, categoryName in
             self?.addNewTracker(newHabit, toCategory: categoryName)
@@ -290,5 +301,14 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 extension TrackersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         
+    }
+}
+
+// MARK: - extention TrackerCategoryStoreDelegate
+extension TrackersViewController: TrackerCategoryStoreDelegate {
+    func store(_ store: TrackerCategoryStore) {
+        categoryList = store.categories.map { $0.name }
+        print("categories: ", categoryList)
+//        categoryListTableView.reloadData()
     }
 }

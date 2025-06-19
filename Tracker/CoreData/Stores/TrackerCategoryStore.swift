@@ -71,22 +71,28 @@ final class TrackerCategoryStore: NSObject {
     // MARK: - IB Actions
     
     // MARK: - Public Methods
-    func getOrCreateCategory(named name: String) throws -> TrackerCategoryCoreData {
+    func getOrCreateCategory(named name: String) throws -> TrackerCategory {
         let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "name == %@", name)
         request.fetchLimit = 1
         
         if let existingCategory = try context.fetch(request).first {
             print("Category named\"\(name)\" already exists")
-            return existingCategory
+            return try category(from: existingCategory)
         } else {
             print("creating new category named \"\(name)\"")
             let newCategory = TrackerCategoryCoreData(context: context)
             newCategory.name = name
             newCategory.id = UUID()
             CoreDataStack.shared.saveContext()
-            return newCategory
+            
+            return try category(from: newCategory)
         }
+    }
+    
+    func refreshStore() throws {
+        try fetchedResultsController.performFetch()
+        delegate?.store(self)
     }
     
     // MARK: - Private Methods

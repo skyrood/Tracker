@@ -14,7 +14,7 @@ final class TrackersViewController: UIViewController {
     
     private var selectedDate: Date = Date()
     
-    private var categoryList: [String] = []
+//    private var categoryList: [Tracker] = []
     
     private var categories: [TrackerCategory] = [
         TrackerCategory(
@@ -70,7 +70,7 @@ final class TrackersViewController: UIViewController {
         view.backgroundColor = UIColor(named: "White")
         
         categoryStore.delegate = self
-        categoryList = categoryStore.categories.map { $0.name }
+        categories = categoryStore.categories
         for category in categoryStore.categories {
             print("category: \(category.name)")
         }
@@ -160,11 +160,11 @@ final class TrackersViewController: UIViewController {
         return completedTrackers.filter{ $0.trackerId == tracker.id }.count
     }
     
-    private func addNewTracker(_ newTracker: Tracker, toCategory categoryName: String) {
+    private func addNewTracker(_ newTracker: Tracker, toCategory selectedCategory: TrackerCategory) {
         var updatedCategories: [TrackerCategory] = []
         var categoryExists = false
         for category in categories {
-            if category.name == categoryName {
+            if category.name == selectedCategory.name {
                 let updatedTrackers = category.trackers + [newTracker]
                 let updatedCategory = TrackerCategory(name: category.name, trackers: updatedTrackers)
                 updatedCategories.append(updatedCategory)
@@ -175,21 +175,25 @@ final class TrackersViewController: UIViewController {
         }
         
         if !categoryExists {
-            let newCategory = TrackerCategory(name: categoryName, trackers: [newTracker])
+            let newCategory = TrackerCategory(name: selectedCategory.name, trackers: [newTracker])
             updatedCategories.append(newCategory)
         }
         
         categories = updatedCategories
+        
+        for category in categories {
+            print("category: \(category.name)")
+        }
         trackersCollectionView.reloadData()
     }
     
     @objc private func addTrackerButtonTapped() {
         let newTrackerViewController = NewTrackerViewController()
 //        newTrackerViewController.categoryList = categories.map { $0.name }
-        newTrackerViewController.categoryList = categoryList
+        newTrackerViewController.categoryList = categories
         newTrackerViewController.maxTrackerID = getMaxTrackerID()
-        newTrackerViewController.passHabitToTrackersList = { [weak self] newHabit, categoryName in
-            self?.addNewTracker(newHabit, toCategory: categoryName)
+        newTrackerViewController.passHabitToTrackersList = { [weak self] newHabit, category in
+            self?.addNewTracker(newHabit, toCategory: category)
             self?.dismiss(animated: true)
         }
         newTrackerViewController.modalPresentationStyle = .pageSheet
@@ -307,8 +311,8 @@ extension TrackersViewController: UISearchResultsUpdating {
 // MARK: - extention TrackerCategoryStoreDelegate
 extension TrackersViewController: TrackerCategoryStoreDelegate {
     func store(_ store: TrackerCategoryStore) {
-        categoryList = store.categories.map { $0.name }
-        print("categories: ", categoryList)
+        categories = store.categories
+        print("categories: ", categories)
 //        categoryListTableView.reloadData()
     }
 }

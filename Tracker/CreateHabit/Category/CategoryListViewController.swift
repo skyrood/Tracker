@@ -11,16 +11,16 @@ final class CategoryListViewController: UIViewController {
 
     // MARK: - Public Properties
     
-    var categoryList: [String] = [] {
+    var categoryList: [TrackerCategory] = [] {
         didSet {
             categoryListTableView.reloadData()
             updateCategoryListTableViewHeight()
         }
     }
     
-    var selectedCategory: String?
+    var selectedCategory: TrackerCategory?
     
-    var onCategorySelected: ((String) -> Void)?
+    var onCategorySelected: ((TrackerCategory) -> Void)?
     
     // MARK: - Private Properties
 //    private let categoryStore = TrackerCategoryStore()
@@ -172,9 +172,9 @@ final class CategoryListViewController: UIViewController {
     @objc private func createNewCategoryButtonTapped() {
         let createNewCategoryViewController = CreateNewCategoryViewController()
         
-        createNewCategoryViewController.onCategoryCreated = { [ weak self ] categoryName in
-            self?.categoryList.append(categoryName)
-            self?.selectedCategory = categoryName
+        createNewCategoryViewController.onCategoryCreated = { [ weak self ] category in
+            self?.categoryList.append(category)
+            self?.selectedCategory = category
             self?.categoryListTableView.reloadData()
             self?.toggleButtonsVisibility()
         }
@@ -201,11 +201,7 @@ extension CategoryListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCategoryName = categoryList[indexPath.row]
         
-        if selectedCategory == selectedCategoryName {
-            selectedCategory = nil
-        } else {
-            selectedCategory = selectedCategoryName
-        }
+        selectedCategory = (selectedCategory?.name == selectedCategoryName.name) ? nil : selectedCategoryName
         
         toggleButtonsVisibility()
         
@@ -221,7 +217,7 @@ extension CategoryListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = categoryListTableView.dequeueReusableCell(withIdentifier: "CategoryListTableViewCell", for: indexPath)
-        cell.textLabel?.text = categoryList[indexPath.row]
+        cell.textLabel?.text = categoryList[indexPath.row].name
         cell.backgroundColor = .clear
         cell.selectionStyle = .none
         
@@ -251,7 +247,7 @@ extension CategoryListViewController: UITableViewDataSource {
             ])
         }
         
-        if categoryList[indexPath.row] == selectedCategory {
+        if categoryList[indexPath.row].name == selectedCategory?.name {
             cell.accessoryType = .checkmark
         } else {
             cell.accessoryType = .none

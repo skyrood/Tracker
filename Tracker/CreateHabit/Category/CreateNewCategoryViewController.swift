@@ -14,9 +14,11 @@ final class CreateNewCategoryViewController: UIViewController {
     }
     
     // MARK: - Public Properties
+    var category: TrackerCategory?
+    
     var categoryName: String?
     
-    var onCategoryCreated: ((String) -> Void)?
+    var onCategoryCreated: ((TrackerCategory) -> Void)?
     
     // MARK: - Private Properties
     private let categoryStore = TrackerCategoryStore()
@@ -146,8 +148,10 @@ final class CreateNewCategoryViewController: UIViewController {
         guard let categoryName = categoryNameTextField.text, !categoryName.isEmpty else { return }
         
         do {
-            _ = try categoryStore.getOrCreateCategory(named: categoryName)
-            onCategoryCreated?(categoryName)
+            let newCategory = try categoryStore.getOrCreateCategory(named: categoryName)
+            try categoryStore.refreshStore()
+            
+            onCategoryCreated?(newCategory)
             dismiss(animated: true)
         } catch {
             print("Error creating category: \(error)")

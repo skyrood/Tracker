@@ -9,3 +9,9 @@ struct TrackerCategory {
     let name: String
     let trackers: [Tracker]
 }
+
+extension TrackerCategory: Equatable {
+    static func ==(lhs: TrackerCategory, rhs: TrackerCategory) -> Bool {
+        return lhs.name == rhs.name
+    }
+}

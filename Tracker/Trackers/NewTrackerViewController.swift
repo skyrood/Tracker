@@ -10,10 +10,10 @@ import UIKit
 final class NewTrackerViewController: UIViewController {
    
     // MARK: - Public Properties
-    var categoryList: [String] = []
+    var categoryList: [TrackerCategory] = []
     var maxTrackerID: UInt = 0
     
-    var passHabitToTrackersList: ((Tracker, String) -> Void)?
+    var passHabitToTrackersList: ((Tracker, TrackerCategory) -> Void)?
     
     // MARK: - Private Properties
     private lazy var titleLabel: UILabel = {
@@ -95,8 +95,8 @@ final class NewTrackerViewController: UIViewController {
         let newHabitViewController = NewHabitViewController()
         newHabitViewController.categoryList = categoryList
         newHabitViewController.maxTrackerID = maxTrackerID
-        newHabitViewController.onHabitCreated = { [weak self] newHabit, categoryName in
-            self?.passHabitToTrackersList?(newHabit, categoryName)
+        newHabitViewController.onHabitCreated = { [weak self] newHabit, category in
+            self?.passHabitToTrackersList?(newHabit, category)
             self?.dismiss(animated: true)
         }
         newHabitViewController.modalPresentationStyle = .pageSheet

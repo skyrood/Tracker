@@ -15,14 +15,14 @@ final class NewHabitViewController: UIViewController {
     }
     
     // MARK: - Public Properties
-    var categoryList: [String] = []
+    var categoryList: [TrackerCategory] = []
     var maxTrackerID: UInt = 0
     var trackerName: String?
     
-    var onHabitCreated: ((Tracker, String) -> Void)?
+    var onHabitCreated: ((Tracker, TrackerCategory) -> Void)?
     
     // MARK: - Private Properties
-    private var categoryName: String?
+    private var category: TrackerCategory?
     private var color: String?
     private var emoji: String?
     private var selectedWeekdays: Weekday?
@@ -185,7 +185,7 @@ final class NewHabitViewController: UIViewController {
     
     private func updateCreateButtonState() {
         guard let trackerName = trackerName, !trackerName.isEmpty,
-              categoryName != nil,
+              category != nil,
               selectedWeekdays != nil,
               emoji != nil,
               color != nil else {
@@ -205,7 +205,7 @@ final class NewHabitViewController: UIViewController {
     @objc func createButtonTapped() {
         print("Create button tapped")
         
-        guard let category = categoryName,
+        guard let category = category,
               let schedule = selectedWeekdays,
               let emoji = emoji,
               let colorName = color,
@@ -361,12 +361,12 @@ extension NewHabitViewController: UITableViewDelegate {
                 let categoryListViewController = CategoryListViewController()
                 categoryListViewController.categoryList = categoryList
                 
-                if categoryName != nil {
-                    categoryListViewController.selectedCategory = categoryName
+                if category != nil {
+                    categoryListViewController.selectedCategory = category
                 }
                 
                 categoryListViewController.onCategorySelected = { [weak self] category in
-                    self?.categoryName = category
+                    self?.category = category
                     if self?.categoryList.contains(category) == false {
                         self?.categoryList.append(category)
                     }
@@ -576,8 +576,8 @@ extension NewHabitViewController: UITableViewDataSource {
         if indexPath.row == 0 {
             cell.textLabel?.text = "Категория"
             
-            if categoryName != nil {
-                cell.detailTextLabel?.text = categoryName
+            if category != nil {
+                cell.detailTextLabel?.text = category?.name
                 cell.detailTextLabel?.font = .systemFont(ofSize: 17)
                 cell.detailTextLabel?.textColor = .gray
             }

@@ -8,11 +8,20 @@
 import UIKit
 
 final class CategoryListViewController: UIViewController {
-
+    
     // MARK: - Public Properties
     
     var categoryList: [TrackerCategory] = [] {
         didSet {
+            if categoryList.isEmpty {
+                setupEmptyStateView()
+                categoryListTableView.removeFromSuperview()
+            } else {
+                emptyStateView?.removeFromSuperview()
+                if categoryListTableView.superview == nil {
+                    setupCategoryListView()
+                }
+            }
             categoryListTableView.reloadData()
             updateCategoryListTableViewHeight()
         }
@@ -23,14 +32,14 @@ final class CategoryListViewController: UIViewController {
     var onCategorySelected: ((TrackerCategory) -> Void)?
     
     // MARK: - Private Properties
-//    private let categoryStore = TrackerCategoryStore()
-
+    private let categoryStore = TrackerCategoryStore()
+    
     private lazy var label: UILabel = UILabel()
     
     private lazy var createNewCategoryButton: UIButton = UIButton()
     
     private lazy var addCategoryButton: UIButton = UIButton()
-        
+    
     private lazy var categoryListTableView: UITableView = UITableView()
     
     private var emptyStateView: EmptyStateView?
@@ -47,19 +56,6 @@ final class CategoryListViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "White")
         navigationItem.hidesBackButton = true
-//        
-//        do {
-//            try categoryStore.getOrCreateCategory(named: "Alcoholism")
-//            for category in categoryStore.categories {
-//                print("Category: \(category)")
-//            }
-//            print("number of categories: \(categoryStore.categories.count)")
-//        } catch {
-//            print("Error: \(error)")
-//        }
-        
-//        categoryStore.delegate = self
-//        categoryList = categoryStore.categories.map { $0.name }
         
         setupCategoryListLabel()
         setupCategoryButton(for: createNewCategoryButton,
@@ -72,14 +68,8 @@ final class CategoryListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        if categoryList.isEmpty {
-            setupEmptyStateView()
-        } else {
-            setupCategoryListView()
-            updateCategoryListTableViewHeight()
-        }
-        
+
+        updateCategoryListTableViewHeight()
         toggleButtonsVisibility()
     }
     
@@ -122,7 +112,7 @@ final class CategoryListViewController: UIViewController {
         categoryListTableView.register(UITableViewCell.self, forCellReuseIdentifier: "CategoryListTableViewCell")
         
         view.addSubview(categoryListTableView)
-                        
+        
         NSLayoutConstraint.activate([
             categoryListTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             categoryListTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
@@ -173,10 +163,10 @@ final class CategoryListViewController: UIViewController {
         let createNewCategoryViewController = CreateNewCategoryViewController()
         
         createNewCategoryViewController.onCategoryCreated = { [ weak self ] category in
-            self?.categoryList.append(category)
-            self?.selectedCategory = category
-            self?.categoryListTableView.reloadData()
-            self?.toggleButtonsVisibility()
+            guard let self else { return }
+            self.categoryList.append(category)
+            self.selectedCategory = category
+            self.toggleButtonsVisibility()
         }
         
         createNewCategoryViewController.modalPresentationStyle = .pageSheet
@@ -226,14 +216,14 @@ extension CategoryListViewController: UITableViewDataSource {
                 subview.removeFromSuperview()
             }
         }
-
+        
         if indexPath.row < categoryList.count - 1 {
             let separatorLineView = UIView()
             separatorLineView.translatesAutoresizingMaskIntoConstraints = false
             separatorLineView.clipsToBounds = true
             separatorLineView.backgroundColor = UIColor(named: "Gray")
             separatorLineView.tag = 999
-
+            
             cell.contentView.addSubview(separatorLineView)
             
             NSLayoutConstraint.activate([

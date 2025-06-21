@@ -6,6 +6,7 @@
 //
 
 import CoreData
+import UIKit
 
 enum TrackerStoreError: Error {
     case categoryStoreInitializationFailed
@@ -38,6 +39,7 @@ final class TrackerStore: NSObject {
     // MARK: - Initializers
     convenience override init() {
         let context = CoreDataStack.shared.context
+        
         do {
             try self.init(context: context)
         } catch {
@@ -70,31 +72,40 @@ final class TrackerStore: NSObject {
     // MARK: - IB Actions
     
     // MARK: - Public Methods
-    func addTracker(name: String, with emoji: String, tile color: String, to category: TrackerCategoryCoreData) throws -> TrackerCoreData {
+    func allTrackers() throws -> [TrackerCoreData] {
+         return fetchedResultsController.fetchedObjects ?? []
+//        return try objects.map({ try tracker(from: $0) })
+    }
+    
+    func addTracker(name: String, emoji: String, color: String, schedule: Weekday, category: TrackerCategoryCoreData) throws -> Tracker {
         let newTracker = TrackerCoreData(context: context)
         newTracker.id = UUID()
         newTracker.name = name
         newTracker.emoji = emoji
-        newTracker.colorHex = color
+        newTracker.colorName = color
+        newTracker.schedule = Int32(schedule.rawValue)
         newTracker.category = category
+        CoreDataStack.shared.saveContext()
         
-        return newTracker
+        return try tracker(from: newTracker)
     }
     
-    private func tracker(from coreData: TrackerCoreData) throws -> Tracker {
+    func tracker(from coreData: TrackerCoreData) throws -> Tracker {
+        let schedule = Weekday(rawValue: Int(coreData.schedule))
         guard let name = coreData.name,
               let emoji = coreData.emoji,
-              let colorHex = coreData.colorHex,
+              let colorName = coreData.colorName,
+              !schedule.isEmpty,
               let id = coreData.id else {
             throw NSError(domain: "TrackerCategoryStore", code: 2, userInfo: [NSLocalizedDescriptionKey: "Invalid tracker data"])
         }
         
         return Tracker(
-            id: 1,
+            id: id,
             name: name,
             emoji: emoji,
-            color: .red,
-            schedule: []
+            color: UIColor(named: colorName) ?? .gray,
+            schedule: schedule
         )
     }
     

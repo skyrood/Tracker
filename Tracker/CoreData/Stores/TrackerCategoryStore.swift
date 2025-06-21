@@ -22,32 +22,51 @@ final class TrackerCategoryStore: NSObject {
     // MARK: - IB Outlets
     
     // MARK: - Public Properties
-    lazy var categories: [TrackerCategory] = {
-        guard let objects = self.fetchedResultsController.fetchedObjects,
-              let categories = try? objects.map({ try category(from: $0) })
-        else { return [] }
+    var categories: [TrackerCategory] {
+        guard let categoryObjects = fetchedResultsController.fetchedObjects else { return [] }
         
-        return categories
-    }()
+        let trackersCoreDataList: [TrackerCoreData]
+        do {
+            trackersCoreDataList = try trackerStore.allTrackers()
+        } catch {
+            print("Ошибка загрузки трекеров \(error)")
+            return []
+        }
+        
+        let groupedTrackers = Dictionary(grouping: trackersCoreDataList, by: { $0.category?.name })
+        
+        return categoryObjects.compactMap { coreDataCategory in
+            guard let name = coreDataCategory.name else { return nil }
+            let trackersForCategory = groupedTrackers[name] ?? []
+            let trackers: [Tracker] = trackersForCategory.compactMap { try? trackerStore.tracker(from: $0) }
+            return TrackerCategory(name: name, trackers: trackers)
+        }
+    }
     
     weak var delegate: TrackerCategoryStoreDelegate?
     
     // MARK: - Private Properties
+    private let trackerStore: TrackerStore
+    
     private let context: NSManagedObjectContext
     private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>!
     
     // MARK: - Initializers
     convenience override init() {
         let context = CoreDataStack.shared.context
+        
         do {
-            try self.init(context: context)
+            let store = try TrackerStore(context: context)
+            try self.init(context: context, trackerStore: store)
         } catch {
             fatalError("Не удалось инициализировать TrackerCategoryStore: \(error)")
         }
     }
     
-    init(context: NSManagedObjectContext) throws {
+    init(context: NSManagedObjectContext, trackerStore: TrackerStore) throws {
         self.context = context
+        self.trackerStore = trackerStore
+        
         super.init()
         
         let fetchRequest = TrackerCategoryCoreData.fetchRequest()
@@ -77,10 +96,8 @@ final class TrackerCategoryStore: NSObject {
         request.fetchLimit = 1
         
         if let existingCategory = try context.fetch(request).first {
-            print("Category named\"\(name)\" already exists")
             return try category(from: existingCategory)
         } else {
-            print("creating new category named \"\(name)\"")
             let newCategory = TrackerCategoryCoreData(context: context)
             newCategory.name = name
             newCategory.id = UUID()
@@ -88,6 +105,11 @@ final class TrackerCategoryStore: NSObject {
             
             return try category(from: newCategory)
         }
+    }
+    
+    func addTracker(name: String, emoji: String, color: String, schedule: Weekday, to category: TrackerCategory) throws -> Tracker {
+        let coreDataCategory = try coreDataCategory(for: category)
+        return try trackerStore.addTracker(name: name, emoji: emoji, color: color, schedule: schedule, category: coreDataCategory)
     }
     
     func refreshStore() throws {
@@ -100,29 +122,23 @@ final class TrackerCategoryStore: NSObject {
         guard let categoryName = trackerCategoryCoreData.name else {
             throw TrackerCategoryStoreError.decodingErrorInvalidCategoryName
         }
-        guard let trackers = try? trackerCategoryCoreData.trackers?.map({ try tracker(from: $0 as! TrackerCoreData) }) else {
+        guard let trackers = try? trackerCategoryCoreData.trackers?.map({ try trackerStore.tracker(from: $0 as! TrackerCoreData) }) else {
             throw TrackerCategoryStoreError.decodingErrorInvalidTrackers
         }
         
         return TrackerCategory(name: categoryName, trackers: trackers)
     }
     
-    // Пока заглушка
-    private func tracker(from coreData: TrackerCoreData) throws -> Tracker {
-        guard let name = coreData.name,
-              let emoji = coreData.emoji,
-              let colorHex = coreData.colorHex,
-              let id = coreData.id else {
-            throw NSError(domain: "TrackerCategoryStore", code: 2, userInfo: [NSLocalizedDescriptionKey: "Invalid tracker data"])
+    private func coreDataCategory(for category: TrackerCategory) throws -> TrackerCategoryCoreData {
+        let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "name == %@", category.name)
+        request.fetchLimit = 1
+        
+        guard let categoryCoreData = try context.fetch(request).first else {
+            throw TrackerCategoryStoreError.decodingErrorInvalidCategoryName
         }
         
-        return Tracker(
-            id: 1,
-            name: name,
-            emoji: emoji,
-            color: .red,
-            schedule: []
-        )
+        return categoryCoreData
     }
 }
 
@@ -150,6 +166,8 @@ extension TrackerCategoryStore {
         for category in categories {
             context.delete(category)
         }
+        
+        try trackerStore.deleteAllTrackers()
         
         CoreDataStack.shared.saveContext()
     }

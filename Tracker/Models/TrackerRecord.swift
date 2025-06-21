@@ -8,7 +8,7 @@
 import UIKit
 
 struct TrackerRecord: Hashable {
-    let trackerId: UInt
+    let trackerId: UUID
     let date: Date
     
     func hash(into hasher: inout Hasher) {

@@ -22,6 +22,7 @@ final class NewHabitViewController: UIViewController {
     var onHabitCreated: ((Tracker, TrackerCategory) -> Void)?
     
     // MARK: - Private Properties
+    private let trackerCategoryStore = TrackerCategoryStore()
     private var category: TrackerCategory?
     private var color: String?
     private var emoji: String?
@@ -214,17 +215,22 @@ final class NewHabitViewController: UIViewController {
             return
         }
         
-        maxTrackerID += 1
+//        maxTrackerID += 1
         
-        let newTracker: Tracker = Tracker(
-            id: maxTrackerID,
-            name: trackerName,
-            emoji: emoji,
-            color: UIColor(named: colorName) ?? .gray,
-            schedule: schedule
-        )
+//        let newTracker: Tracker = Tracker(
+//            id: maxTrackerID,
+//            name: trackerName,
+//            emoji: emoji,
+//            color: UIColor(named: colorName) ?? .gray,
+//            schedule: schedule
+//        )
         
-        onHabitCreated?(newTracker, category)
+        do {
+            let newTracker = try trackerCategoryStore.addTracker(name: trackerName, emoji: emoji, color: colorName, schedule: schedule, to: category)
+            onHabitCreated?(newTracker, category)
+        } catch {
+            print("saving new tracker failed: \(error)")
+        }
     }
     
     @objc private func dismissKeyboard() {

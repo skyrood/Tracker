@@ -150,7 +150,6 @@ final class CreateNewCategoryViewController: UIViewController {
         do {
             let newCategory = try categoryStore.getOrCreateCategory(named: categoryName)
             try categoryStore.refreshStore()
-            
             onCategoryCreated?(newCategory)
             dismiss(animated: true)
         } catch {

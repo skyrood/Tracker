@@ -13,24 +13,8 @@ final class TrackersViewController: UIViewController {
     private let categoryStore = TrackerCategoryStore()
     
     private var selectedDate: Date = Date()
-    
-//    private var categoryList: [Tracker] = []
-    
-    private var categories: [TrackerCategory] = [
-        TrackerCategory(
-            name: "Fitness",
-            trackers: [
-                Tracker(id: 1, name: "Morning Run", emoji: "🤮", color: .selection1, schedule: [ Weekday.monday, Weekday.tuesday, Weekday.thursday ])
-            ]
-        ),
-        TrackerCategory(
-            name: "Productivity",
-            trackers: [
-                Tracker(id: 2, name: "Read a Book", emoji: "💩", color: .selection6, schedule: [ Weekday.monday, Weekday.wednesday]),
-                Tracker(id: 3, name: "Code for an Hour and complete the sprint", emoji: "☠️", color: .selection12, schedule: [ Weekday.wednesday, Weekday.sunday ])
-            ]
-        )
-    ]
+        
+    private var categories: [TrackerCategory] = []
         
     private var filteredCategories: [TrackerCategory] {
         let weekdayBit = getWeekday(from: selectedDate)
@@ -70,6 +54,15 @@ final class TrackersViewController: UIViewController {
         view.backgroundColor = UIColor(named: "White")
         
         categoryStore.delegate = self
+        
+        // debugging purposes: clean database method
+//        do {
+//            try categoryStore.deleteAllCategories()
+//            print("Categories deleted")
+//        } catch {
+//            print("error while deleting data. \(error)")
+//        }
+        
         categories = categoryStore.categories
         for category in categoryStore.categories {
             print("category: \(category.name)")
@@ -149,51 +142,14 @@ final class TrackersViewController: UIViewController {
         return weekdays[weekdayIndex - 1]
     }
     
-    private func getMaxTrackerID() -> UInt {
-        categories
-            .flatMap(\.trackers)
-            .map(\.id)
-            .max() ?? 0
-    }
-    
     private func completedDaysCount(for tracker: Tracker) -> Int {
         return completedTrackers.filter{ $0.trackerId == tracker.id }.count
     }
     
-    private func addNewTracker(_ newTracker: Tracker, toCategory selectedCategory: TrackerCategory) {
-        var updatedCategories: [TrackerCategory] = []
-        var categoryExists = false
-        for category in categories {
-            if category.name == selectedCategory.name {
-                let updatedTrackers = category.trackers + [newTracker]
-                let updatedCategory = TrackerCategory(name: category.name, trackers: updatedTrackers)
-                updatedCategories.append(updatedCategory)
-                categoryExists = true
-            } else {
-                updatedCategories.append(category)
-            }
-        }
-        
-        if !categoryExists {
-            let newCategory = TrackerCategory(name: selectedCategory.name, trackers: [newTracker])
-            updatedCategories.append(newCategory)
-        }
-        
-        categories = updatedCategories
-        
-        for category in categories {
-            print("category: \(category.name)")
-        }
-        trackersCollectionView.reloadData()
-    }
-    
     @objc private func addTrackerButtonTapped() {
         let newTrackerViewController = NewTrackerViewController()
-//        newTrackerViewController.categoryList = categories.map { $0.name }
         newTrackerViewController.categoryList = categories
-        newTrackerViewController.maxTrackerID = getMaxTrackerID()
         newTrackerViewController.passHabitToTrackersList = { [weak self] newHabit, category in
-            self?.addNewTracker(newHabit, toCategory: category)
             self?.dismiss(animated: true)
         }
         newTrackerViewController.modalPresentationStyle = .pageSheet
@@ -224,7 +180,25 @@ final class TrackersViewController: UIViewController {
         cell.configureButton(for: tracker, selectedDate: selectedDate, completedTrackers: completedTrackers)
         
         let completedCount = completedDaysCount(for: tracker)
-        cell.daysCountLabel.text = "\(completedCount) дней"
+        cell.daysCountLabel.text = "\(completedCount) \(dayWord(for: completedCount))"
+    }
+    
+    private func dayWord(for count: Int) -> String {
+        let remainder10 = count % 10
+        let remainder100 = count % 100
+        
+        if remainder100 >= 11 && remainder100 <= 14 {
+            return "дней"
+        }
+        
+        switch remainder10 {
+        case 1:
+            return "день"
+        case 2, 3, 4:
+            return "дня"
+        default:
+            return "дней"
+        }
     }
 }
 
@@ -252,7 +226,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.emojiLabel.text = filteredCategories[indexPath.section].trackers[indexPath.row].emoji
         cell.title = filteredCategories[indexPath.section].trackers[indexPath.row].name
         let completedCount = completedDaysCount(for: tracker)
-        cell.daysCountLabel.text = "\(completedCount) дней"
+        cell.daysCountLabel.text = "\(completedCount) \(dayWord(for: completedCount))"
         
         cell.configureButton(for: tracker, selectedDate: selectedDate, completedTrackers: completedTrackers)
 
@@ -312,7 +286,7 @@ extension TrackersViewController: UISearchResultsUpdating {
 extension TrackersViewController: TrackerCategoryStoreDelegate {
     func store(_ store: TrackerCategoryStore) {
         categories = store.categories
-        print("categories: ", categories)
-//        categoryListTableView.reloadData()
+        trackersCollectionView.reloadData()
+        updateUI()
     }
 }

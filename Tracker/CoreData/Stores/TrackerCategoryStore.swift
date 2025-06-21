@@ -22,6 +22,8 @@ final class TrackerCategoryStore: NSObject {
     // MARK: - IB Outlets
     
     // MARK: - Public Properties
+    weak var delegate: TrackerCategoryStoreDelegate?
+
     var categories: [TrackerCategory] {
         guard let categoryObjects = fetchedResultsController.fetchedObjects else { return [] }
         
@@ -42,8 +44,6 @@ final class TrackerCategoryStore: NSObject {
             return TrackerCategory(name: name, trackers: trackers)
         }
     }
-    
-    weak var delegate: TrackerCategoryStoreDelegate?
     
     // MARK: - Private Properties
     private let trackerStore: TrackerStore

@@ -11,6 +11,7 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Private Properties
     private let categoryStore = TrackerCategoryStore()
+    private let trackerRecordStore = TrackerRecordStore()
     
     private var selectedDate: Date = Date()
         
@@ -54,6 +55,7 @@ final class TrackersViewController: UIViewController {
         view.backgroundColor = UIColor(named: "White")
         
         categoryStore.delegate = self
+        trackerRecordStore.delegate = self
         
         // debugging purposes: clean database method
 //        do {
@@ -68,6 +70,8 @@ final class TrackersViewController: UIViewController {
             print("category: \(category.name)")
         }
         
+        completedTrackers = trackerRecordStore.records
+
         setUpNavigationBar()
         
         setupEmptyStateView()
@@ -173,8 +177,10 @@ final class TrackersViewController: UIViewController {
         
         if completedTrackers.contains(record) {
             completedTrackers.remove(record)
+            trackerRecordStore.deleteRecord(record) // возможно, надо обновлять весь массив данных о выполнении через стор, но при большом количестве записей это, возможно, может стать проблемой. с другой стороны, возникает риск рассинхронизации данных в базе и в приложении (хотя я пока не представляю, как)
         } else {
             completedTrackers.insert(record)
+            trackerRecordStore.addRecord(record)
         }
         
         cell.configureButton(for: tracker, selectedDate: selectedDate, completedTrackers: completedTrackers)
@@ -288,5 +294,12 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
         categories = store.categories
         trackersCollectionView.reloadData()
         updateUI()
+    }
+}
+
+// MARK: - extention TrackerRecordStoreDelegate
+extension TrackersViewController: TrackerRecordStoreDelegate {
+    func store(_ store: TrackerRecordStore) {
+
     }
 }

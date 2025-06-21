@@ -167,6 +167,7 @@ final class CategoryListViewController: UIViewController {
             self.categoryList.append(category)
             self.selectedCategory = category
             self.toggleButtonsVisibility()
+            self.categoryListTableView.reloadData()
         }
         
         createNewCategoryViewController.modalPresentationStyle = .pageSheet

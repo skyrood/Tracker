@@ -12,6 +12,7 @@ enum TrackerStoreError: Error {
     case categoryStoreInitializationFailed
     case decodingErrorInvalidCategoryName
     case decodingErrorInvalidTrackers
+    case trackerNotFound
 }
 
 protocol TrackerStoreDelegate: AnyObject {
@@ -107,6 +108,18 @@ final class TrackerStore: NSObject {
             color: UIColor(named: colorName) ?? .gray,
             schedule: schedule
         )
+    }
+    
+    func tracker(from trackerId: UUID) throws -> TrackerCoreData {
+        let request: NSFetchRequest<TrackerCoreData> = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", trackerId.uuidString)
+        request.fetchLimit = 1
+        
+        guard let trackerCoreData = try context.fetch(request).first else {
+            throw TrackerStoreError.trackerNotFound
+        }
+        
+        return trackerCoreData
     }
     
     // MARK: - Private Methods

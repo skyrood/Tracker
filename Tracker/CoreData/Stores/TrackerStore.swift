@@ -78,13 +78,13 @@ final class TrackerStore: NSObject {
 //        return try objects.map({ try tracker(from: $0) })
     }
     
-    func addTracker(name: String, emoji: String, color: String, schedule: Weekday, category: TrackerCategoryCoreData) throws -> Tracker {
+    func addTracker(name: String, emoji: String, color: String, schedule: Weekday?, category: TrackerCategoryCoreData) throws -> Tracker {
         let newTracker = TrackerCoreData(context: context)
         newTracker.id = UUID()
         newTracker.name = name
         newTracker.emoji = emoji
         newTracker.colorName = color
-        newTracker.schedule = Int32(schedule.rawValue)
+        newTracker.schedule = Int32(schedule?.rawValue ?? -1)
         newTracker.category = category
         CoreDataStack.shared.saveContext()
         
@@ -92,11 +92,10 @@ final class TrackerStore: NSObject {
     }
     
     func tracker(from coreData: TrackerCoreData) throws -> Tracker {
-        let schedule = Weekday(rawValue: Int(coreData.schedule))
+        let schedule: Weekday? = coreData.schedule == -1 ? nil : Weekday(rawValue: Int(coreData.schedule))
         guard let name = coreData.name,
               let emoji = coreData.emoji,
               let colorName = coreData.colorName,
-              !schedule.isEmpty,
               let id = coreData.id else {
             throw NSError(domain: "TrackerCategoryStore", code: 2, userInfo: [NSLocalizedDescriptionKey: "Invalid tracker data"])
         }

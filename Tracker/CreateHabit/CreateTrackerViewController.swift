@@ -1,5 +1,5 @@
 //
-//  NewHabitViewController.swift
+//  CreateTrackerViewController.swift
 //  Tracker
 //
 //  Created by Rodion Kim on 2024/12/25.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class NewHabitViewController: UIViewController {
+final class CreateTrackerViewController: UIViewController {
     
     // MARK: - Constants
     private enum Constants {
@@ -18,6 +18,7 @@ final class NewHabitViewController: UIViewController {
     var categoryList: [TrackerCategory] = []
     var maxTrackerID: UInt = 0
     var trackerName: String?
+    var showScheduleOption: Bool
     
     var onHabitCreated: ((Tracker, TrackerCategory) -> Void)?
     
@@ -27,7 +28,6 @@ final class NewHabitViewController: UIViewController {
     private var color: String?
     private var emoji: String?
     private var selectedWeekdays: Weekday?
-    
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
@@ -64,6 +64,16 @@ final class NewHabitViewController: UIViewController {
     private var createButton: UIButton = UIButton()
     
     private var shouldShowWarningCell = false
+    
+    // MARK: - Initializers
+    init(showScheduleOption: Bool = true) {
+        self.showScheduleOption = showScheduleOption
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
@@ -187,7 +197,7 @@ final class NewHabitViewController: UIViewController {
     private func updateCreateButtonState() {
         guard let trackerName = trackerName, !trackerName.isEmpty,
               category != nil,
-              selectedWeekdays != nil,
+//              selectedWeekdays != nil,
               emoji != nil,
               color != nil else {
             createButton.isEnabled = false
@@ -204,10 +214,8 @@ final class NewHabitViewController: UIViewController {
     }
     
     @objc func createButtonTapped() {
-        print("Create button tapped")
         
         guard let category = category,
-              let schedule = selectedWeekdays,
               let emoji = emoji,
               let colorName = color,
               let trackerName = trackerName else {
@@ -215,21 +223,11 @@ final class NewHabitViewController: UIViewController {
             return
         }
         
-//        maxTrackerID += 1
-        
-//        let newTracker: Tracker = Tracker(
-//            id: maxTrackerID,
-//            name: trackerName,
-//            emoji: emoji,
-//            color: UIColor(named: colorName) ?? .gray,
-//            schedule: schedule
-//        )
-        
         do {
-            let newTracker = try trackerCategoryStore.addTracker(name: trackerName, emoji: emoji, color: colorName, schedule: schedule, to: category)
+            let newTracker = try trackerCategoryStore.addTracker(name: trackerName, emoji: emoji, color: colorName, schedule: selectedWeekdays, to: category)
             onHabitCreated?(newTracker, category)
         } catch {
-            print("saving new tracker failed: \(error)")
+            print("Saving new tracker failed: \(error)")
         }
     }
     
@@ -239,7 +237,7 @@ final class NewHabitViewController: UIViewController {
 }
 
 // MARK: - extension UITextFieldDelegate
-extension NewHabitViewController: UITextFieldDelegate {
+extension CreateTrackerViewController: UITextFieldDelegate {
     func textField(
         _ textField: UITextField, shouldChangeCharactersIn range: NSRange,
         replacementString string: String
@@ -285,7 +283,7 @@ extension NewHabitViewController: UITextFieldDelegate {
 }
 
 // MARK: - extension UITableViewDelegate
-extension NewHabitViewController: UITableViewDelegate {
+extension CreateTrackerViewController: UITableViewDelegate {
     func tableView(
         _ tableView: UITableView, heightForRowAt indexPath: IndexPath
     ) -> CGFloat {
@@ -384,7 +382,7 @@ extension NewHabitViewController: UITableViewDelegate {
                 categoryListViewController.view.layer.cornerRadius = 10
                 
                 present(categoryListViewController, animated: true, completion: nil)
-            } else if indexPath.row == 1 {
+            } else if indexPath.row == 1 && showScheduleOption {
                 let createScheduleViewController = CreatecreateScheduleViewController()
                 createScheduleViewController.selectedWeekdays = selectedWeekdays ?? []
                 createScheduleViewController.onScheduleCreated = { [weak self] selectedDays in
@@ -403,7 +401,7 @@ extension NewHabitViewController: UITableViewDelegate {
 }
 
 // MARK: - extension UITableViewDataSource
-extension NewHabitViewController: UITableViewDataSource {
+extension CreateTrackerViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 4
     }
@@ -415,7 +413,7 @@ extension NewHabitViewController: UITableViewDataSource {
         case 0:
             return shouldShowWarningCell ? 2 : 1
         case 1:
-            return 2
+            return showScheduleOption ? 2 : 1
         case 2:
             return 1
         case 3:
@@ -555,25 +553,34 @@ extension NewHabitViewController: UITableViewDataSource {
                     equalTo: cell.leadingAnchor),
                 backgroundView.trailingAnchor.constraint(
                     equalTo: cell.trailingAnchor),
-                backgroundView.heightAnchor.constraint(equalToConstant: 150),
             ])
             
-            let separatorLineView = UIView()
-            separatorLineView.translatesAutoresizingMaskIntoConstraints = false
-            separatorLineView.clipsToBounds = true
-            separatorLineView.backgroundColor = UIColor(named: "Gray")
-            
-            cell.contentView.addSubview(separatorLineView)
-            
-            NSLayoutConstraint.activate([
-                separatorLineView.heightAnchor.constraint(equalToConstant: 0.5),
-                separatorLineView.topAnchor.constraint(
-                    equalTo: cell.contentView.topAnchor, constant: 75),
-                separatorLineView.leadingAnchor.constraint(
-                    equalTo: cell.leadingAnchor, constant: 16),
-                separatorLineView.trailingAnchor.constraint(
-                    equalTo: cell.trailingAnchor, constant: -16),
-            ])
+            if showScheduleOption {
+                NSLayoutConstraint.activate([
+                    backgroundView.heightAnchor.constraint(equalToConstant: 150),
+                ])
+                
+                let separatorLineView = UIView()
+                separatorLineView.translatesAutoresizingMaskIntoConstraints = false
+                separatorLineView.clipsToBounds = true
+                separatorLineView.backgroundColor = UIColor(named: "Gray")
+                
+                cell.contentView.addSubview(separatorLineView)
+                
+                NSLayoutConstraint.activate([
+                    separatorLineView.heightAnchor.constraint(equalToConstant: 0.5),
+                    separatorLineView.topAnchor.constraint(
+                        equalTo: cell.contentView.topAnchor, constant: 75),
+                    separatorLineView.leadingAnchor.constraint(
+                        equalTo: cell.leadingAnchor, constant: 16),
+                    separatorLineView.trailingAnchor.constraint(
+                        equalTo: cell.trailingAnchor, constant: -16),
+                ])
+            } else {
+                NSLayoutConstraint.activate([
+                    backgroundView.heightAnchor.constraint(equalToConstant: 75),
+                ])
+            }
         }
         
         cell.textLabel?.font = .systemFont(ofSize: 17)

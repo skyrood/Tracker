@@ -21,7 +21,7 @@ final class TrackersViewController: UIViewController {
         let weekdayBit = getWeekday(from: selectedDate)
         
         return categories.compactMap { category in
-            let filteredTrackers = category.trackers.filter { $0.schedule.contains(weekdayBit) }
+            let filteredTrackers = category.trackers.filter { $0.schedule?.contains(weekdayBit) ?? true }
             
             return filteredTrackers.isEmpty ? nil : TrackerCategory(name: category.name, trackers: filteredTrackers)
         }
@@ -66,9 +66,6 @@ final class TrackersViewController: UIViewController {
 //        }
         
         categories = categoryStore.categories
-        for category in categoryStore.categories {
-            print("category: \(category.name)")
-        }
         
         completedTrackers = trackerRecordStore.records
 

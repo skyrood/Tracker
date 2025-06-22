@@ -107,7 +107,7 @@ final class TrackerCategoryStore: NSObject {
         }
     }
     
-    func addTracker(name: String, emoji: String, color: String, schedule: Weekday, to category: TrackerCategory) throws -> Tracker {
+    func addTracker(name: String, emoji: String, color: String, schedule: Weekday?, to category: TrackerCategory) throws -> Tracker {
         let coreDataCategory = try coreDataCategory(for: category)
         return try trackerStore.addTracker(name: name, emoji: emoji, color: color, schedule: schedule, category: coreDataCategory)
     }

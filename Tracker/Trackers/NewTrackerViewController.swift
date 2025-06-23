@@ -10,10 +10,10 @@ import UIKit
 final class NewTrackerViewController: UIViewController {
    
     // MARK: - Public Properties
-    var categoryList: [String] = []
+    var categoryList: [TrackerCategory] = []
     var maxTrackerID: UInt = 0
     
-    var passHabitToTrackersList: ((Tracker, String) -> Void)?
+    var passHabitToTrackersList: ((Tracker, TrackerCategory) -> Void)?
     
     // MARK: - Private Properties
     private lazy var titleLabel: UILabel = {
@@ -28,13 +28,13 @@ final class NewTrackerViewController: UIViewController {
     
     private lazy var habitButton: UIButton = {
         let button = createButton(title: "Привычка")
-        button.addTarget(self, action: #selector(habitButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(habitButtonTappedWrapper), for: .touchUpInside)
         return button
     }()
     
     private lazy var eventButton: UIButton = {
         let button = createButton(title: "Нерегулярное событие")
-        button.addTarget(self, action: #selector(eventButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(eventButtonTappedWrapper), for: .touchUpInside)
         return button
     }()
     
@@ -91,20 +91,24 @@ final class NewTrackerViewController: UIViewController {
         ])
     }
     
-    @objc private func habitButtonTapped() {
-        let newHabitViewController = NewHabitViewController()
-        newHabitViewController.categoryList = categoryList
-        newHabitViewController.maxTrackerID = maxTrackerID
-        newHabitViewController.onHabitCreated = { [weak self] newHabit, categoryName in
-            self?.passHabitToTrackersList?(newHabit, categoryName)
+    @objc private func newTrackerButtonTapped(showScheduleOption: Bool) {
+        let createTrackerViewController = CreateTrackerViewController(showScheduleOption: showScheduleOption)
+        createTrackerViewController.categoryList = categoryList
+        createTrackerViewController.maxTrackerID = maxTrackerID
+        createTrackerViewController.onHabitCreated = { [weak self] newTracker, category in
+            self?.passHabitToTrackersList?(newTracker, category)
             self?.dismiss(animated: true)
         }
-        newHabitViewController.modalPresentationStyle = .pageSheet
-        newHabitViewController.view.layer.cornerRadius = 10
-        present(newHabitViewController, animated: true, completion: nil)
+        createTrackerViewController.modalPresentationStyle = .pageSheet
+        createTrackerViewController.view.layer.cornerRadius = 10
+        present(createTrackerViewController, animated: true, completion: nil)
     }
     
-    @objc private func eventButtonTapped() {
-        print("Event button tapped")
+    @objc private func habitButtonTappedWrapper() {
+        newTrackerButtonTapped(showScheduleOption: true)
+    }
+
+    @objc private func eventButtonTappedWrapper() {
+        newTrackerButtonTapped(showScheduleOption: false)
     }
 }

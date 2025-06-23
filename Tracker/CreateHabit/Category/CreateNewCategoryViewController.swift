@@ -14,11 +14,15 @@ final class CreateNewCategoryViewController: UIViewController {
     }
     
     // MARK: - Public Properties
+    var category: TrackerCategory?
+    
     var categoryName: String?
     
-    var onCategoryCreated: ((String) -> Void)?
+    var onCategoryCreated: ((TrackerCategory) -> Void)?
     
     // MARK: - Private Properties
+    private let categoryStore = TrackerCategoryStore()
+    
     private var titleLabel: UILabel = UILabel()
     
     private var categoryNameTextField: UITextField = UITextField()
@@ -143,8 +147,15 @@ final class CreateNewCategoryViewController: UIViewController {
     @objc private func createCategoryButtonTapped() {
         guard let categoryName = categoryNameTextField.text, !categoryName.isEmpty else { return }
         
-        onCategoryCreated?(categoryName)
-        dismiss(animated: true)
+        do {
+            let newCategory = try categoryStore.getOrCreateCategory(named: categoryName)
+            try categoryStore.refreshStore()
+            onCategoryCreated?(newCategory)
+            dismiss(animated: true)
+        } catch {
+            print("Error creating category: \(error)")
+        }
+
     }
     
     @objc private func categoryNameTextFieldDidChange() {

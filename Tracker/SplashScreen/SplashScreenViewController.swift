@@ -50,13 +50,11 @@ final class SplashScreenViewController: UIViewController {
         let tabViewBarController = TabBarViewController()
         tabViewBarController.modalPresentationStyle = .fullScreen
         present(tabViewBarController, animated: true, completion: nil)
-        print("navigated to tab bar controller!")
     }
     
     private func navigateToOnboardingScreen() {
         let onboardingScreenViewController = OnboardingScreenViewController()
         onboardingScreenViewController.modalPresentationStyle = .fullScreen
         present(onboardingScreenViewController, animated: true)
-        print("navigated to Onboarding screen controller!")
     }
 }

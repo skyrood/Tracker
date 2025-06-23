@@ -197,7 +197,6 @@ final class CreateTrackerViewController: UIViewController {
     private func updateCreateButtonState() {
         guard let trackerName = trackerName, !trackerName.isEmpty,
               category != nil,
-//              selectedWeekdays != nil,
               emoji != nil,
               color != nil else {
             createButton.isEnabled = false

@@ -57,14 +57,6 @@ final class TrackersViewController: UIViewController {
         categoryStore.delegate = self
         trackerRecordStore.delegate = self
         
-        // debugging purposes: clean database method
-//        do {
-//            try categoryStore.deleteAllCategories()
-//            print("Categories deleted")
-//        } catch {
-//            print("error while deleting data. \(error)")
-//        }
-        
         categories = categoryStore.categories
         
         completedTrackers = trackerRecordStore.records

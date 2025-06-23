@@ -17,7 +17,6 @@ protocol TrackerRecordStoreDelegate: AnyObject {
 }
 
 final class TrackerRecordStore: NSObject {
-    // MARK: - IB Outlets
     
     // MARK: - Public Properties
     weak var delegate: TrackerRecordStoreDelegate?
@@ -69,10 +68,6 @@ final class TrackerRecordStore: NSObject {
         
         try fetchedResultsController.performFetch()
     }
-    
-    // MARK: - Overrides Methods
-    
-    // MARK: - IB Actions
     
     // MARK: - Public Methods
     func addRecord(_ record: TrackerRecord) {

@@ -20,8 +20,7 @@ protocol TrackerStoreDelegate: AnyObject {
 }
 
 final class TrackerStore: NSObject {
-    // MARK: - IB Outlets
-    
+
     // MARK: - Public Properties
     lazy var trackers: [Tracker] = {
         guard let objects = self.fetchedResultsController.fetchedObjects,
@@ -67,11 +66,7 @@ final class TrackerStore: NSObject {
         
         try fetchedResultsController.performFetch()
     }
-    
-    // MARK: - Overrides Methods
-    
-    // MARK: - IB Actions
-    
+
     // MARK: - Public Methods
     func allTrackers() throws -> [TrackerCoreData] {
          return fetchedResultsController.fetchedObjects ?? []
@@ -120,8 +115,6 @@ final class TrackerStore: NSObject {
         
         return trackerCoreData
     }
-    
-    // MARK: - Private Methods
 }
 
 // MARK: - extension NSFetchedResultsControllerDelegate

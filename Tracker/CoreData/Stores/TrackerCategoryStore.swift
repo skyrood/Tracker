@@ -19,8 +19,6 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
 
 final class TrackerCategoryStore: NSObject {
     
-    // MARK: - IB Outlets
-    
     // MARK: - Public Properties
     weak var delegate: TrackerCategoryStoreDelegate?
 
@@ -85,10 +83,6 @@ final class TrackerCategoryStore: NSObject {
         try fetchedResultsController.performFetch()
     }
     
-    // MARK: - Overrides Methods
-    
-    // MARK: - IB Actions
-    
     // MARK: - Public Methods
     func getOrCreateCategory(named name: String) throws -> TrackerCategory {
         let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
@@ -122,9 +116,12 @@ final class TrackerCategoryStore: NSObject {
         guard let categoryName = trackerCategoryCoreData.name else {
             throw TrackerCategoryStoreError.decodingErrorInvalidCategoryName
         }
-        guard let trackers = try? trackerCategoryCoreData.trackers?.map({ try trackerStore.tracker(from: $0 as! TrackerCoreData) }) else {
+
+        guard let trackersCoreData = trackerCategoryCoreData.trackers as? Set<TrackerCoreData> else {
             throw TrackerCategoryStoreError.decodingErrorInvalidTrackers
         }
+        
+        let trackers: [Tracker] = try trackersCoreData.map { try trackerStore.tracker(from: $0) }
         
         return TrackerCategory(name: categoryName, trackers: trackers)
     }

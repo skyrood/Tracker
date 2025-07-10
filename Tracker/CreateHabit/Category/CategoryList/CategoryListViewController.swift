@@ -205,11 +205,10 @@ extension CategoryListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let viewModel = viewModel else { return }
         
-        let selectedCategoryModel = viewModel.categories[indexPath.row].category
-        selectedCategory = (selectedCategory?.name == selectedCategoryModel.name) ? nil : selectedCategoryModel
+        viewModel.selectCategory(at: indexPath.row)
+        selectedCategory = viewModel.selectedCategory
         
         toggleButtonsVisibility()
-        
         categoryListTableView.reloadData()
     }
 }

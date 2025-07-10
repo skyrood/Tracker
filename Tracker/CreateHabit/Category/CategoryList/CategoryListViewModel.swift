@@ -43,6 +43,15 @@ final class CategoryListViewModel {
         categories.append(CategoryViewModel(categoryName: newCategory.name))
         selectedCategory = newCategory
     }
+    
+    func selectCategory(at index: Int) {
+        let tappedCategory = categories[index].category
+        if selectedCategory?.name == tappedCategory.name {
+            selectedCategory = nil
+        } else {
+            selectedCategory = tappedCategory
+        }
+    }
 }
 
 extension CategoryListViewModel: TrackerCategoryStoreDelegate {

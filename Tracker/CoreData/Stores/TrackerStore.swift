@@ -70,7 +70,6 @@ final class TrackerStore: NSObject {
     // MARK: - Public Methods
     func allTrackers() throws -> [TrackerCoreData] {
          return fetchedResultsController.fetchedObjects ?? []
-//        return try objects.map({ try tracker(from: $0) })
     }
     
     func addTracker(name: String, emoji: String, color: String, schedule: Weekday?, category: TrackerCategoryCoreData) throws -> Tracker {

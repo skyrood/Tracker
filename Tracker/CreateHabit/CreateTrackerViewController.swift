@@ -213,7 +213,6 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     @objc func createButtonTapped() {
-        
         guard let category = category,
               let emoji = emoji,
               let colorName = color,
@@ -362,7 +361,8 @@ extension CreateTrackerViewController: UITableViewDelegate {
         if indexPath.section == 1 {
             if indexPath.row == 0 {
                 let categoryListViewController = CategoryListViewController()
-                categoryListViewController.categoryList = categoryList
+//                categoryListViewController.categoryList = categoryList
+                categoryListViewController.selectedCategory = category
                 
                 if category != nil {
                     categoryListViewController.selectedCategory = category

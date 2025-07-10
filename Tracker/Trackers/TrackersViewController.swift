@@ -141,7 +141,6 @@ final class TrackersViewController: UIViewController {
     
     @objc private func addTrackerButtonTapped() {
         let newTrackerViewController = NewTrackerViewController()
-        newTrackerViewController.categoryList = categories
         newTrackerViewController.passHabitToTrackersList = { [weak self] newHabit, category in
             self?.dismiss(animated: true)
         }

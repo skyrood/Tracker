@@ -50,8 +50,6 @@ final class CategoryListViewController: UIViewController {
         setupCategoryButton(for: addCategoryButton,
                             buttonText: "Готово",
                             using: #selector(addCategoryButtonTapped))
-//        setupEmptyStateView()
-//        setupCategoryListView()
 
         guard let viewModel else { return }
         
@@ -69,9 +67,7 @@ final class CategoryListViewController: UIViewController {
                     self.setupCategoryListView()
                 }
                 self.categoryListTableView.reloadData()
-//                print("number of rows: \(self.categoryListTableView.numberOfRows(inSection: 0))")
                 updateCategoryListTableViewHeight()
-//                print("table height: \(String(describing: categoryListTableViewHeight))")
             }
         }
         
@@ -82,13 +78,6 @@ final class CategoryListViewController: UIViewController {
         super.viewWillAppear(animated)
         toggleButtonsVisibility()
     }
-    
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        updateCategoryListTableViewHeight()
-//        categoryListTableView.layoutIfNeeded()
-//        categoryListTableViewHeight?.constant = min(categoryListTableView.contentSize.height, view.bounds.height)
-//    }
     
     // MARK: - Private Methods
     private func setupCategoryListLabel() {
@@ -134,7 +123,6 @@ final class CategoryListViewController: UIViewController {
             categoryListTableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             categoryListTableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
             categoryListTableView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 38),
-//            categoryListTableView.bottomAnchor.constraint(equalTo: addCategoryButton.topAnchor, constant: -16) // this works
         ])
         
         categoryListTableViewHeight = categoryListTableView.heightAnchor.constraint(equalToConstant: 0)
@@ -169,13 +157,9 @@ final class CategoryListViewController: UIViewController {
         let fullHeight: CGFloat = cellHeight * CGFloat(viewModel.categories.count)
         let maxHeight: CGFloat = addCategoryButton.frame.minY - categoryListTableView.frame.minY - 16
         let finalHeight: CGFloat = min(fullHeight, maxHeight)
-        print("final height: \(finalHeight)")
         categoryListTableViewHeight?.constant = finalHeight
-        print("height constant: \(categoryListTableViewHeight?.constant ?? -1)")
         
         view.layoutIfNeeded()
-        print("table height: \(categoryListTableView.frame.height)")
-
     }
     
     private func toggleButtonsVisibility() {

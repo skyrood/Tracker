@@ -30,8 +30,6 @@ final class CategoryListViewModel {
         trackerCategoryStore.delegate = self
         categories = getCategoriesFromStore()
         self.selectedCategory = selectedCategory
-        
-        print("view model says: categories count: \(categories.count)")
     }
     
     private func getCategoriesFromStore() -> [CategoryViewModel] {

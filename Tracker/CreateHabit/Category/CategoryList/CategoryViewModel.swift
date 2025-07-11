@@ -8,6 +8,8 @@
 import Foundation
 
 final class CategoryViewModel: Identifiable {
+
+    // MARK: - Public Properties
     let categoryStore = TrackerCategoryStore()
     
     let category: TrackerCategory
@@ -16,18 +18,19 @@ final class CategoryViewModel: Identifiable {
         return category.name
     }
     
+    var categoryNameBinding: Binding<String>? {
+        didSet {
+            categoryNameBinding?(categoryName)
+        }
+    }
+
+    // MARK: - Initializers
     init(categoryName: String) {
         do {
             self.category = try categoryStore.getOrCreateCategory(named: categoryName)
         } catch {
             print("Error while fetching category: \(error)")
             self.category = TrackerCategory(name: categoryName, trackers: [])
-        }
-    }
-    
-    var categoryNameBinding: Binding<String>? {
-        didSet {
-            categoryNameBinding?(categoryName)
         }
     }
 }

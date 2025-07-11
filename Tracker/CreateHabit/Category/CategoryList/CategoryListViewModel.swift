@@ -8,6 +8,13 @@
 import Foundation
 
 final class CategoryListViewModel {
+
+    // MARK: - Public Properties
+    var categoryListBinding: Binding<[CategoryViewModel]>?
+    
+    var selectedCategory: TrackerCategory?
+    
+    // MARK: - Private Properties
     private let trackerCategoryStore: TrackerCategoryStore
     
     private(set) var categories: [CategoryViewModel] = [] {
@@ -16,10 +23,7 @@ final class CategoryListViewModel {
         }
     }
     
-    var categoryListBinding: Binding<[CategoryViewModel]>?
-    
-    var selectedCategory: TrackerCategory?
-    
+    // MARK: - Initializers
     convenience init() {
         let trackerCategoryStore = TrackerCategoryStore()
         self.init(trackerCategoryStore: trackerCategoryStore)
@@ -32,12 +36,7 @@ final class CategoryListViewModel {
         self.selectedCategory = selectedCategory
     }
     
-    private func getCategoriesFromStore() -> [CategoryViewModel] {
-        return trackerCategoryStore.categories.map {
-            CategoryViewModel(categoryName: $0.name)
-        }
-    }
-    
+    // MARK: - Public Methods
     func addCategory(_ newCategory: TrackerCategory) {
         guard !categories.contains(where: { $0.categoryName == newCategory.name }) else { return }
         categories.append(CategoryViewModel(categoryName: newCategory.name))
@@ -52,11 +51,18 @@ final class CategoryListViewModel {
             selectedCategory = tappedCategory
         }
     }
+    
+    // MARK: - Private Methods
+    private func getCategoriesFromStore() -> [CategoryViewModel] {
+        return trackerCategoryStore.categories.map {
+            CategoryViewModel(categoryName: $0.name)
+        }
+    }
 }
 
+// MARK: - extension TrackerCategoryStoreDelegate
 extension CategoryListViewModel: TrackerCategoryStoreDelegate {
     func store(_ store: TrackerCategoryStore) {
         categories = getCategoriesFromStore()
     }
 }
-

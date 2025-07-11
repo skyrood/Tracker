@@ -10,9 +10,7 @@ import UIKit
 final class NewTrackerViewController: UIViewController {
    
     // MARK: - Public Properties
-    var categoryList: [TrackerCategory] = []
-    var maxTrackerID: UInt = 0
-    
+  
     var passHabitToTrackersList: ((Tracker, TrackerCategory) -> Void)?
     
     // MARK: - Private Properties
@@ -93,8 +91,7 @@ final class NewTrackerViewController: UIViewController {
     
     @objc private func newTrackerButtonTapped(showScheduleOption: Bool) {
         let createTrackerViewController = CreateTrackerViewController(showScheduleOption: showScheduleOption)
-        createTrackerViewController.categoryList = categoryList
-        createTrackerViewController.maxTrackerID = maxTrackerID
+        
         createTrackerViewController.onHabitCreated = { [weak self] newTracker, category in
             self?.passHabitToTrackersList?(newTracker, category)
             self?.dismiss(animated: true)

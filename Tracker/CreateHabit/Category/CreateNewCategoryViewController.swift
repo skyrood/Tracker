@@ -155,7 +155,6 @@ final class CreateNewCategoryViewController: UIViewController {
         } catch {
             print("Error creating category: \(error)")
         }
-
     }
     
     @objc private func categoryNameTextFieldDidChange() {

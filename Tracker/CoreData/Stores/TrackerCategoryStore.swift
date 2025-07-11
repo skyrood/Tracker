@@ -24,7 +24,7 @@ final class TrackerCategoryStore: NSObject {
 
     var categories: [TrackerCategory] {
         guard let categoryObjects = fetchedResultsController.fetchedObjects else { return [] }
-        
+                
         let trackersCoreDataList: [TrackerCoreData]
         do {
             trackersCoreDataList = try trackerStore.allTrackers()

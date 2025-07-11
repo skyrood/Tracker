@@ -15,7 +15,6 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     // MARK: - Public Properties
-    var categoryList: [TrackerCategory] = []
     var maxTrackerID: UInt = 0
     var trackerName: String?
     var showScheduleOption: Bool
@@ -213,7 +212,6 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     @objc func createButtonTapped() {
-        
         guard let category = category,
               let emoji = emoji,
               let colorName = color,
@@ -362,7 +360,7 @@ extension CreateTrackerViewController: UITableViewDelegate {
         if indexPath.section == 1 {
             if indexPath.row == 0 {
                 let categoryListViewController = CategoryListViewController()
-                categoryListViewController.categoryList = categoryList
+                categoryListViewController.selectedCategory = category
                 
                 if category != nil {
                     categoryListViewController.selectedCategory = category
@@ -370,9 +368,6 @@ extension CreateTrackerViewController: UITableViewDelegate {
                 
                 categoryListViewController.onCategorySelected = { [weak self] category in
                     self?.category = category
-                    if self?.categoryList.contains(category) == false {
-                        self?.categoryList.append(category)
-                    }
                     self?.updateCreateButtonState()
                     tableView.reloadData()
                 }

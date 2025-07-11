@@ -18,19 +18,17 @@ final class SplashScreenViewController: UIViewController {
         
         return view
     }()
-    
-    private var onboardingScreenShown: Bool = true
-    
+        
     // MARK: - Overrides Methods
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+                
         self.view.backgroundColor = UIColor(named: "Blue")
         
         self.view.addSubview(logoImageView)
         setConstraints(for: logoImageView)
         
-        if onboardingScreenShown {
+        if UserDefaults.standard.bool(forKey: "onboardingScreenShown") {
             navigateToTabBarController()
         } else {
             navigateToOnboardingScreen()

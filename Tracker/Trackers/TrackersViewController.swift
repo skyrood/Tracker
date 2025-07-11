@@ -141,7 +141,6 @@ final class TrackersViewController: UIViewController {
     
     @objc private func addTrackerButtonTapped() {
         let newTrackerViewController = NewTrackerViewController()
-        newTrackerViewController.categoryList = categories
         newTrackerViewController.passHabitToTrackersList = { [weak self] newHabit, category in
             self?.dismiss(animated: true)
         }
@@ -166,7 +165,7 @@ final class TrackersViewController: UIViewController {
         
         if completedTrackers.contains(record) {
             completedTrackers.remove(record)
-            trackerRecordStore.deleteRecord(record) // возможно, надо обновлять весь массив данных о выполнении через стор, но при большом количестве записей это, возможно, может стать проблемой. с другой стороны, возникает риск рассинхронизации данных в базе и в приложении (хотя я пока не представляю, как)
+            trackerRecordStore.deleteRecord(record)
         } else {
             completedTrackers.insert(record)
             trackerRecordStore.addRecord(record)

@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class OnboardingScreenViewController: UIPageViewController, UIPageViewControllerDelegate {
+final class OnboardingScreenViewController: UIPageViewController {
     
     // MARK: - Private Properties
     private lazy var pages: [UIViewController] = {
@@ -15,6 +15,18 @@ final class OnboardingScreenViewController: UIPageViewController, UIPageViewCont
             OnboardingBlueViewController(),
             OnboardingRedViewController()
         ]
+    }()
+    
+    lazy var pageControl: UIPageControl = {
+        let pageControl = UIPageControl()
+        pageControl.translatesAutoresizingMaskIntoConstraints = false
+        pageControl.numberOfPages = pages.count
+        pageControl.currentPageIndicatorTintColor = .black
+        pageControl.pageIndicatorTintColor = .gray
+        pageControl.currentPage = 0
+        pageControl.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        
+        return pageControl
     }()
     
     private lazy var onboardButton: UIButton = {
@@ -50,9 +62,10 @@ final class OnboardingScreenViewController: UIPageViewController, UIPageViewCont
         if let firstPage = pages.first {
             setViewControllers([firstPage], direction: .forward, animated: true, completion: nil)
         }
+        view.addSubview(pageControl)
+        view.addSubview(onboardButton)
         
-        self.view.addSubview(onboardButton)
-        
+        setConstraints(for: pageControl)
         setConstraints(for: onboardButton)
     }
     
@@ -73,11 +86,10 @@ final class OnboardingScreenViewController: UIPageViewController, UIPageViewCont
         }
     }
     
-    private func setConstraints(for label: UILabel) {
+    private func setConstraints(for pageControl: UIPageControl) {
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            label.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            label.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -(view.bounds.height * 0.3525))
+            pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -134),
+            pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
@@ -91,7 +103,7 @@ final class OnboardingScreenViewController: UIPageViewController, UIPageViewCont
     }
     
     @objc private func onboardButtonTapped() {
-        print("Onboarding screen shown. Never showing it again...") // TODO: save shown status to userdefaults?
+        UserDefaults.standard.set(true, forKey: "onboardingScreenShown")
         navigateToTabBarView()
     }
     
@@ -116,5 +128,15 @@ extension OnboardingScreenViewController: UIPageViewControllerDataSource {
             return nil
         }
         return pages[currentIndex + 1]
+    }
+}
+
+// MARK: - extension UIPageViewControllerDelegate
+extension OnboardingScreenViewController: UIPageViewControllerDelegate {
+    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        if let currentViewController = pageViewController.viewControllers?.first,
+           let currentIndex = pages.firstIndex(of: currentViewController) {
+            pageControl.currentPage = currentIndex
+        }
     }
 }

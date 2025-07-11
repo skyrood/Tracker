@@ -10,29 +10,12 @@ import UIKit
 final class CategoryListViewController: UIViewController {
     
     // MARK: - Public Properties
-    
-    var categoryList: [TrackerCategory] = [] {
-        didSet {
-            if categoryList.isEmpty {
-                setupEmptyStateView()
-                categoryListTableView.removeFromSuperview()
-            } else {
-                emptyStateView?.removeFromSuperview()
-                if categoryListTableView.superview == nil {
-                    setupCategoryListView()
-                }
-            }
-            categoryListTableView.reloadData()
-            updateCategoryListTableViewHeight()
-        }
-    }
-    
     var selectedCategory: TrackerCategory?
     
     var onCategorySelected: ((TrackerCategory) -> Void)?
     
     // MARK: - Private Properties
-    private let categoryStore = TrackerCategoryStore()
+    private var viewModel: CategoryListViewModel?
     
     private lazy var label: UILabel = UILabel()
     
@@ -54,6 +37,9 @@ final class CategoryListViewController: UIViewController {
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+                
+        viewModel = CategoryListViewModel()
+
         view.backgroundColor = UIColor(named: "White")
         navigationItem.hidesBackButton = true
         
@@ -64,12 +50,32 @@ final class CategoryListViewController: UIViewController {
         setupCategoryButton(for: addCategoryButton,
                             buttonText: "Готово",
                             using: #selector(addCategoryButtonTapped))
+
+        guard let viewModel else { return }
+        
+        viewModel.categoryListBinding = { [weak self] categories in
+            guard let self else { return }
+
+            if categories.isEmpty {
+                self.categoryListTableView.removeFromSuperview()
+                if self.emptyStateView == nil {
+                    self.setupEmptyStateView()
+                }
+            } else {
+                self.emptyStateView?.removeFromSuperview()
+                if self.categoryListTableView.superview == nil {
+                    self.setupCategoryListView()
+                }
+                self.categoryListTableView.reloadData()
+                updateCategoryListTableViewHeight()
+            }
+        }
+        
+        viewModel.categoryListBinding?(viewModel.categories)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        updateCategoryListTableViewHeight()
         toggleButtonsVisibility()
     }
     
@@ -109,7 +115,7 @@ final class CategoryListViewController: UIViewController {
         categoryListTableView.separatorStyle = .none
         categoryListTableView.delegate = self
         categoryListTableView.dataSource = self
-        categoryListTableView.register(UITableViewCell.self, forCellReuseIdentifier: "CategoryListTableViewCell")
+        categoryListTableView.register(CategoryTableViewCell.self, forCellReuseIdentifier: CategoryTableViewCell.reuseIdentifier)
         
         view.addSubview(categoryListTableView)
         
@@ -121,6 +127,8 @@ final class CategoryListViewController: UIViewController {
         
         categoryListTableViewHeight = categoryListTableView.heightAnchor.constraint(equalToConstant: 0)
         categoryListTableViewHeight?.isActive = true
+        
+        updateCategoryListTableViewHeight()
     }
     
     private func setupCategoryButton(for button: UIButton, buttonText: String, using action: Selector) {
@@ -144,8 +152,13 @@ final class CategoryListViewController: UIViewController {
     }
     
     private func updateCategoryListTableViewHeight() {
-        let tableViewHeight: CGFloat = cellHeight * CGFloat(categoryList.count)
-        categoryListTableViewHeight?.constant = tableViewHeight
+        guard let viewModel = viewModel else { return }
+        
+        let fullHeight: CGFloat = cellHeight * CGFloat(viewModel.categories.count)
+        let maxHeight: CGFloat = addCategoryButton.frame.minY - categoryListTableView.frame.minY - 16
+        let finalHeight: CGFloat = min(fullHeight, maxHeight)
+        categoryListTableViewHeight?.constant = finalHeight
+        
         view.layoutIfNeeded()
     }
     
@@ -164,7 +177,7 @@ final class CategoryListViewController: UIViewController {
         
         createNewCategoryViewController.onCategoryCreated = { [ weak self ] category in
             guard let self else { return }
-            self.categoryList.append(category)
+            self.viewModel?.addCategory(category)
             self.selectedCategory = category
             self.toggleButtonsVisibility()
             self.categoryListTableView.reloadData()
@@ -190,12 +203,12 @@ extension CategoryListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedCategoryName = categoryList[indexPath.row]
+        guard let viewModel = viewModel else { return }
         
-        selectedCategory = (selectedCategory?.name == selectedCategoryName.name) ? nil : selectedCategoryName
+        viewModel.selectCategory(at: indexPath.row)
+        selectedCategory = viewModel.selectedCategory
         
         toggleButtonsVisibility()
-        
         categoryListTableView.reloadData()
     }
 }
@@ -203,14 +216,20 @@ extension CategoryListViewController: UITableViewDelegate {
 // MARK: - extension UITableViewDataSource
 extension CategoryListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categoryList.count
+        guard let viewModel else { return 0 }
+        
+        return viewModel.categories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = categoryListTableView.dequeueReusableCell(withIdentifier: "CategoryListTableViewCell", for: indexPath)
-        cell.textLabel?.text = categoryList[indexPath.row].name
-        cell.backgroundColor = .clear
-        cell.selectionStyle = .none
+        guard
+            let cell = categoryListTableView.dequeueReusableCell(withIdentifier: CategoryTableViewCell.reuseIdentifier, for: indexPath) as? CategoryTableViewCell,
+            let viewModel
+        else {
+            return UITableViewCell()
+        }
+        
+        cell.configure(with: viewModel.categories[indexPath.item])
         
         cell.contentView.subviews.forEach { subview in
             if subview.tag == 999 {
@@ -218,7 +237,7 @@ extension CategoryListViewController: UITableViewDataSource {
             }
         }
         
-        if indexPath.row < categoryList.count - 1 {
+        if indexPath.row < viewModel.categories.count - 1 {
             let separatorLineView = UIView()
             separatorLineView.translatesAutoresizingMaskIntoConstraints = false
             separatorLineView.clipsToBounds = true
@@ -238,7 +257,7 @@ extension CategoryListViewController: UITableViewDataSource {
             ])
         }
         
-        if categoryList[indexPath.row].name == selectedCategory?.name {
+        if viewModel.categories[indexPath.row].categoryName == selectedCategory?.name {
             cell.accessoryType = .checkmark
         } else {
             cell.accessoryType = .none

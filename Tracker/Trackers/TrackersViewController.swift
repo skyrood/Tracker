@@ -174,25 +174,11 @@ final class TrackersViewController: UIViewController {
         cell.configureButton(for: tracker, selectedDate: selectedDate, completedTrackers: completedTrackers)
         
         let completedCount = completedDaysCount(for: tracker)
-        cell.daysCountLabel.text = "\(completedCount) \(dayWord(for: completedCount))"
+        cell.daysCountLabel.text = completedTrackersDaysCountString(for: completedCount)
     }
     
-    private func dayWord(for count: Int) -> String {
-        let remainder10 = count % 10
-        let remainder100 = count % 100
-        
-        if remainder100 >= 11 && remainder100 <= 14 {
-            return "дней"
-        }
-        
-        switch remainder10 {
-        case 1:
-            return "день"
-        case 2, 3, 4:
-            return "дня"
-        default:
-            return "дней"
-        }
+    private func completedTrackersDaysCountString(for completedCount: Int) -> String {
+        return String.localizedStringWithFormat(NSLocalizedString("DaysCompleted", comment: "Number of days comleted for the tracker"), completedCount)
     }
 }
 
@@ -220,7 +206,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.emojiLabel.text = filteredCategories[indexPath.section].trackers[indexPath.row].emoji
         cell.title = filteredCategories[indexPath.section].trackers[indexPath.row].name
         let completedCount = completedDaysCount(for: tracker)
-        cell.daysCountLabel.text = "\(completedCount) \(dayWord(for: completedCount))"
+        cell.daysCountLabel.text  = completedTrackersDaysCountString(for: completedCount)
         
         cell.configureButton(for: tracker, selectedDate: selectedDate, completedTrackers: completedTrackers)
 

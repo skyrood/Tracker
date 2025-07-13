@@ -34,7 +34,7 @@ final class CreateNewCategoryViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         
-        label.text = "Ограничение \(Constants.categoryNameMaxLength) символов"
+        label.text = L10n.categoryNameLimit(Constants.categoryNameMaxLength)
         label.font = .systemFont(ofSize: 17)
         label.textColor = UIColor(named: "Red")
         return label
@@ -69,7 +69,7 @@ final class CreateNewCategoryViewController: UIViewController {
         titleLabel.clipsToBounds = true
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         titleLabel.textColor = UIColor(named: "Black")
-        titleLabel.text = "Новая категория"
+        titleLabel.text = L10n.newCategory
         
         view.addSubview(titleLabel)
         
@@ -82,7 +82,7 @@ final class CreateNewCategoryViewController: UIViewController {
     private func setupCategoryNameTextField() {
         categoryNameTextField.translatesAutoresizingMaskIntoConstraints = false
         categoryNameTextField.clipsToBounds = true
-        categoryNameTextField.placeholder = "Введите название категории"
+        categoryNameTextField.placeholder = L10n.enterCategoryName
         categoryNameTextField.font = .systemFont(ofSize: 17)
         categoryNameTextField.textColor = UIColor(named: "Black")
         categoryNameTextField.backgroundColor = UIColor(named: "InputBackground")
@@ -123,7 +123,7 @@ final class CreateNewCategoryViewController: UIViewController {
     
     private func setupCreateCagegoryButton() {
         createCategoryButton.translatesAutoresizingMaskIntoConstraints = false
-        createCategoryButton.setTitle("Готово", for: .normal)
+        createCategoryButton.setTitle(L10n.done, for: .normal)
         createCategoryButton.setTitleColor(.white, for: .normal)
         createCategoryButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         createCategoryButton.backgroundColor = .black

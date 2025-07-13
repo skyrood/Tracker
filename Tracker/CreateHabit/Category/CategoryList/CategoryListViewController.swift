@@ -32,7 +32,7 @@ final class CategoryListViewController: UIViewController {
     private var categoryListTableViewHeight: NSLayoutConstraint?
     
     private let emptyStateImage: UIImage? = UIImage(named: "TrackersEmpty")
-    private let emptyStateMessage: String = "Привычки и события можно объединить по смыслу"
+    private let emptyStateMessage: String = L10n.categoryTip
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
@@ -45,10 +45,10 @@ final class CategoryListViewController: UIViewController {
         
         setupCategoryListLabel()
         setupCategoryButton(for: createNewCategoryButton,
-                            buttonText: "Добавить категорию",
+                            buttonText: L10n.addCategory,
                             using: #selector(createNewCategoryButtonTapped))
         setupCategoryButton(for: addCategoryButton,
-                            buttonText: "Готово",
+                            buttonText: L10n.done,
                             using: #selector(addCategoryButtonTapped))
 
         guard let viewModel else { return }
@@ -85,7 +85,7 @@ final class CategoryListViewController: UIViewController {
         label.clipsToBounds = true
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.textColor = UIColor(named: "Black")
-        label.text = "Категория"
+        label.text = L10n.category
         
         view.addSubview(label)
         

@@ -18,20 +18,20 @@ final class NewTrackerViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
-        label.text = "Создание трекера"
+        label.text = L10n.trackerCreation
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = UIColor(named: "Black")
         return label
     }()
     
     private lazy var habitButton: UIButton = {
-        let button = createButton(title: "Привычка")
+        let button = createButton(title: L10n.habit)
         button.addTarget(self, action: #selector(habitButtonTappedWrapper), for: .touchUpInside)
         return button
     }()
     
     private lazy var eventButton: UIButton = {
-        let button = createButton(title: "Нерегулярное событие")
+        let button = createButton(title: L10n.irregularEvent)
         button.addTarget(self, action: #selector(eventButtonTappedWrapper), for: .touchUpInside)
         return button
     }()

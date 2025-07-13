@@ -24,8 +24,8 @@ final class TabBarViewController: UITabBarController {
         let trackersNavController = UINavigationController(rootViewController: TrackersViewController())
         let statisticsViewController = StatisticsViewController()
         
-        trackersNavController.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "TrackersTabBarLogo"), tag: 0)
-        statisticsViewController.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "StatisticsTabBarLogo"), tag: 0)
+        trackersNavController.tabBarItem = UITabBarItem(title: L10n.trackersTitle, image: UIImage(named: "TrackersTabBarLogo"), tag: 0)
+        statisticsViewController.tabBarItem = UITabBarItem(title: L10n.statisticsTab, image: UIImage(named: "StatisticsTabBarLogo"), tag: 0)
         tabBar.barTintColor = UIColor(named: "White")
         
         viewControllers = [trackersNavController, statisticsViewController]

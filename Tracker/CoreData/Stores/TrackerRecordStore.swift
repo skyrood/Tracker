@@ -43,7 +43,7 @@ final class TrackerRecordStore: NSObject {
             let store = try TrackerStore(context: context)
             try self.init(context: context, trackerStore: store)
         } catch {
-            fatalError("Не удалось инициализировать TrackerRecordStore: \(error)")
+            fatalError("Failed to initialize TrackerRecordStore: \(error)")
         }
     }
     

@@ -24,7 +24,7 @@ final class OnboardingBlueViewController: UIViewController {
         label.clipsToBounds = true
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         label.numberOfLines = 0
-        let text = "Отслеживайте только то, что хотите"
+        let text = L10n.onboardingBlue
         let attributedString = NSMutableAttributedString(string: text)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6

@@ -29,7 +29,7 @@ final class TrackerCategoryStore: NSObject {
         do {
             trackersCoreDataList = try trackerStore.allTrackers()
         } catch {
-            print("Ошибка загрузки трекеров \(error)")
+            print("Error loading trackers: \(error)")
             return []
         }
         
@@ -57,7 +57,7 @@ final class TrackerCategoryStore: NSObject {
             let store = try TrackerStore(context: context)
             try self.init(context: context, trackerStore: store)
         } catch {
-            fatalError("Не удалось инициализировать TrackerCategoryStore: \(error)")
+            fatalError("Failed to initialize TrackerCategoryStore: \(error)")
         }
     }
     

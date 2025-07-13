@@ -39,7 +39,7 @@ final class CreatecreateScheduleViewController: UIViewController {
         titleLabel.clipsToBounds = true
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         titleLabel.textColor = UIColor(named: "Black")
-        titleLabel.text = "Расписание"
+        titleLabel.text = L10n.scheduleTitle
         
         view.addSubview(titleLabel)
         
@@ -51,7 +51,7 @@ final class CreatecreateScheduleViewController: UIViewController {
     
     private func setupCreateScheduleButton() {
         createScheduleButton.translatesAutoresizingMaskIntoConstraints = false
-        createScheduleButton.setTitle("Готово", for: .normal)
+        createScheduleButton.setTitle(L10n.done, for: .normal)
         createScheduleButton.setTitleColor(.white, for: .normal)
         createScheduleButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         createScheduleButton.backgroundColor = .black
@@ -138,13 +138,13 @@ extension CreatecreateScheduleViewController: UITableViewDataSource{
         cell.selectionStyle = .none
         
         let weekdays = [
-            ("Понедельник", Weekday.monday),
-            ("Вторник", Weekday.tuesday),
-            ("Среда", Weekday.wednesday),
-            ("Четверг", Weekday.thursday),
-            ("Пятница", Weekday.friday),
-            ("Суббота", Weekday.saturday),
-            ("Воскресенье", Weekday.sunday)
+            (L10n.monday, Weekday.monday),
+            (L10n.tuesday, Weekday.tuesday),
+            (L10n.wednesday, Weekday.wednesday),
+            (L10n.thursday, Weekday.thursday),
+            (L10n.friday, Weekday.friday),
+            (L10n.saturday, Weekday.saturday),
+            (L10n.sunday, Weekday.sunday)
         ]
         
         let (dayName, flag) = weekdays[indexPath.row]

@@ -32,8 +32,8 @@ final class TrackersViewController: UIViewController {
     private var emptyStateView: EmptyStateView?
     
     private var emptyStateImage: UIImage? = UIImage(named: "TrackersEmpty")
-    private lazy var emptyStateMessage: String = categories.isEmpty ? "Что будем отслеживать?" :
-                                                                      "Привычки и события можно\nобъединить по смыслу"
+    private lazy var emptyStateMessage: String = categories.isEmpty ? L10n.whatToTrack :
+    L10n.categoryTipMultiline
     
     private lazy var trackersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -71,7 +71,7 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Private Methods
     private func setUpNavigationBar() {
-        title = "Трекеры"
+        title = L10n.trackersTitle
         navigationController?.navigationBar.prefersLargeTitles = true
 
         let addButton = UIButton(type: .system)
@@ -92,7 +92,7 @@ final class TrackersViewController: UIViewController {
         let searchBar = UISearchController(searchResultsController: nil)
         searchBar.searchResultsUpdater = self
         searchBar.obscuresBackgroundDuringPresentation = false
-        searchBar.searchBar.placeholder = "Поиск"
+        searchBar.searchBar.placeholder = L10n.search
         
         navigationItem.leftBarButtonItem = addTrackerButton
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
@@ -178,7 +178,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func completedTrackersDaysCountString(for completedCount: Int) -> String {
-        return String.localizedStringWithFormat(NSLocalizedString("DaysCompleted", comment: "Number of days comleted for the tracker"), completedCount)
+        return L10n.daysCompleted(completedCount)
     }
 }
 

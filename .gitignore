@@ -111,3 +111,6 @@ iOSInjectionProject/
 
 # Персональные настройки проекта
 *.xcodeproj/xcuserdata/
+
+# L10n generated files
+Tracker/Resources/Generated/L10n.swift

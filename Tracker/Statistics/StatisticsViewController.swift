@@ -19,7 +19,7 @@ final class StatisticsViewController: UIViewController {
         label.clipsToBounds = true
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
         label.textColor = UIColor(named: "Black")
-        label.text = "Статистика"
+        label.text = L10n.statisticsTitle
         
         return label
     }()
@@ -27,7 +27,7 @@ final class StatisticsViewController: UIViewController {
     private var emptyStateView: EmptyStateView?
     
     private let emptyStateImage: UIImage? = UIImage(named: "StatisticsEmpty")
-    private let emptyStateMessage: String = "Анализировать пока нечего"
+    private let emptyStateMessage: String = L10n.nothingToAnalyze
     
     // MARK: - Initializers
     

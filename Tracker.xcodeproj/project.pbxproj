@@ -65,6 +65,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 977AC1EB2D0074B200663904 /* Build configuration list for PBXNativeTarget "Tracker" */;
 			buildPhases = (
+				970EC3642E23A42800FEED15 /* Generate String Localization File */,
 				977AC1D42D0074B200663904 /* Sources */,
 				977AC1D52D0074B200663904 /* Frameworks */,
 				977AC1D62D0074B200663904 /* Resources */,
@@ -105,6 +106,7 @@
 				en,
 				Base,
 				ru,
+				ja,
 			);
 			mainGroup = 977AC1CF2D0074B200663904;
 			minimizedProjectReferenceProxies = 1;
@@ -127,6 +129,31 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		970EC3642E23A42800FEED15 /* Generate String Localization File */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(PROJECT_DIR)/Tracker/Resources/en.lproj/Localizable.strings",
+				"$(PROJECT_DIR)/Tracker/Resources/en.lproj/Localizable.stringsdict",
+			);
+			name = "Generate String Localization File";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${PROJECT_DIR}/Tracker/Resources/Generated/L10n.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n\"${PROJECT_DIR}/swiftgen/bin/swiftgen\" config run --config \"${PROJECT_DIR}/swiftgen/swiftgen.yml\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		977AC1D42D0074B200663904 /* Sources */ = {
@@ -245,7 +272,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -309,7 +336,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

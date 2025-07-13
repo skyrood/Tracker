@@ -42,7 +42,7 @@ final class CreateTrackerViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
-        label.text = "Новая привычка"
+        label.text = L10n.newTracker
         label.font = .systemFont(ofSize: 16, weight: .medium)
         label.textColor = UIColor(named: "Black")
         return label
@@ -53,7 +53,7 @@ final class CreateTrackerViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         
-        label.text = "Ограничение \(Constants.trackerNameMaxLength) символов"
+        label.text = L10n.trackerNameLimit(Constants.trackerNameMaxLength)
         label.font = .systemFont(ofSize: 17)
         label.textColor = UIColor(named: "Red")
         return label
@@ -126,8 +126,8 @@ final class CreateTrackerViewController: UIViewController {
         
         let font = UIFont.systemFont(ofSize: 16, weight: .medium)
         let attributes: [NSAttributedString.Key: Any] = [.font: font]
-        let cancelButtonTitle = NSAttributedString(string: "Отменить", attributes: attributes)
-        let createButtonTitle = NSAttributedString(string: "Создать", attributes: attributes)
+        let cancelButtonTitle = NSAttributedString(string: L10n.cancel, attributes: attributes)
+        let createButtonTitle = NSAttributedString(string: L10n.create, attributes: attributes)
         
         cancelButton.setAttributedTitle(cancelButtonTitle, for: .normal)
         cancelButton.setTitleColor(.red, for: .normal)
@@ -173,13 +173,13 @@ final class CreateTrackerViewController: UIViewController {
     private func selectedReadableWeekdays() -> String? {
         guard let selectedWeekdays else { return nil }
         let days = [
-            (Weekday.monday, "Пн"),
-            (Weekday.tuesday, "Вт"),
-            (Weekday.wednesday, "Ср"),
-            (Weekday.thursday, "Чт"),
-            (Weekday.friday, "Пт"),
-            (Weekday.saturday, "Сб"),
-            (Weekday.sunday, "Вс")
+            (Weekday.monday, L10n.monShort),
+            (Weekday.tuesday, L10n.tueShort),
+            (Weekday.wednesday, L10n.wedShort),
+            (Weekday.thursday, L10n.thuShort),
+            (Weekday.friday, L10n.friShort),
+            (Weekday.saturday, L10n.satShort),
+            (Weekday.sunday, L10n.sunShort)
         ]
         
         let selectedDays = days
@@ -187,7 +187,7 @@ final class CreateTrackerViewController: UIViewController {
             .map { $0.1 }
         
         if selectedDays.count == days.count {
-            return "Каждый день"
+            return L10n.everyDay
         }
         
         return selectedDays.joined(separator: ", ")
@@ -329,7 +329,7 @@ extension CreateTrackerViewController: UITableViewDelegate {
             emojiLabel.textColor = UIColor(named: "Black")
             emojiLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
             emojiLabel.translatesAutoresizingMaskIntoConstraints = false
-            emojiLabel.text = "Цвет"
+            emojiLabel.text = L10n.color
             
             headerView.addSubview(emojiLabel)
             
@@ -477,7 +477,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
         let habitNameField = UITextField()
         habitNameField.translatesAutoresizingMaskIntoConstraints = false
         habitNameField.clipsToBounds = true
-        habitNameField.placeholder = "Введите название трекера"
+        habitNameField.placeholder = L10n.enterTrackerName
         habitNameField.font = .systemFont(ofSize: 17)
         habitNameField.textColor = UIColor(named: "Black")
         habitNameField.backgroundColor = .clear
@@ -581,7 +581,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
         cell.textLabel?.textColor = UIColor(named: "Black")
         
         if indexPath.row == 0 {
-            cell.textLabel?.text = "Категория"
+            cell.textLabel?.text = L10n.category
             
             if category != nil {
                 cell.detailTextLabel?.text = category?.name
@@ -591,7 +591,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
         }
         
         if indexPath.row == 1 {
-            cell.textLabel?.text = "Расписание"
+            cell.textLabel?.text = L10n.scheduleTitle
             
             if selectedWeekdays != nil {
                 cell.detailTextLabel?.text = selectedReadableWeekdays()

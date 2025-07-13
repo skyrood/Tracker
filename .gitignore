@@ -99,3 +99,15 @@ iOSInjectionProject/
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 # End of https://www.toptal.com/developers/gitignore/api/swift,xcode
+
+# Пользовательские данные Xcode (локальные настройки, breakpoints и т.д.)
+*.xcuserdatad/xcschemes/xschememanagement.plist
+
+# Локальные (не shared) схемы — на усмотрение
+*.xcuserdatad/xcschemes/*.xcscheme
+
+# Локальные workspace settings
+*.xcworkspace/xcuserdata/
+
+# Персональные настройки проекта
+*.xcodeproj/xcuserdata/

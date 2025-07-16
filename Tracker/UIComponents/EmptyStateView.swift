@@ -22,6 +22,11 @@ final class EmptyStateView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func update(image: UIImage?, message: String) {
+        imageView.image = image
+        messageLabel.text = message
+    }
+    
     private func setupView(image: UIImage?, message: String) {
         translatesAutoresizingMaskIntoConstraints = false
         

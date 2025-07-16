@@ -14,27 +14,36 @@ final class TrackersViewController: UIViewController {
     private let trackerRecordStore = TrackerRecordStore()
     
     private var selectedDate: Date = Date()
-        
+    private var searchText: String = ""
+    
     private var categories: [TrackerCategory] = []
         
     private var filteredCategories: [TrackerCategory] {
         let weekdayBit = getWeekday(from: selectedDate)
         
         return categories.compactMap { category in
-            let filteredTrackers = category.trackers.filter { $0.schedule?.contains(weekdayBit) ?? true }
+            let filteredByDayTrackers = category.trackers.filter { $0.schedule?.contains(weekdayBit) ?? true }
             
-            return filteredTrackers.isEmpty ? nil : TrackerCategory(name: category.name, trackers: filteredTrackers)
+            let filteredByTextTrackers: [Tracker]
+            
+            if searchText.isEmpty {
+                filteredByTextTrackers = filteredByDayTrackers
+            } else {
+                let lowered = searchText.lowercased()
+                filteredByTextTrackers = filteredByDayTrackers.filter {
+                    $0.name.lowercased().contains(lowered) ||
+                    category.name.lowercased().contains(lowered)
+                }
+            }
+            
+            return filteredByTextTrackers.isEmpty ? nil : TrackerCategory(name: category.name, trackers: filteredByTextTrackers)
         }
     }
     
     private var completedTrackers: Set<TrackerRecord> = []
 
     private var emptyStateView: EmptyStateView?
-    
-    private var emptyStateImage: UIImage? = UIImage(named: "TrackersEmpty")
-    private lazy var emptyStateMessage: String = categories.isEmpty ? L10n.whatToTrack :
-    L10n.categoryTipMultiline
-    
+
     private lazy var trackersCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -102,12 +111,30 @@ final class TrackersViewController: UIViewController {
     private func updateUI() {
         let hasTrackers = !filteredCategories.isEmpty
         
-        emptyStateView?.isHidden = hasTrackers
         trackersCollectionView.isHidden = !hasTrackers
+        
+        if hasTrackers {
+            emptyStateView?.isHidden = true
+            return
+        }
+        
+        let image: UIImage?
+        let message: String
+        
+        if searchText.isEmpty {
+            image = UIImage(named: "TrackersEmpty")
+            message = categories.isEmpty ? L10n.whatToTrack : L10n.categoryTipMultiline
+        } else {
+            image = UIImage(named: "NoSearchResults")
+            message = L10n.nothingFound
+        }
+        
+        emptyStateView?.update(image: image, message: message)
+        emptyStateView?.isHidden = false
     }
     
     private func setupEmptyStateView() {
-        emptyStateView = EmptyStateView(image: emptyStateImage, message: emptyStateMessage)
+        emptyStateView = EmptyStateView(image: UIImage(named: "TrackersEmpty"), message: categories.isEmpty ? L10n.whatToTrack : L10n.categoryTipMultiline)
         guard let emptyStateView = emptyStateView else { return }
         
         view.addSubview(emptyStateView)
@@ -182,11 +209,6 @@ final class TrackersViewController: UIViewController {
     }
 }
 
-// MARK: - extension UISearchBarDelegate
-extension TrackersViewController: UISearchBarDelegate {
-    
-}
-
 // MARK: - extension UICollectionViewDataSource
 extension TrackersViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -258,7 +280,11 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - extension UISearchResultsUpdating
 extension TrackersViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
+        guard let query = searchController.searchBar.text else { return }
+        searchText = query
         
+        trackersCollectionView.reloadData()
+        updateUI()
     }
 }
 

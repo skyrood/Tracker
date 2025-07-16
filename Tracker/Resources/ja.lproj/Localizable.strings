@@ -61,6 +61,7 @@
 "what_to_track" = "何を追跡しますか？";
 "category_tip_multiline" = "習慣やイベントを意味でまとめることができます";
 "search" = "検索";
+"nothing_found" = "見つかりませんでした";
 
 /* NewTrackerViewController */
 "tracker_creation" = "トラッカーの作成";

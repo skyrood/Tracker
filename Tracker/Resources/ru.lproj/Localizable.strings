@@ -61,6 +61,7 @@
 "what_to_track" = "Что будем отслеживать?";
 "category_tip_multiline" = "Привычки и события можно объединить по смыслу";
 "search" = "Поиск";
+"nothing_found" = "Ничего не найдено";
 
 /* NewTrackerViewController */
 "tracker_creation" = "Создание трекера";

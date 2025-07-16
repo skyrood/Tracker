@@ -9,9 +9,11 @@ import UIKit
 
 final class EmptyStateView: UIView {
     
+    // MARK: - Private Properties
     private let imageView: UIImageView = UIImageView()
     private let messageLabel: UILabel = UILabel()
     
+    // MARK: - Initializers
     init(image: UIImage?, message: String) {
         super.init(frame: .zero)
         setupView(image: image, message: message)
@@ -22,11 +24,13 @@ final class EmptyStateView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Public Methods
     func update(image: UIImage?, message: String) {
         imageView.image = image
         messageLabel.text = message
     }
     
+    // MARK: - Private Methods
     private func setupView(image: UIImage?, message: String) {
         translatesAutoresizingMaskIntoConstraints = false
         

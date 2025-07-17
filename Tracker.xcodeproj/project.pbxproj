@@ -211,6 +211,10 @@
 			inputPaths = (
 				"$(PROJECT_DIR)/Tracker/Resources/en.lproj/Localizable.strings",
 				"$(PROJECT_DIR)/Tracker/Resources/en.lproj/Localizable.stringsdict",
+				"$(PROJECT_DIR)/Tracker/Resources/ru.lproj/Localizable.strings",
+				"$(PROJECT_DIR)/Tracker/Resources/ja.lproj/Localizable.strings",
+				"$(PROJECT_DIR)/Tracker/Resources/ru.lproj/Localizable.stringsdict",
+				"$(PROJECT_DIR)/Tracker/Resources/ja.lproj/Localizable.stringsdict",
 			);
 			name = "Generate String Localization File";
 			outputFileListPaths = (

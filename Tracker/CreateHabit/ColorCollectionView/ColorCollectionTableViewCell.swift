@@ -30,26 +30,9 @@ final class ColorCollectionTableViewCell: UITableViewCell {
         return collectionView
     }()
     
-    private var colors: [String] = [
-        "Selection 1",
-        "Selection 2",
-        "Selection 3",
-        "Selection 4",
-        "Selection 5",
-        "Selection 6",
-        "Selection 7",
-        "Selection 8",
-        "Selection 9",
-        "Selection 10",
-        "Selection 11",
-        "Selection 12",
-        "Selection 13",
-        "Selection 14",
-        "Selection 15",
-        "Selection 16",
-        "Selection 17",
-        "Selection 18",
-    ]
+    private var colorNames: [String] {
+        return Array(Colors.selection.keys).sorted()
+    }
 
     // MARK: - Overrides Methods
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -85,8 +68,8 @@ extension ColorCollectionTableViewCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? ColorCell {
             cell.isSelected = true
-            selectedColor = colors[indexPath.row]
-            onColorSelected?(colors[indexPath.row])
+            selectedColor = colorNames[indexPath.row]
+            onColorSelected?(colorNames[indexPath.row])
         }
     }
     
@@ -101,15 +84,15 @@ extension ColorCollectionTableViewCell: UICollectionViewDelegate {
 // MARK: - extension UICollectionViewDataSource
 extension ColorCollectionTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        colors.count
+        colorNames.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = colorCollectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as? ColorCell
-        
         guard let cell else { return UICollectionViewCell() }
         
-        cell.colorView.backgroundColor = Colors.selection[colors[indexPath.row]]
+        let key = colorNames[indexPath.row]
+        cell.colorView.backgroundColor = Colors.selection[key]
         
         return cell
     }

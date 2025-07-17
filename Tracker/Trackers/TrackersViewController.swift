@@ -78,6 +78,19 @@ final class TrackersViewController: UIViewController {
         updateUI()
     }
     
+    // MARK: - Public Methods (testing)
+    func setTestData() {
+        let weekdays: Weekday = [.monday, .tuesday, .wednesday, .thursday, .friday, .saturday, .sunday]
+        selectedDate = Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 13))!
+        categories = [
+            TrackerCategory(name: "Work", trackers: [
+                Tracker(id: UUID(), name: "Do Job", emoji: "🍻", color: .selection13, schedule: weekdays)
+            ]),
+        ]
+        
+        trackersCollectionView.reloadData()
+    }
+    
     // MARK: - Private Methods
     private func setUpNavigationBar() {
         title = L10n.trackersTitle

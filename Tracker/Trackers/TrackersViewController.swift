@@ -61,7 +61,7 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = Colors.white
         
         categoryStore.delegate = self
         trackerRecordStore.delegate = self
@@ -100,7 +100,7 @@ final class TrackersViewController: UIViewController {
         let plusImage = UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold))
 
         addButton.setImage(plusImage, for: .normal)
-        addButton.tintColor = .black
+        addButton.tintColor = Colors.black
         addButton.addTarget(self, action: #selector(addTrackerButtonTapped), for: .touchUpInside)
 
         let addTrackerButton = UIBarButtonItem(customView: addButton)

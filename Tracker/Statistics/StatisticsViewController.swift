@@ -18,7 +18,7 @@ final class StatisticsViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
-        label.textColor = UIColor(named: "Black")
+        label.textColor = Colors.black
         label.text = L10n.statisticsTitle
         
         return label
@@ -33,7 +33,7 @@ final class StatisticsViewController: UIViewController {
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = Colors.white
         
         setupTitleLabel()
         setupEmptyStateView()

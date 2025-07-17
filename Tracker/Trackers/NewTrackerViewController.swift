@@ -20,7 +20,7 @@ final class NewTrackerViewController: UIViewController {
         label.clipsToBounds = true
         label.text = L10n.trackerCreation
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = UIColor(named: "Black")
+        label.textColor = Colors.black
         return label
     }()
     
@@ -40,7 +40,7 @@ final class NewTrackerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = Colors.white
         navigationItem.hidesBackButton = true
 
         view.addSubview(titleLabel)
@@ -61,8 +61,8 @@ final class NewTrackerViewController: UIViewController {
         button.clipsToBounds = true
         button.setTitle(title, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = UIColor(named: "Black")
-        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = Colors.black
+        button.setTitleColor(Colors.white, for: .normal)
         button.layer.cornerRadius = 16
         return button
     }

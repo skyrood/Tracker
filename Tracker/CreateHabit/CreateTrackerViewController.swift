@@ -33,7 +33,7 @@ final class CreateTrackerViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.clipsToBounds = true
         tableView.showsVerticalScrollIndicator = false
-        tableView.backgroundColor = UIColor(named: "White")
+        tableView.backgroundColor = Colors.white
         tableView.separatorStyle = .none
         return tableView
     }()
@@ -44,7 +44,7 @@ final class CreateTrackerViewController: UIViewController {
         label.clipsToBounds = true
         label.text = L10n.newTracker
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = UIColor(named: "Black")
+        label.textColor = Colors.black
         return label
     }()
     
@@ -55,7 +55,7 @@ final class CreateTrackerViewController: UIViewController {
         
         label.text = L10n.trackerNameLimit(Constants.trackerNameMaxLength)
         label.font = .systemFont(ofSize: 17)
-        label.textColor = UIColor(named: "Red")
+        label.textColor = Colors.red
         return label
     }()
     
@@ -77,7 +77,7 @@ final class CreateTrackerViewController: UIViewController {
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = Colors.white
         navigationItem.hidesBackButton = true
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -139,8 +139,8 @@ final class CreateTrackerViewController: UIViewController {
             self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         
         createButton.setAttributedTitle(createButtonTitle, for: .normal)
-        createButton.setTitleColor(.white, for: .normal)
-        createButton.backgroundColor = .black
+        createButton.setTitleColor(Colors.white, for: .normal)
+        createButton.backgroundColor = Colors.black
         createButton.layer.cornerRadius = 16
         createButton.translatesAutoresizingMaskIntoConstraints = false
         createButton.addTarget(
@@ -199,12 +199,12 @@ final class CreateTrackerViewController: UIViewController {
               emoji != nil,
               color != nil else {
             createButton.isEnabled = false
-            createButton.alpha = 0.3
+            createButton.backgroundColor = Colors.gray
             return
         }
         
         createButton.isEnabled = true
-        createButton.alpha = 1.0
+        createButton.backgroundColor = Colors.black
     }
     
     @objc func cancelButtonTapped() {
@@ -309,7 +309,7 @@ extension CreateTrackerViewController: UITableViewDelegate {
         
         if section == 2 {
             let emojiLabel = UILabel()
-            emojiLabel.textColor = UIColor(named: "Black")
+            emojiLabel.textColor = Colors.black
             emojiLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
             emojiLabel.translatesAutoresizingMaskIntoConstraints = false
             emojiLabel.text = "Emoji"
@@ -326,7 +326,7 @@ extension CreateTrackerViewController: UITableViewDelegate {
         
         if section == 3 {
             let emojiLabel = UILabel()
-            emojiLabel.textColor = UIColor(named: "Black")
+            emojiLabel.textColor = Colors.black
             emojiLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
             emojiLabel.translatesAutoresizingMaskIntoConstraints = false
             emojiLabel.text = L10n.color
@@ -458,7 +458,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
         let backgroundView = UIView()
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         backgroundView.clipsToBounds = true
-        backgroundView.backgroundColor = UIColor(named: "InputBackground")
+        backgroundView.backgroundColor = Colors.inputBackground
         backgroundView.layer.cornerRadius = 16
         
         cell.contentView.addSubview(backgroundView)
@@ -479,7 +479,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
         habitNameField.clipsToBounds = true
         habitNameField.placeholder = L10n.enterTrackerName
         habitNameField.font = .systemFont(ofSize: 17)
-        habitNameField.textColor = UIColor(named: "Black")
+        habitNameField.textColor = Colors.black
         habitNameField.backgroundColor = .clear
         habitNameField.layer.borderWidth = 0
         habitNameField.delegate = self
@@ -535,7 +535,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
             let backgroundView = UIView()
             backgroundView.translatesAutoresizingMaskIntoConstraints = false
             backgroundView.clipsToBounds = true
-            backgroundView.backgroundColor = UIColor(named: "InputBackground")
+            backgroundView.backgroundColor = Colors.inputBackground
             backgroundView.layer.cornerRadius = 16
             
             cell.contentView.addSubview(backgroundView)
@@ -557,7 +557,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
                 let separatorLineView = UIView()
                 separatorLineView.translatesAutoresizingMaskIntoConstraints = false
                 separatorLineView.clipsToBounds = true
-                separatorLineView.backgroundColor = UIColor(named: "Gray")
+                separatorLineView.backgroundColor = Colors.gray
                 
                 cell.contentView.addSubview(separatorLineView)
                 
@@ -578,7 +578,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
         }
         
         cell.textLabel?.font = .systemFont(ofSize: 17)
-        cell.textLabel?.textColor = UIColor(named: "Black")
+        cell.textLabel?.textColor = Colors.black
         
         if indexPath.row == 0 {
             cell.textLabel?.text = L10n.category

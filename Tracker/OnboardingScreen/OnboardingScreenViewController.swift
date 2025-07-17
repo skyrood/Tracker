@@ -34,10 +34,10 @@ final class OnboardingScreenViewController: UIPageViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.clipsToBounds = true
         button.layer.cornerRadius = 16
-        button.backgroundColor = UIColor(named: "Black")
+        button.backgroundColor = Colors.black
         button.setTitle(L10n.onboardingTitle, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(UIColor(named: "White"), for: .normal)
+        button.setTitleColor(Colors.white, for: .normal)
         button.addTarget(self, action: #selector(onboardButtonTapped), for: .touchUpInside)
         
         return button

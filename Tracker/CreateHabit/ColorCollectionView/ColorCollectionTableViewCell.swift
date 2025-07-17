@@ -109,7 +109,7 @@ extension ColorCollectionTableViewCell: UICollectionViewDataSource {
         
         guard let cell else { return UICollectionViewCell() }
         
-        cell.colorView.backgroundColor = UIColor(named: colors[indexPath.row])
+        cell.colorView.backgroundColor = Colors.selection[colors[indexPath.row]]
         
         return cell
     }

@@ -13,7 +13,7 @@ final class WeekdayCell: UITableViewCell {
     let toggleSwitch: UISwitch = {
         let toggle = UISwitch()
         toggle.translatesAutoresizingMaskIntoConstraints = false
-        toggle.onTintColor = UIColor(named: "Blue")
+        toggle.onTintColor = Colors.blue
         return toggle
     }()
     
@@ -21,7 +21,7 @@ final class WeekdayCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 17, weight: .regular)
-        label.textColor = .black
+        label.textColor = Colors.black
         return label
     }()
 

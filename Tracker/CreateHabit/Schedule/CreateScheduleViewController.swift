@@ -26,7 +26,7 @@ final class CreatecreateScheduleViewController: UIViewController {
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = Colors.white
         
         setupTitleLabel()
         setupCreateScheduleButton()
@@ -38,7 +38,7 @@ final class CreatecreateScheduleViewController: UIViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.clipsToBounds = true
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        titleLabel.textColor = UIColor(named: "Black")
+        titleLabel.textColor = Colors.black
         titleLabel.text = L10n.scheduleTitle
         
         view.addSubview(titleLabel)
@@ -52,9 +52,9 @@ final class CreatecreateScheduleViewController: UIViewController {
     private func setupCreateScheduleButton() {
         createScheduleButton.translatesAutoresizingMaskIntoConstraints = false
         createScheduleButton.setTitle(L10n.done, for: .normal)
-        createScheduleButton.setTitleColor(.white, for: .normal)
+        createScheduleButton.setTitleColor(Colors.white, for: .normal)
         createScheduleButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        createScheduleButton.backgroundColor = .black
+        createScheduleButton.backgroundColor = Colors.black
         createScheduleButton.layer.cornerRadius = 16
         createScheduleButton.addTarget(self, action: #selector(createScheduleButtonTapped), for: .touchUpInside)
         
@@ -71,7 +71,7 @@ final class CreatecreateScheduleViewController: UIViewController {
     private func setupScheduleTableView() {
         scheduleTableView.translatesAutoresizingMaskIntoConstraints = false
         scheduleTableView.clipsToBounds = true
-        scheduleTableView.backgroundColor = UIColor(named: "InputBackground")
+        scheduleTableView.backgroundColor = Colors.inputBackground
         scheduleTableView.layer.cornerRadius = 16
         scheduleTableView.separatorStyle = .none
         scheduleTableView.delegate = self
@@ -160,7 +160,7 @@ extension CreatecreateScheduleViewController: UITableViewDataSource{
             let separatorLineView = UIView()
             separatorLineView.translatesAutoresizingMaskIntoConstraints = false
             separatorLineView.clipsToBounds = true
-            separatorLineView.backgroundColor = UIColor(named: "Gray")
+            separatorLineView.backgroundColor = Colors.gray
 
             cell.contentView.addSubview(separatorLineView)
             

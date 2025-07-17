@@ -38,7 +38,7 @@ final class EmojiCell: UICollectionViewCell {
     
     override var isSelected: Bool {
         didSet {
-            contentView.layer.backgroundColor = isSelected ? UIColor(named: "LightGray")?.cgColor : UIColor.clear.cgColor
+            contentView.layer.backgroundColor = isSelected ? Colors.lightGray.cgColor : UIColor.clear.cgColor
         }
     }
 }

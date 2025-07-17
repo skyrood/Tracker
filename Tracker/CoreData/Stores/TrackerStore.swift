@@ -98,7 +98,7 @@ final class TrackerStore: NSObject {
             id: id,
             name: name,
             emoji: emoji,
-            color: UIColor(named: colorName) ?? .gray,
+            color: Colors.selection[colorName] ?? .gray,
             schedule: schedule
         )
     }

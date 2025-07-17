@@ -40,7 +40,7 @@ final class CategoryListViewController: UIViewController {
                 
         viewModel = CategoryListViewModel()
 
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = Colors.white
         navigationItem.hidesBackButton = true
         
         setupCategoryListLabel()
@@ -84,7 +84,7 @@ final class CategoryListViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = UIColor(named: "Black")
+        label.textColor = Colors.black
         label.text = L10n.category
         
         view.addSubview(label)
@@ -110,7 +110,7 @@ final class CategoryListViewController: UIViewController {
     private func setupCategoryListView() {
         categoryListTableView.translatesAutoresizingMaskIntoConstraints = false
         categoryListTableView.clipsToBounds = true
-        categoryListTableView.backgroundColor = UIColor(named: "InputBackground")
+        categoryListTableView.backgroundColor = Colors.inputBackground
         categoryListTableView.layer.cornerRadius = 16
         categoryListTableView.separatorStyle = .none
         categoryListTableView.delegate = self
@@ -136,8 +136,8 @@ final class CategoryListViewController: UIViewController {
         button.clipsToBounds = true
         button.setTitle(buttonText, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = UIColor(named: "Black")
-        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = Colors.black
+        button.setTitleColor(Colors.white, for: .normal)
         button.layer.cornerRadius = 16
         button.addTarget(self, action: action, for: .touchUpInside)
         
@@ -241,7 +241,7 @@ extension CategoryListViewController: UITableViewDataSource {
             let separatorLineView = UIView()
             separatorLineView.translatesAutoresizingMaskIntoConstraints = false
             separatorLineView.clipsToBounds = true
-            separatorLineView.backgroundColor = UIColor(named: "Gray")
+            separatorLineView.backgroundColor = Colors.gray
             separatorLineView.tag = 999
             
             cell.contentView.addSubview(separatorLineView)

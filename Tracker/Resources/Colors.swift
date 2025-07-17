@@ -39,4 +39,13 @@ struct Colors {
         "Selection 17": UIColor(named: "Selection 17") ?? .purple,
         "Selection 18": UIColor(named: "Selection 18") ?? .green
     ]
+    
+    static let sortedKeys = Colors.selection.keys.sorted {
+        extractNumber(from: $0) < extractNumber(from: $1)
+    }
+    
+    static private func extractNumber(from key: String) -> Int {
+        let number = key.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+        return Int(number) ?? 0
+    }
 }

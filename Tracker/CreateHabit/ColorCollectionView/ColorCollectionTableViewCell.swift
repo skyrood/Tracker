@@ -31,7 +31,7 @@ final class ColorCollectionTableViewCell: UITableViewCell {
     }()
     
     private var colorNames: [String] {
-        return Array(Colors.selection.keys).sorted()
+        return Colors.sortedKeys
     }
 
     // MARK: - Overrides Methods

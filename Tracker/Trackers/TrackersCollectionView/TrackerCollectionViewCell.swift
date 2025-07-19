@@ -11,8 +11,8 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
 
     // MARK: - Public Properties
     var onCompleteButtonTapped: (() -> Void)?
-    
     var onEditButtonTapped: ((Tracker) -> Void)?
+    var onDeleteButtonTapped: ((Tracker) -> Void)?
     
     let daysCountLabel: UILabel = {
         let label = UILabel()
@@ -209,14 +209,21 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
 extension TrackerCollectionViewCell: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {        
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
-            let editAction = UIAction(title: "Edit", image: nil) { [ weak self ] _ in
-                guard let tracker = self?.tracker else { return }
-                self?.onEditButtonTapped?(tracker)
+            let editAction = UIAction(title: L10n.editButton, image: nil) { [ weak self ] _ in
+                guard let self, let tracker = self.tracker else { return }
+                self.onEditButtonTapped?(tracker)
             }
             
-            let deleteAction = UIAction(title: "Delete", image: nil) { _ in
-                print("Удалить трекер: ")
+            let deleteAction = UIAction(title: "", image: nil) { [ weak self ] _ in
+                guard let self, let tracker = self.tracker else { return }
+                self.onDeleteButtonTapped?(tracker)
             }
+            
+            let deleteTitle = NSAttributedString(
+                string: L10n.deleteTrackerButton,
+                attributes: [.foregroundColor: UIColor.red]
+            )
+            deleteAction.setValue(deleteTitle, forKey: "attributedTitle")
             
             return UIMenu(title: "", children: [editAction, deleteAction])
         }

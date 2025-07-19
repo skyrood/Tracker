@@ -133,6 +133,11 @@ final class TrackerCategoryStore: NSObject {
         delegate?.store(self)
     }
     
+    func deleteTracker(with id: UUID) throws {
+        try trackerStore.deleteTracker(with: id)
+        delegate?.store(self)
+    }
+    
     func refreshStore() throws {
         try fetchedResultsController.performFetch()
         delegate?.store(self)

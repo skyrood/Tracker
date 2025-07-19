@@ -169,6 +169,36 @@ final class TrackersViewController: UIViewController {
         ])
     }
     
+    private func showDeleteConfirmationAlert(for tracker: Tracker) {
+        let alert = UIAlertController(title: nil, message: "", preferredStyle: .actionSheet)
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+
+        let title = NSAttributedString(
+            string: L10n.deleteTrackerConfirmation,
+            attributes: [
+                .font: UIFont.systemFont(ofSize: 13),
+                .foregroundColor: UIColor.label,
+                .paragraphStyle: paragraphStyle
+            ]
+        )
+        alert.setValue(title, forKey: "attributedTitle")
+        
+        alert.addAction(UIAlertAction(title: L10n.deleteTrackerButton, style: .destructive, handler: { [weak self] _ in
+            guard let self else { return }
+            do {
+                try categoryStore.deleteTracker(with: tracker.id)
+            } catch {
+                print("Error deleting tracker: \(error)")
+            }
+        }))
+                                      
+        alert.addAction(UIAlertAction(title: L10n.cancelButton, style: .cancel, handler: nil))
+        
+        present(alert, animated: true)
+    }
+    
     private func getWeekday(from date: Date) -> Weekday {
         let weekdayIndex = Calendar.current.component(.weekday, from: date)
         let weekdays: [Weekday] = [.sunday, .monday, .tuesday, .wednesday, .thursday, .friday, .saturday]
@@ -260,6 +290,10 @@ extension TrackersViewController: UICollectionViewDataSource {
             }
             
             self.present(editTrackerViewController, animated: true)
+        }
+        
+        cell.onDeleteButtonTapped = { [weak self] tracker in
+            self?.showDeleteConfirmationAlert(for: tracker)
         }
         
         return cell

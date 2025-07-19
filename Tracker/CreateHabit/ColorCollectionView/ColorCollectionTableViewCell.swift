@@ -50,7 +50,7 @@ final class ColorCollectionTableViewCell: UITableViewCell {
         self.selectedColor = selectedColor
         
         if let colorKey = selectedColor,
-           let index = Colors.selectionKeys.firstIndex(of: colorKey) {
+           let index = Colors.sortedKeys.firstIndex(of: colorKey) {
             let indexPath = IndexPath(item: index, section: 0)
             colorCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
             

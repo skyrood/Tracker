@@ -47,6 +47,7 @@
 "emoji" = "絵文字";
 "color" = "色";
 "enter_tracker_name" = "トラッカー名を入力してください";
+"save" = "保存する";
 
 /* TabBarViewController */
 "statistics_tab" = "統計";
@@ -62,6 +63,12 @@
 "category_tip_multiline" = "習慣やイベントを意味でまとめることができます";
 "search" = "検索";
 "nothing_found" = "見つかりませんでした";
+"delete_tracker_confirmation" = "トラッカーを削除してもよろしいですか？";
+"delete_tracker_button" = "削除する";
+"cancel_button" = "キャンセル";
+
+/* TrackerCollectionViewCell */
+"edit_button" = "Edit";
 
 /* NewTrackerViewController */
 "tracker_creation" = "トラッカーの作成";

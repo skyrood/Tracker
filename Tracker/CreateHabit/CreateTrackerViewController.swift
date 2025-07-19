@@ -138,7 +138,7 @@ final class CreateTrackerViewController: UIViewController {
         let font = UIFont.systemFont(ofSize: 16, weight: .medium)
         let attributes: [NSAttributedString.Key: Any] = [.font: font]
         let cancelButtonTitle = NSAttributedString(string: L10n.cancel, attributes: attributes)
-        let createButtonTitle = (trackerToEdit != nil) ? NSAttributedString(string: "Save") : NSAttributedString(string: L10n.create, attributes: attributes)
+        let createButtonTitle = (trackerToEdit != nil) ? NSAttributedString(string: L10n.save) : NSAttributedString(string: L10n.create, attributes: attributes)
         
         cancelButton.setAttributedTitle(cancelButtonTitle, for: .normal)
         cancelButton.setTitleColor(.red, for: .normal)

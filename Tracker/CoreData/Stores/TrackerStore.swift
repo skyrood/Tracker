@@ -111,6 +111,12 @@ final class TrackerStore: NSObject {
         CoreDataStack.shared.saveContext()
     }
     
+    func deleteTracker(with id: UUID) throws {
+        let trackerToDelete = try tracker(from: id)
+        context.delete(trackerToDelete)
+        CoreDataStack.shared.saveContext()
+    }
+    
     func tracker(from coreData: TrackerCoreData) throws -> Tracker {
         let schedule: Weekday? = coreData.schedule == -1 ? nil : Weekday(rawValue: Int(coreData.schedule))
         guard let name = coreData.name,

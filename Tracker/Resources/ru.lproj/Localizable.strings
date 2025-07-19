@@ -47,6 +47,7 @@
 "emoji" = "Emoji";
 "color" = "Цвет";
 "enter_tracker_name" = "Введите название трекера";
+"save" = "Сохранить";
 
 /* TabBarViewController */
 "statistics_tab" = "Статистика";
@@ -62,6 +63,12 @@
 "category_tip_multiline" = "Привычки и события можно объединить по смыслу";
 "search" = "Поиск";
 "nothing_found" = "Ничего не найдено";
+"delete_tracker_confirmation" = "Уверены, что хотите удалить трекер?";
+"delete_tracker_button" = "Удалить";
+"cancel_button" = "Отменить";
+
+/* TrackerCollectionViewCell */
+"edit_button" = "Редактировать";
 
 /* NewTrackerViewController */
 "tracker_creation" = "Создание трекера";

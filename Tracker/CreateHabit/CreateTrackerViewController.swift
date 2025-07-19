@@ -15,16 +15,17 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     // MARK: - Public Properties
-    var maxTrackerID: UInt = 0
+    var categoryStore: TrackerCategoryStore
     var trackerName: String?
     var showScheduleOption: Bool
     
-    var onHabitCreated: ((Tracker, TrackerCategory) -> Void)?
+    var onHabitCreated: (() -> Void)?
     
     // MARK: - Private Properties
-    private let trackerCategoryStore = TrackerCategoryStore()
-    private var category: TrackerCategory?
-    private var color: String?
+    private var trackerToEdit: Tracker?
+    
+    private var selectedCategory: TrackerCategory?
+    private var colorName: String?
     private var emoji: String?
     private var selectedWeekdays: Weekday?
     
@@ -65,8 +66,11 @@ final class CreateTrackerViewController: UIViewController {
     private var shouldShowWarningCell = false
     
     // MARK: - Initializers
-    init(showScheduleOption: Bool = true) {
+    init(categoryStore: TrackerCategoryStore, showScheduleOption: Bool = true, trackerToEdit: Tracker? = nil, category: TrackerCategory? = nil) {
+        self.categoryStore = categoryStore
         self.showScheduleOption = showScheduleOption
+        self.trackerToEdit = trackerToEdit
+        self.selectedCategory = category
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -79,6 +83,13 @@ final class CreateTrackerViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = Colors.white
         navigationItem.hidesBackButton = true
+        
+        if let tracker = trackerToEdit {
+            trackerName = tracker.name
+            emoji = tracker.emoji
+            colorName = tracker.colorName
+            selectedWeekdays = tracker.schedule
+        }
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
@@ -127,7 +138,7 @@ final class CreateTrackerViewController: UIViewController {
         let font = UIFont.systemFont(ofSize: 16, weight: .medium)
         let attributes: [NSAttributedString.Key: Any] = [.font: font]
         let cancelButtonTitle = NSAttributedString(string: L10n.cancel, attributes: attributes)
-        let createButtonTitle = NSAttributedString(string: L10n.create, attributes: attributes)
+        let createButtonTitle = (trackerToEdit != nil) ? NSAttributedString(string: "Save") : NSAttributedString(string: L10n.create, attributes: attributes)
         
         cancelButton.setAttributedTitle(cancelButtonTitle, for: .normal)
         cancelButton.setTitleColor(.red, for: .normal)
@@ -195,9 +206,9 @@ final class CreateTrackerViewController: UIViewController {
     
     private func updateCreateButtonState() {
         guard let trackerName = trackerName, !trackerName.isEmpty,
-              category != nil,
+              selectedCategory != nil,
               emoji != nil,
-              color != nil else {
+              colorName != nil else {
             createButton.isEnabled = false
             createButton.backgroundColor = Colors.gray
             return
@@ -212,17 +223,17 @@ final class CreateTrackerViewController: UIViewController {
     }
     
     @objc func createButtonTapped() {
-        guard let category = category,
+        guard let selectedCategory = selectedCategory,
               let emoji = emoji,
-              let colorName = color,
+              let colorName = colorName,
               let trackerName = trackerName else {
             print("Error: Missing required fields")
             return
         }
         
         do {
-            let newTracker = try trackerCategoryStore.addTracker(name: trackerName, emoji: emoji, color: colorName, schedule: selectedWeekdays, to: category)
-            onHabitCreated?(newTracker, category)
+            try categoryStore.addOrUpdateTracker(trackerID: trackerToEdit?.id, name: trackerName, emoji: emoji, color: colorName, schedule: selectedWeekdays, to: selectedCategory)
+            onHabitCreated?()
         } catch {
             print("Saving new tracker failed: \(error)")
         }
@@ -360,14 +371,14 @@ extension CreateTrackerViewController: UITableViewDelegate {
         if indexPath.section == 1 {
             if indexPath.row == 0 {
                 let categoryListViewController = CategoryListViewController()
-                categoryListViewController.selectedCategory = category
+                categoryListViewController.selectedCategory = selectedCategory
                 
-                if category != nil {
-                    categoryListViewController.selectedCategory = category
+                if selectedCategory != nil {
+                    categoryListViewController.selectedCategory = selectedCategory
                 }
                 
                 categoryListViewController.onCategorySelected = { [weak self] category in
-                    self?.category = category
+                    self?.selectedCategory = category
                     self?.updateCreateButtonState()
                     tableView.reloadData()
                 }
@@ -435,15 +446,19 @@ extension CreateTrackerViewController: UITableViewDataSource {
                     self?.updateCreateButtonState()
                     self?.tableView.reloadData()
                 }
+                
+                cell.configure(with: emoji)
                 return cell
             }
         } else if indexPath.section == 3 {
             if let cell = tableView.dequeueReusableCell(withIdentifier: "ColorCollectionTableViewCell", for: indexPath) as? ColorCollectionTableViewCell {
-                cell.onColorSelected = { [weak self] color in
-                    self?.color = color
+                cell.onColorSelected = { [weak self] colorName in
+                    self?.colorName = colorName
                     self?.updateCreateButtonState()
                     self?.tableView.reloadData()
                 }
+                
+                cell.configure(with: colorName)
                 return cell
             }
         }
@@ -583,8 +598,8 @@ extension CreateTrackerViewController: UITableViewDataSource {
         if indexPath.row == 0 {
             cell.textLabel?.text = L10n.category
             
-            if category != nil {
-                cell.detailTextLabel?.text = category?.name
+            if selectedCategory != nil {
+                cell.detailTextLabel?.text = selectedCategory?.name
                 cell.detailTextLabel?.font = .systemFont(ofSize: 17)
                 cell.detailTextLabel?.textColor = .gray
             }
@@ -608,10 +623,10 @@ extension CreateTrackerViewController: UITableViewDataSource {
         return cell
     }
     
-    private func colorCollectionCell() -> UITableViewCell {
-        let cell = UITableViewCell(
-            style: .default, reuseIdentifier: "colorCell")
-        
-        return cell
-    }
+//    private func colorCollectionCell() -> UITableViewCell {
+//        let cell = UITableViewCell(
+//            style: .default, reuseIdentifier: "colorCell")
+//        
+//        return cell
+//    }
 }

@@ -10,8 +10,9 @@ import UIKit
 final class NewTrackerViewController: UIViewController {
    
     // MARK: - Public Properties
+    var categoryStore: TrackerCategoryStore
   
-    var passHabitToTrackersList: ((Tracker, TrackerCategory) -> Void)?
+    var passHabitToTrackersList: (() -> Void)?
     
     // MARK: - Private Properties
     private lazy var titleLabel: UILabel = {
@@ -35,6 +36,16 @@ final class NewTrackerViewController: UIViewController {
         button.addTarget(self, action: #selector(eventButtonTappedWrapper), for: .touchUpInside)
         return button
     }()
+    
+    // MARK: - Initializers
+    init(categoryStore: TrackerCategoryStore) {
+        self.categoryStore = categoryStore
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
@@ -90,12 +101,13 @@ final class NewTrackerViewController: UIViewController {
     }
     
     @objc private func newTrackerButtonTapped(showScheduleOption: Bool) {
-        let createTrackerViewController = CreateTrackerViewController(showScheduleOption: showScheduleOption)
+        let createTrackerViewController = CreateTrackerViewController(categoryStore: categoryStore, showScheduleOption: showScheduleOption)
         
-        createTrackerViewController.onHabitCreated = { [weak self] newTracker, category in
-            self?.passHabitToTrackersList?(newTracker, category)
+        createTrackerViewController.onHabitCreated = { [weak self] in
+            self?.passHabitToTrackersList?()
             self?.dismiss(animated: true)
         }
+        
         createTrackerViewController.modalPresentationStyle = .pageSheet
         createTrackerViewController.view.layer.cornerRadius = 10
         present(createTrackerViewController, animated: true, completion: nil)

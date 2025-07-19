@@ -18,6 +18,12 @@ struct Colors {
     static let shadow = UIColor(named: "Shadow") ?? .shadow
     static let white = UIColor(named: "White") ?? .white
     
+    static let selectionKeys: [String] = [
+        "Selection 1", "Selection 2", "Selection 3", "Selection 4", "Selection 5", "Selection 6",
+        "Selection 7", "Selection 8", "Selection 9", "Selection 10", "Selection 11", "Selection 12",
+        "Selection 13", "Selection 14", "Selection 15", "Selection 16", "Selection 17", "Selection 18"
+    ]
+    
     // selection colors
     static let selection: [String: UIColor] = [
         "Selection 1": UIColor(named: "Selection 1") ?? .red,

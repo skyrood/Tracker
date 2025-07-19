@@ -36,6 +36,8 @@ final class TrackerStore: NSObject {
     private let context: NSManagedObjectContext
     private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>!
     
+    private let emptySchedule: Int = -1
+    
     // MARK: - Initializers
     convenience override init() {
         let context = CoreDataStack.shared.context
@@ -72,17 +74,41 @@ final class TrackerStore: NSObject {
          return fetchedResultsController.fetchedObjects ?? []
     }
     
-    func addTracker(name: String, emoji: String, color: String, schedule: Weekday?, category: TrackerCategoryCoreData) throws -> Tracker {
+    func addTracker(
+        name: String,
+        emoji: String,
+        color: String,
+        schedule: Weekday?,
+        category: TrackerCategoryCoreData
+    ) throws {
         let newTracker = TrackerCoreData(context: context)
+        
         newTracker.id = UUID()
         newTracker.name = name
         newTracker.emoji = emoji
         newTracker.colorName = color
-        newTracker.schedule = Int32(schedule?.rawValue ?? -1)
+        newTracker.schedule = Int32(schedule?.rawValue ?? emptySchedule)
         newTracker.category = category
         CoreDataStack.shared.saveContext()
-        
-        return try tracker(from: newTracker)
+    }
+    
+    func updateTracker(
+        id: UUID,
+        name: String,
+        emoji: String,
+        color: String,
+        schedule: Weekday?,
+        category: TrackerCategoryCoreData
+    ) throws {
+        let updatedTracker = try tracker(from: id)
+
+        updatedTracker.name = name
+        updatedTracker.emoji = emoji
+        updatedTracker.colorName = color
+        updatedTracker.schedule = Int32(schedule?.rawValue ?? emptySchedule)
+        updatedTracker.category = category
+
+        CoreDataStack.shared.saveContext()
     }
     
     func tracker(from coreData: TrackerCoreData) throws -> Tracker {
@@ -98,7 +124,7 @@ final class TrackerStore: NSObject {
             id: id,
             name: name,
             emoji: emoji,
-            color: Colors.selection[colorName] ?? .gray,
+            colorName: colorName,
             schedule: schedule
         )
     }

@@ -33,7 +33,7 @@ final class ColorCollectionTableViewCell: UITableViewCell {
     private var colorNames: [String] {
         return Colors.sortedKeys
     }
-
+    
     // MARK: - Overrides Methods
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: cellReuseIdentifier)
@@ -44,7 +44,24 @@ final class ColorCollectionTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
+    // MARK: - Public Methods
+    func configure(with selectedColor: String?) {
+        self.selectedColor = selectedColor
+        
+        if let colorKey = selectedColor,
+           let index = Colors.selectionKeys.firstIndex(of: colorKey) {
+            let indexPath = IndexPath(item: index, section: 0)
+            colorCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+            
+            DispatchQueue.main.async {
+                if let cell = self.colorCollectionView.cellForItem(at: indexPath) as? ColorCell {
+                    cell.isSelected = true
+                }
+            }
+        }
+    }
+    
     // MARK: - Private Methods
     private func setupColorCollectionView() {
         contentView.addSubview(colorCollectionView)
@@ -101,8 +118,8 @@ extension ColorCollectionTableViewCell: UICollectionViewDataSource {
 // MARK: - extension UICollectionViewDelegateFlowLayout
 extension ColorCollectionTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let emojiSize = (colorCollectionView.bounds.width - 25) / 6
-        return CGSize(width: emojiSize, height: emojiSize )
+        let colorCellSize = (colorCollectionView.bounds.width - 25) / 6
+        return CGSize(width: colorCellSize, height: colorCellSize )
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {

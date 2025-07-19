@@ -84,7 +84,7 @@ final class TrackersViewController: UIViewController {
         selectedDate = Calendar.current.date(from: DateComponents(year: 2025, month: 7, day: 13))!
         categories = [
             TrackerCategory(name: "Work", trackers: [
-                Tracker(id: UUID(), name: "Do Job", emoji: "🍻", color: .selection13, schedule: weekdays)
+                Tracker(id: UUID(), name: "Do Job", emoji: "🍻", colorName: "Selection 13", schedule: weekdays)
             ]),
         ]
         
@@ -180,10 +180,11 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func addTrackerButtonTapped() {
-        let newTrackerViewController = NewTrackerViewController()
-        newTrackerViewController.passHabitToTrackersList = { [weak self] newHabit, category in
+        let newTrackerViewController = NewTrackerViewController(categoryStore: categoryStore)
+        newTrackerViewController.passHabitToTrackersList = { [weak self] in
             self?.dismiss(animated: true)
         }
+        
         newTrackerViewController.modalPresentationStyle = .pageSheet
         newTrackerViewController.view.layer.cornerRadius = 10
         present(newTrackerViewController, animated: true, completion: nil)
@@ -238,14 +239,28 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         let tracker = filteredCategories[indexPath.section].trackers[indexPath.row]
         
-        cell.emojiLabel.text = filteredCategories[indexPath.section].trackers[indexPath.row].emoji
-        cell.title = filteredCategories[indexPath.section].trackers[indexPath.row].name
         let completedCount = completedDaysCount(for: tracker)
-        cell.daysCountLabel.text  = completedTrackersDaysCountString(for: completedCount)
+        cell.configure(for: tracker, with: completedCount, for: selectedDate)
         
         cell.configureButton(for: tracker, selectedDate: selectedDate, completedTrackers: completedTrackers)
 
         cell.completeTrackerButton.addTarget(self, action: #selector(toggleCompletion(_:)), for: .touchUpInside)
+        
+        cell.onEditButtonTapped = { [weak self] tracker in
+            guard let self else { return }
+            let showScheduleOption = tracker.schedule != nil
+            
+            let selectedCategory = self.filteredCategories[indexPath.section]
+                        
+            let editTrackerViewController = CreateTrackerViewController(categoryStore: categoryStore, showScheduleOption: showScheduleOption, trackerToEdit: tracker, category: selectedCategory)
+            
+            editTrackerViewController.onHabitCreated = { [ weak self ] in
+                self?.dismiss(animated: true)
+                self?.trackersCollectionView.reloadData()
+            }
+            
+            self.present(editTrackerViewController, animated: true)
+        }
         
         return cell
     }
@@ -268,6 +283,11 @@ extension TrackersViewController: UICollectionViewDataSource {
         
         return header
     }
+}
+
+// MARK: - extension UICollectionViewDelegate
+extension TrackersViewController: UICollectionViewDelegate {
+    
 }
 
 // MARK: - extension UICollectionViewDelegateFlowLayout

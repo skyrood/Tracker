@@ -47,6 +47,17 @@ final class EmojiCollectionTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: - Public Methods
+    func configure(with selectedEmoji: String?) {
+        self.selectedEmoji = selectedEmoji
+        
+        if let emoji = selectedEmoji,
+           let index = emojis.firstIndex(of: emoji) {
+            let indexPath = IndexPath(item: index, section: 0)
+            emojiCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+        }
+    }
+    
     // MARK: - Private Methods
     private func setupEmojiCollectionView() {
         contentView.addSubview(emojiCollectionView)

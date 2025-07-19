@@ -21,10 +21,10 @@ final class TrackerCategoryStore: NSObject {
     
     // MARK: - Public Properties
     weak var delegate: TrackerCategoryStoreDelegate?
-
+    
     var categories: [TrackerCategory] {
         guard let categoryObjects = fetchedResultsController.fetchedObjects else { return [] }
-                
+        
         let trackersCoreDataList: [TrackerCoreData]
         do {
             trackersCoreDataList = try trackerStore.allTrackers()
@@ -101,9 +101,36 @@ final class TrackerCategoryStore: NSObject {
         }
     }
     
-    func addTracker(name: String, emoji: String, color: String, schedule: Weekday?, to category: TrackerCategory) throws -> Tracker {
+    func addOrUpdateTracker(
+        trackerID: UUID? = nil,
+        name: String,
+        emoji: String,
+        color: String,
+        schedule: Weekday?,
+        to category: TrackerCategory
+    ) throws {
         let coreDataCategory = try coreDataCategory(for: category)
-        return try trackerStore.addTracker(name: name, emoji: emoji, color: color, schedule: schedule, category: coreDataCategory)
+        
+        if let id = trackerID, (try? trackerStore.tracker(from: id)) != nil {
+            try trackerStore.updateTracker(
+                id: id,
+                name: name,
+                emoji: emoji,
+                color: color,
+                schedule: schedule,
+                category: coreDataCategory
+            )
+        } else {
+            try trackerStore.addTracker(
+                name: name,
+                emoji: emoji,
+                color: color,
+                schedule: schedule,
+                category: coreDataCategory
+            )
+        }
+        
+        delegate?.store(self)
     }
     
     func refreshStore() throws {
@@ -116,7 +143,7 @@ final class TrackerCategoryStore: NSObject {
         guard let categoryName = trackerCategoryCoreData.name else {
             throw TrackerCategoryStoreError.decodingErrorInvalidCategoryName
         }
-
+        
         guard let trackersCoreData = trackerCategoryCoreData.trackers as? Set<TrackerCoreData> else {
             throw TrackerCategoryStoreError.decodingErrorInvalidTrackers
         }

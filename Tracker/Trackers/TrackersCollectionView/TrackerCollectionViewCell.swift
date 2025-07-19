@@ -8,11 +8,39 @@
 import UIKit
 
 final class TrackerCollectionViewCell: UICollectionViewCell {
+
+    // MARK: - Public Properties
     var onCompleteButtonTapped: (() -> Void)?
     
+    var onEditButtonTapped: ((Tracker) -> Void)?
+    
+    let daysCountLabel: UILabel = {
+        let label = UILabel()
+        
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = .systemFont(ofSize: 12, weight: .medium)
+        label.textColor = Colors.black
+        
+        return label
+    }()
+    
+    let completeTrackerButton: UIButton = {
+        let button = UIButton(type: .custom)
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.layer.cornerRadius = 17
+        button.contentHorizontalAlignment = .center
+        button.contentVerticalAlignment = .center
+        button.contentEdgeInsets = .zero
+        button.tintColor = .white
+        
+        return button
+    }()
+    
+    // MARK: - Private Properties
     private var tracker: Tracker?
     
-    let titleView: UIView = {
+    private let titleView: UIView = {
         let view = UIView()
         
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -21,7 +49,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    let emojiBackgroundView: UIView = {
+    private let emojiBackgroundView: UIView = {
         let view = UIView()
         
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -31,7 +59,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    let emojiLabel: UILabel = {
+    private let emojiLabel: UILabel = {
         let label = UILabel()
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -42,7 +70,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    var title: String? {
+    private var title: String? {
         get {
             titleLabel.text
         }
@@ -63,7 +91,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -75,50 +103,36 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    let daysCountLabel: UILabel = {
-        let label = UILabel()
-        
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 12, weight: .medium)
-        label.textColor = Colors.black
-        
-        return label
-    }()
-    
-    var completeTrackerButtonColor: UIColor? {
+    private var completeTrackerButtonColor: UIColor? {
         get { completeTrackerButton.backgroundColor }
         set {
             completeTrackerButton.backgroundColor = newValue
         }
     }
     
-    let completeTrackerButton: UIButton = {
-        let button = UIButton(type: .custom)
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 17
-        button.contentHorizontalAlignment = .center
-        button.contentVerticalAlignment = .center
-        button.contentEdgeInsets = .zero
-        button.tintColor = .white
-        
-        return button
-    }()
-
+    // MARK: - Initializers
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         contentView.addSubview(titleView)
-        contentView.addSubview(emojiBackgroundView)
-        contentView.addSubview(emojiLabel)
-        contentView.addSubview(titleLabel)
+        
+        titleView.addSubview(emojiBackgroundView)
+        titleView.addSubview(emojiLabel)
+        titleView.addSubview(titleLabel)
+        
         contentView.addSubview(completeTrackerButton)
         contentView.addSubview(daysCountLabel)
+        
+        completeTrackerButton.addTarget(self, action: #selector(didTapCompleteTrackerButton(_:)), for: .touchUpInside)
+        
+        let interaction = UIContextMenuInteraction(delegate: self)
+        titleView.addInteraction(interaction)
         
         NSLayoutConstraint.activate([
             titleView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
             titleView.heightAnchor.constraint(equalToConstant: 90),
             titleView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            titleView.topAnchor.constraint(equalTo: contentView.topAnchor),
             
             emojiBackgroundView.widthAnchor.constraint(equalToConstant: 24),
             emojiBackgroundView.heightAnchor.constraint(equalToConstant: 24),
@@ -148,6 +162,14 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    // MARK: - Public Methods
+    func configure(for tracker: Tracker, with daysCompleted: Int, for selectedDate: Date) {
+        self.tracker = tracker
+        title = tracker.name
+        emojiLabel.text = tracker.emoji
+        daysCountLabel.text = L10n.daysCompleted(daysCompleted)
+    }
     
     func configureButton(for tracker: Tracker, selectedDate: Date, completedTrackers: Set<TrackerRecord>) {
         let isCompleted = completedTrackers.contains{
@@ -155,9 +177,11 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
             Calendar.current.isDate($0.date, inSameDayAs: selectedDate)
         }
 
-        titleView.backgroundColor = tracker.color
+        let trackerColor = Colors.selection[tracker.colorName]
         
-        completeTrackerButtonColor = isCompleted ? tracker.color.withAlphaComponent(0.3) : tracker.color.withAlphaComponent(1.0)
+        titleView.backgroundColor = trackerColor
+        
+        completeTrackerButtonColor = isCompleted ? trackerColor?.withAlphaComponent(0.3) : trackerColor?.withAlphaComponent(1.0)
         let image = isCompleted ?
                     UIImage(systemName: "checkmark")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)) :
         UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 14, weight: .bold))
@@ -171,7 +195,30 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    // MARK: - Private Methods
+    private func completedDaysCount(for tracker: Tracker, completedTrackers: [TrackerRecord]) -> Int {
+        return completedTrackers.filter{ $0.trackerId == tracker.id }.count
+    }
+    
     @objc private func didTapCompleteTrackerButton(_ sender: UIButton) {
         onCompleteButtonTapped?()
+    }
+}
+
+// MARK: - extension UIContextMenuInteractionDelegate
+extension TrackerCollectionViewCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {        
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let editAction = UIAction(title: "Edit", image: nil) { [ weak self ] _ in
+                guard let tracker = self?.tracker else { return }
+                self?.onEditButtonTapped?(tracker)
+            }
+            
+            let deleteAction = UIAction(title: "Delete", image: nil) { _ in
+                print("Удалить трекер: ")
+            }
+            
+            return UIMenu(title: "", children: [editAction, deleteAction])
+        }
     }
 }

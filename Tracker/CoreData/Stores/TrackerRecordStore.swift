@@ -19,6 +19,8 @@ protocol TrackerRecordStoreDelegate: AnyObject {
 final class TrackerRecordStore: NSObject {
     
     // MARK: - Public Properties
+    static let shared = TrackerRecordStore()
+    
     weak var delegate: TrackerRecordStoreDelegate?
     
     var records: Set<TrackerRecord> {
@@ -36,37 +38,29 @@ final class TrackerRecordStore: NSObject {
     private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>!
     
     // MARK: - Initializers
-    convenience override init() {
-        let context = CoreDataStack.shared.context
-        
-        do {
-            let store = try TrackerStore(context: context)
-            try self.init(context: context, trackerStore: store)
-        } catch {
-            fatalError("Failed to initialize TrackerRecordStore: \(error)")
-        }
-    }
-    
-    init(context: NSManagedObjectContext, trackerStore: TrackerStore) throws {
-        self.context = context
-        self.trackerStore = trackerStore
-        
-        super.init()
+    private override init() {
+        self.context = CoreDataStack.shared.context
+        self.trackerStore = TrackerStore.shared
         
         let fetchRequest = TrackerRecordCoreData.fetchRequest()
-        fetchRequest.sortDescriptors = []
+        fetchRequest.sortDescriptors = [] // или нужные тебе сортировки
         
-        let fetchedResultsController = NSFetchedResultsController(
+        self.fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
         
-        fetchedResultsController.delegate = self
-        self.fetchedResultsController = fetchedResultsController
+        super.init()
         
-        try fetchedResultsController.performFetch()
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("Failed to fetch tracker records: \(error)")
+        }
     }
     
     // MARK: - Public Methods

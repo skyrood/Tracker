@@ -21,7 +21,7 @@ final class CreateNewCategoryViewController: UIViewController {
     var onCategoryCreated: ((TrackerCategory) -> Void)?
     
     // MARK: - Private Properties
-    private let categoryStore = TrackerCategoryStore()
+    private let categoryStore = TrackerCategoryStore.shared
     
     private var titleLabel: UILabel = UILabel()
     

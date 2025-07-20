@@ -10,8 +10,8 @@ import UIKit
 final class TrackersViewController: UIViewController {
     
     // MARK: - Private Properties
-    private let categoryStore = TrackerCategoryStore()
-    private let trackerRecordStore = TrackerRecordStore()
+    private let categoryStore = TrackerCategoryStore.shared
+    private let trackerRecordStore = TrackerRecordStore.shared
     
     private var selectedDate: Date = Date()
     private var selectedFilter: TrackerFilter = .all
@@ -445,6 +445,6 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
 // MARK: - extention TrackerRecordStoreDelegate
 extension TrackersViewController: TrackerRecordStoreDelegate {
     func store(_ store: TrackerRecordStore) {
-
+        NotificationCenter.default.post(name: .trackerRecordsDidChange, object: nil)
     }
 }

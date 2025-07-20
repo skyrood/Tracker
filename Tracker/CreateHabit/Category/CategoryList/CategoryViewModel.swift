@@ -10,7 +10,7 @@ import Foundation
 final class CategoryViewModel: Identifiable {
 
     // MARK: - Public Properties
-    let categoryStore = TrackerCategoryStore()
+    let categoryStore = TrackerCategoryStore.shared
     
     let category: TrackerCategory
     

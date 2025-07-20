@@ -20,6 +20,8 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
 final class TrackerCategoryStore: NSObject {
     
     // MARK: - Public Properties
+    static let shared = TrackerCategoryStore()
+    
     weak var delegate: TrackerCategoryStoreDelegate?
     
     var categories: [TrackerCategory] {
@@ -50,37 +52,29 @@ final class TrackerCategoryStore: NSObject {
     private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>!
     
     // MARK: - Initializers
-    convenience override init() {
-        let context = CoreDataStack.shared.context
-        
-        do {
-            let store = try TrackerStore(context: context)
-            try self.init(context: context, trackerStore: store)
-        } catch {
-            fatalError("Failed to initialize TrackerCategoryStore: \(error)")
-        }
-    }
-    
-    init(context: NSManagedObjectContext, trackerStore: TrackerStore) throws {
-        self.context = context
-        self.trackerStore = trackerStore
-        
-        super.init()
+    private override init() {
+        self.context = CoreDataStack.shared.context
+        self.trackerStore = TrackerStore.shared
         
         let fetchRequest = TrackerCategoryCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackerCategoryCoreData.name, ascending: true)]
         
-        let fetchedResultsController = NSFetchedResultsController(
+        self.fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
         
-        fetchedResultsController.delegate = self
-        self.fetchedResultsController = fetchedResultsController
+        super.init()
         
-        try fetchedResultsController.performFetch()
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("Failed to fetch tracker categories: \(error)")
+        }
     }
     
     // MARK: - Public Methods

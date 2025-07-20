@@ -20,15 +20,17 @@ protocol TrackerStoreDelegate: AnyObject {
 }
 
 final class TrackerStore: NSObject {
-
+    
     // MARK: - Public Properties
-    lazy var trackers: [Tracker] = {
+    static let shared = TrackerStore()
+    
+    var trackers: [Tracker] {
         guard let objects = self.fetchedResultsController.fetchedObjects,
               let trackers = try? objects.map({ try tracker(from: $0) })
         else { return [] }
         
         return trackers
-    }()
+    }
     
     weak var delegate: TrackerStoreDelegate?
     
@@ -39,39 +41,34 @@ final class TrackerStore: NSObject {
     private let emptySchedule: Int = -1
     
     // MARK: - Initializers
-    convenience override init() {
-        let context = CoreDataStack.shared.context
-        
-        do {
-            try self.init(context: context)
-        } catch {
-            fatalError("Failed to initialize TrackerStore: \(error)")
-        }
-    }
-    
-    init(context: NSManagedObjectContext) throws {
-        self.context = context
-        super.init()
+    private override init() {
+        context = CoreDataStack.shared.context
         
         let fetchRequest = TrackerCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackerCoreData.name, ascending: true)]
         
-        let fetchedResultsController = NSFetchedResultsController(
+        fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
         
-        fetchedResultsController.delegate = self
-        self.fetchedResultsController = fetchedResultsController
+        super.init()
         
-        try fetchedResultsController.performFetch()
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("Failed to fetch trackers: \(error)")
+        }
+        
     }
-
+    
     // MARK: - Public Methods
     func allTrackers() throws -> [TrackerCoreData] {
-         return fetchedResultsController.fetchedObjects ?? []
+        return fetchedResultsController.fetchedObjects ?? []
     }
     
     func addTracker(
@@ -101,13 +98,13 @@ final class TrackerStore: NSObject {
         category: TrackerCategoryCoreData
     ) throws {
         let updatedTracker = try tracker(from: id)
-
+        
         updatedTracker.name = name
         updatedTracker.emoji = emoji
         updatedTracker.colorName = color
         updatedTracker.schedule = Int32(schedule?.rawValue ?? emptySchedule)
         updatedTracker.category = category
-
+        
         CoreDataStack.shared.saveContext()
     }
     
@@ -159,7 +156,7 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
     }
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-    
+        
     }
 }
 

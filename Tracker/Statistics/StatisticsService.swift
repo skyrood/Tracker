@@ -29,15 +29,21 @@ final class StatisticsService {
     
     // MARK: - Initializers
     convenience init() {
-        let trackerRecordStore = TrackerRecordStore()
-        let trackerStore = TrackerStore()
+        let trackerRecordStore = TrackerRecordStore.shared
+        let trackerStore = TrackerStore.shared
         self.init(trackerRecordStore: trackerRecordStore, trackerStore: trackerStore)
     }
     
     init(trackerRecordStore: TrackerRecordStore, trackerStore: TrackerStore) {
         self.trackerRecordStore = trackerRecordStore
         self.trackerStore = trackerStore
-        trackerRecordStore.delegate = self
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleTrackerRecordsDidChange),
+            name: .trackerRecordsDidChange,
+            object: nil
+        )
     }
     
     // MARK: - Public Methods
@@ -146,6 +152,11 @@ final class StatisticsService {
         
         let weekdayBit = 1 << ((weekdayIndex + 5) % 7)
         return schedule.contains(Weekday(rawValue: weekdayBit))
+    }
+    
+    @objc private func handleTrackerRecordsDidChange() {
+        _ = calculate()
+        onDidUpdate?()
     }
 }
 

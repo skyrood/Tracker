@@ -25,7 +25,7 @@ final class CategoryListViewModel {
     
     // MARK: - Initializers
     convenience init() {
-        let trackerCategoryStore = TrackerCategoryStore()
+        let trackerCategoryStore = TrackerCategoryStore.shared
         self.init(trackerCategoryStore: trackerCategoryStore)
     }
     

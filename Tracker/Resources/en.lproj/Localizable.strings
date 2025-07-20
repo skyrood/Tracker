@@ -81,3 +81,9 @@
 "trackers_for_today" = "Trackers for Today";
 "completed_trackers" = "Completed";
 "uncompleted_trackers" = "Uncompleted";
+
+/* StatisticsViewController */
+"best_period" = "Best Streak";
+"perfect_days" = "Perfect Days";
+"trackers_completed" = "Trackers Completed";
+"completed_average" = "Average Completed Per Day";

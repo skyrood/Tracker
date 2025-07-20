@@ -81,3 +81,9 @@
 "trackers_for_today" = "Трекеры на сегодня";
 "completed_trackers" = "Завершенные";
 "uncompleted_trackers" = "Незавершенные";
+
+/* StatisticsViewController */
+"best_period" = "Лучший период";
+"perfect_days" = "Идеальные дни";
+"trackers_completed" = "Трекеров завершено";
+"completed_average" = "Среднее значение";

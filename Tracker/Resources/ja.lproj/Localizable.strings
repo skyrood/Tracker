@@ -81,3 +81,9 @@
 "trackers_for_today" = "今日のトラッカー";
 "completed_trackers" = "完了済み";
 "uncompleted_trackers" = "未完了";
+
+/* StatisticsViewController */
+"best_period" = "ベスト期間";
+"perfect_days" = "パーフェクトデイ";
+"trackers_completed" = "完了したトラッカー数";
+"completed_average" = "1日あたりの平均達成数";

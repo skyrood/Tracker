@@ -66,6 +66,7 @@
 "delete_tracker_confirmation" = "Are you sure you want to delete this tracker?";
 "delete_tracker_button" = "Delete";
 "cancel_button" = "Cancel";
+"filters" = "Filters";
 
 /* TrackerCollectionViewCell */
 "edit_button" = "Edit";
@@ -74,3 +75,9 @@
 "tracker_creation" = "Tracker creation";
 "habit" = "Habit";
 "irregular_event" = "Irregular event";
+
+/* FiltersViewController */
+"all_trackers" = "All Trackers";
+"trackers_for_today" = "Trackers for Today";
+"completed_trackers" = "Completed";
+"uncompleted_trackers" = "Uncompleted";

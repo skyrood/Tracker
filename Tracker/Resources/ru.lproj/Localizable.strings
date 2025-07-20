@@ -66,6 +66,7 @@
 "delete_tracker_confirmation" = "Уверены, что хотите удалить трекер?";
 "delete_tracker_button" = "Удалить";
 "cancel_button" = "Отменить";
+"filters" = "Фильтры";
 
 /* TrackerCollectionViewCell */
 "edit_button" = "Редактировать";
@@ -74,3 +75,9 @@
 "tracker_creation" = "Создание трекера";
 "habit" = "Привычка";
 "irregular_event" = "Нерегулярное событие";
+
+/* FiltersViewController */
+"all_trackers" = "Все трекеры";
+"trackers_for_today" = "Трекеры на сегодня";
+"completed_trackers" = "Завершенные";
+"uncompleted_trackers" = "Незавершенные";

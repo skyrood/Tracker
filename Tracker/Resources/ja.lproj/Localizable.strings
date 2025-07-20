@@ -66,6 +66,7 @@
 "delete_tracker_confirmation" = "トラッカーを削除してもよろしいですか？";
 "delete_tracker_button" = "削除する";
 "cancel_button" = "キャンセル";
+"filters" = "フィルター";
 
 /* TrackerCollectionViewCell */
 "edit_button" = "Edit";
@@ -74,3 +75,9 @@
 "tracker_creation" = "トラッカーの作成";
 "habit" = "習慣";
 "irregular_event" = "不定期イベント";
+
+/* FiltersViewController */
+"all_trackers" = "すべてのトラッカー";
+"trackers_for_today" = "今日のトラッカー";
+"completed_trackers" = "完了済み";
+"uncompleted_trackers" = "未完了";

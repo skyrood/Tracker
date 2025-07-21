@@ -159,9 +159,3 @@ final class StatisticsService {
         onDidUpdate?()
     }
 }
-
-extension StatisticsService: TrackerRecordStoreDelegate {
-    func store(_ store: TrackerRecordStore) {
-        onDidUpdate?()
-    }
-}

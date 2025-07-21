@@ -12,17 +12,11 @@ enum TrackerRecordStoreError: Error {
     case decodingErrorInvalidRecordData
 }
 
-protocol TrackerRecordStoreDelegate: AnyObject {
-    func store( _ store: TrackerRecordStore)
-}
-
 final class TrackerRecordStore: NSObject {
     
     // MARK: - Public Properties
     static let shared = TrackerRecordStore()
-    
-    weak var delegate: TrackerRecordStoreDelegate?
-    
+        
     var records: Set<TrackerRecord> {
         guard let recordObjects = fetchedResultsController.fetchedObjects else {
             return []
@@ -81,6 +75,8 @@ final class TrackerRecordStore: NSObject {
         newRecord.tracker = try? trackerStore.tracker(from: record.trackerId)
         
         CoreDataStack.shared.saveContext()
+        
+        NotificationCenter.default.post(name: .trackerRecordsDidChange, object: nil)
     }
     
     func deleteRecord(_ record: TrackerRecord) {
@@ -89,7 +85,10 @@ final class TrackerRecordStore: NSObject {
         }) else { return }
         
         context.delete(recordToDelete)
+        
         CoreDataStack.shared.saveContext()
+        
+        NotificationCenter.default.post(name: .trackerRecordsDidChange, object: nil)
     }
     
     // MARK: - Private Methods
@@ -105,15 +104,9 @@ final class TrackerRecordStore: NSObject {
 
 // MARK: - extension NSFetchedResultsControllerDelegate
 extension TrackerRecordStore: NSFetchedResultsControllerDelegate {
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
-        
-    }
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {}
     
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
-        delegate?.store(self)
-    }
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {}
     
-    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        
-    }
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {}
 }

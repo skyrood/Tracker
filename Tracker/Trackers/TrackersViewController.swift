@@ -88,8 +88,14 @@ final class TrackersViewController: UIViewController {
     override func viewDidLoad() {
         view.backgroundColor = Colors.white
         
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleTrackerRecordsDidChange),
+            name: .trackerRecordsDidChange,
+            object: nil
+        )
+        
         categoryStore.delegate = self
-        trackerRecordStore.delegate = self
         
         categories = categoryStore.categories
         
@@ -369,6 +375,12 @@ final class TrackersViewController: UIViewController {
         present(filtersViewController, animated: true)
     }
     
+    @objc private func handleTrackerRecordsDidChange() {
+        completedTrackers = trackerRecordStore.records
+        trackersCollectionView.reloadData()
+        updateUI()
+    }
+    
     private func completedTrackersDaysCountString(for completedCount: Int) -> String {
         return L10n.daysCompleted(completedCount)
     }
@@ -498,12 +510,5 @@ extension TrackersViewController: TrackerCategoryStoreDelegate {
         categories = store.categories
         trackersCollectionView.reloadData()
         updateUI()
-    }
-}
-
-// MARK: - extention TrackerRecordStoreDelegate
-extension TrackersViewController: TrackerRecordStoreDelegate {
-    func store(_ store: TrackerRecordStore) {
-        NotificationCenter.default.post(name: .trackerRecordsDidChange, object: nil)
     }
 }

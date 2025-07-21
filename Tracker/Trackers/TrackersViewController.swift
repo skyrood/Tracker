@@ -12,7 +12,7 @@ final class TrackersViewController: UIViewController {
     // MARK: - Private Properties
     private let categoryStore = TrackerCategoryStore.shared
     private let trackerRecordStore = TrackerRecordStore.shared
-    
+        
     private var selectedDate: Date = Date()
     private var selectedFilter: TrackerFilter = .all
     
@@ -103,6 +103,24 @@ final class TrackersViewController: UIViewController {
         setupFiltersButton()
         
         updateUI()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        AnalyticsService.shared.reportEvent(
+            event: "open",
+            params: ["screen": "Main"]
+        )
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        AnalyticsService.shared.reportEvent(
+            event: "close",
+            params: ["screen": "Main"]
+        )
     }
     
     // MARK: - Public Methods (testing)
@@ -278,6 +296,14 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func addTrackerButtonTapped() {
+        AnalyticsService.shared.reportEvent(
+            event: "click",
+            params: [
+                "screen": "Main",
+                "item": "add_track"
+            ]
+        )
+        
         let newTrackerViewController = NewTrackerViewController(categoryStore: categoryStore)
         newTrackerViewController.passHabitToTrackersList = { [weak self] in
             self?.dismiss(animated: true)
@@ -285,6 +311,7 @@ final class TrackersViewController: UIViewController {
         
         newTrackerViewController.modalPresentationStyle = .pageSheet
         newTrackerViewController.view.layer.cornerRadius = 10
+        
         present(newTrackerViewController, animated: true, completion: nil)
     }
     
@@ -296,6 +323,14 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func toggleCompletion(_ sender: UIButton) {
+        AnalyticsService.shared.reportEvent(
+            event: "click",
+            params: [
+                "screen": "Main",
+                "item": "track"
+            ]
+        )
+        
         guard let cell = sender.superview?.superview as? TrackerCollectionViewCell,
               let indexPath = trackersCollectionView.indexPath(for: cell) else { return }
         
@@ -317,6 +352,14 @@ final class TrackersViewController: UIViewController {
     }
     
     @objc private func showFilters() {
+        AnalyticsService.shared.reportEvent(
+            event: "click",
+            params: [
+                "screen": "Main",
+                "item": "filter"
+            ]
+        )
+        
         let filtersViewController = FiltersViewController()
         filtersViewController.selectedFilter = selectedFilter
         filtersViewController.onFilterSelected = { [weak self] filter in
@@ -355,6 +398,14 @@ extension TrackersViewController: UICollectionViewDataSource {
         cell.completeTrackerButton.addTarget(self, action: #selector(toggleCompletion(_:)), for: .touchUpInside)
         
         cell.onEditButtonTapped = { [weak self] tracker in
+            AnalyticsService.shared.reportEvent(
+                event: "click",
+                params: [
+                    "screen": "Main",
+                    "item": "edit"
+                ]
+            )
+            
             guard let self else { return }
             let showScheduleOption = tracker.schedule != nil
             
@@ -371,6 +422,14 @@ extension TrackersViewController: UICollectionViewDataSource {
         }
         
         cell.onDeleteButtonTapped = { [weak self] tracker in
+            AnalyticsService.shared.reportEvent(
+                event: "click",
+                params: [
+                    "screen": "Main",
+                    "item": "delete"
+                ]
+            )
+            
             self?.showDeleteConfirmationAlert(for: tracker)
         }
         

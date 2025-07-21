@@ -63,7 +63,6 @@ final class TrackerStore: NSObject {
         } catch {
             fatalError("Failed to fetch trackers: \(error)")
         }
-        
     }
     
     // MARK: - Public Methods

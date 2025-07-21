@@ -622,11 +622,4 @@ extension CreateTrackerViewController: UITableViewDataSource {
         
         return cell
     }
-    
-//    private func colorCollectionCell() -> UITableViewCell {
-//        let cell = UITableViewCell(
-//            style: .default, reuseIdentifier: "colorCell")
-//        
-//        return cell
-//    }
 }

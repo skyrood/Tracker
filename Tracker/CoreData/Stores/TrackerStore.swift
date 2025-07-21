@@ -15,10 +15,6 @@ enum TrackerStoreError: Error {
     case trackerNotFound
 }
 
-protocol TrackerStoreDelegate: AnyObject {
-    func store( _ store: TrackerStore)
-}
-
 final class TrackerStore: NSObject {
     
     // MARK: - Public Properties
@@ -31,9 +27,7 @@ final class TrackerStore: NSObject {
         
         return trackers
     }
-    
-    weak var delegate: TrackerStoreDelegate?
-    
+        
     // MARK: - Private Properties
     private let context: NSManagedObjectContext
     private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>!
@@ -151,7 +145,7 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
-        delegate?.store(self)
+
     }
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {

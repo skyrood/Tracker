@@ -31,7 +31,6 @@ final class CategoryListViewModel {
     
     init(trackerCategoryStore: TrackerCategoryStore, selectedCategory: TrackerCategory? = nil) {
         self.trackerCategoryStore = trackerCategoryStore
-        trackerCategoryStore.delegate = self
         categories = getCategoriesFromStore()
         self.selectedCategory = selectedCategory
     }
@@ -57,12 +56,5 @@ final class CategoryListViewModel {
         return trackerCategoryStore.categories.map {
             CategoryViewModel(categoryName: $0.name)
         }
-    }
-}
-
-// MARK: - extension TrackerCategoryStoreDelegate
-extension CategoryListViewModel: TrackerCategoryStoreDelegate {
-    func store(_ store: TrackerCategoryStore) {
-        categories = getCategoriesFromStore()
     }
 }

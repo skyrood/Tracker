@@ -43,7 +43,7 @@ final class TrackerRecordStore: NSObject {
         self.trackerStore = TrackerStore.shared
         
         let fetchRequest = TrackerRecordCoreData.fetchRequest()
-        fetchRequest.sortDescriptors = [] // или нужные тебе сортировки
+        fetchRequest.sortDescriptors = []
         
         self.fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,

@@ -1,0 +1,89 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Rodion Kim on 2025/07/13.
+  
+*/
+
+/* StatisticsViewController */
+"statistics_title" = "統計";
+"nothing_to_analyze" = "分析するものがまだありません";
+
+/* CreateScheduleViewController */
+"schedule_title" = "スケジュール";
+"done" = "完了";
+"monday" = "月曜日";
+"tuesday" = "火曜日";
+"wednesday" = "水曜日";
+"thursday" = "木曜日";
+"friday" = "金曜日";
+"saturday" = "土曜日";
+"sunday" = "日曜日";
+
+/* CreateNewCategoryViewController */
+"category_name_limit" = "%@文字以内で入力してください";
+"new_category" = "新しいカテゴリ";
+"enter_category_name" = "カテゴリ名を入力してください";
+
+/* CategoryListViewController */
+"category_tip" = "習慣やイベントを意味でまとめることができます";
+"add_category" = "カテゴリを追加";
+"category" = "カテゴリ";
+
+/* CreateTrackerViewController */
+"new_tracker" = "新しい習慣";
+"tracker_name_limit" = "%@文字以内で入力してください";
+"cancel" = "キャンセル";
+"create" = "作成";
+"mon_short" = "月";
+"tue_short" = "火";
+"wed_short" = "水";
+"thu_short" = "木";
+"fri_short" = "金";
+"sat_short" = "土";
+"sun_short" = "日";
+"every_day" = "毎日";
+"emoji" = "絵文字";
+"color" = "色";
+"enter_tracker_name" = "トラッカー名を入力してください";
+"save" = "保存する";
+
+/* TabBarViewController */
+"statistics_tab" = "統計";
+
+/* Onboarding */
+"onboarding_red" = "たとえそれが水を飲むことやヨガでなくても";
+"onboarding_blue" = "自分が追跡したいことだけを記録しましょう";
+"onboarding_title" = "これぞテクノロジー！";
+
+/* TrackersViewController */
+"trackers_title" = "トラッカー";
+"what_to_track" = "何を追跡しますか？";
+"category_tip_multiline" = "習慣やイベントを意味でまとめることができます";
+"search" = "検索";
+"nothing_found" = "見つかりませんでした";
+"delete_tracker_confirmation" = "トラッカーを削除してもよろしいですか？";
+"delete_tracker_button" = "削除する";
+"cancel_button" = "キャンセル";
+"filters" = "フィルター";
+
+/* TrackerCollectionViewCell */
+"edit_button" = "Edit";
+
+/* NewTrackerViewController */
+"tracker_creation" = "トラッカーの作成";
+"habit" = "習慣";
+"irregular_event" = "不定期イベント";
+
+/* FiltersViewController */
+"all_trackers" = "すべてのトラッカー";
+"trackers_for_today" = "今日のトラッカー";
+"completed_trackers" = "完了済み";
+"uncompleted_trackers" = "未完了";
+
+/* StatisticsViewController */
+"best_period" = "ベスト期間";
+"perfect_days" = "パーフェクトデイ";
+"trackers_completed" = "完了したトラッカー数";
+"completed_average" = "1日あたりの平均達成数";

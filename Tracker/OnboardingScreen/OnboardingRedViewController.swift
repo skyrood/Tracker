@@ -24,7 +24,7 @@ final class OnboardingRedViewController: UIViewController {
         label.clipsToBounds = true
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
         label.numberOfLines = 0
-        let text = "Даже если это не литры воды и йога"
+        let text = L10n.onboardingRed
         let attributedString = NSMutableAttributedString(string: text)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 6

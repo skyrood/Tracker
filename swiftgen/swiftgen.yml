@@ -1,0 +1,7 @@
+strings:
+  inputs:
+    - ../Tracker/Resources/en.lproj/Localizable.strings
+    - ../Tracker/Resources/en.lproj/Localizable.stringsdict
+  outputs:
+    - templateName: structured-swift5
+      output: ../Tracker/Resources/Generated/L10n.swift

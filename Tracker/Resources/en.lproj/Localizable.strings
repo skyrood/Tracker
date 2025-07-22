@@ -1,0 +1,89 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Rodion Kim on 2025/07/13.
+  
+*/
+
+/* StatisticsViewController */
+"statistics_title" = "Statistics";
+"nothing_to_analyze" = "Nothing to analyze yet";
+
+/* CreateScheduleViewController */
+"schedule_title" = "Schedule";
+"done" = "Done";
+"monday" = "Monday";
+"tuesday" = "Tuesday";
+"wednesday" = "Wednesday";
+"thursday" = "Thursday";
+"friday" = "Friday";
+"saturday" = "Saturday";
+"sunday" = "Sunday";
+
+/* CreateNewCategoryViewController */
+"category_name_limit" = "Limit of %@ characters";
+"new_category" = "New category";
+"enter_category_name" = "Enter category name";
+
+/* CategoryListViewController */
+"category_tip" = "You can group habits and events by meaning";
+"add_category" = "Add category";
+"category" = "Category";
+
+/* CreateTrackerViewController */
+"new_tracker" = "New habit";
+"tracker_name_limit" = "Limit of %@ characters";
+"cancel" = "Cancel";
+"create" = "Create";
+"mon_short" = "Mon";
+"tue_short" = "Tue";
+"wed_short" = "Wed";
+"thu_short" = "Thu";
+"fri_short" = "Fri";
+"sat_short" = "Sat";
+"sun_short" = "Sun";
+"every_day" = "Every day";
+"emoji" = "Emoji";
+"color" = "Color";
+"enter_tracker_name" = "Enter tracker name";
+"save" = "Save";
+
+/* TabBarViewController */
+"statistics_tab" = "Statistics";
+
+/* Onboarding */
+"onboarding_red" = "Even if it’s not liters of water or yoga";
+"onboarding_blue" = "Track only what you want";
+"onboarding_title" = "Now that’s technology!";
+
+/* TrackersViewController */
+"trackers_title" = "Trackers";
+"what_to_track" = "What do you want to track?";
+"category_tip_multiline" = "You can grouphabits and events by meaning";
+"search" = "Search";
+"nothing_found" = "Nothing found";
+"delete_tracker_confirmation" = "Are you sure you want to delete this tracker?";
+"delete_tracker_button" = "Delete";
+"cancel_button" = "Cancel";
+"filters" = "Filters";
+
+/* TrackerCollectionViewCell */
+"edit_button" = "Edit";
+
+/* NewTrackerViewController */
+"tracker_creation" = "Tracker creation";
+"habit" = "Habit";
+"irregular_event" = "Irregular event";
+
+/* FiltersViewController */
+"all_trackers" = "All Trackers";
+"trackers_for_today" = "Trackers for Today";
+"completed_trackers" = "Completed";
+"uncompleted_trackers" = "Uncompleted";
+
+/* StatisticsViewController */
+"best_period" = "Best Streak";
+"perfect_days" = "Perfect Days";
+"trackers_completed" = "Trackers Completed";
+"completed_average" = "Average Completed Per Day";

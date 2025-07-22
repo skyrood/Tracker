@@ -12,15 +12,11 @@ enum TrackerRecordStoreError: Error {
     case decodingErrorInvalidRecordData
 }
 
-protocol TrackerRecordStoreDelegate: AnyObject {
-    func store( _ store: TrackerRecordStore)
-}
-
 final class TrackerRecordStore: NSObject {
     
     // MARK: - Public Properties
-    weak var delegate: TrackerRecordStoreDelegate?
-    
+    static let shared = TrackerRecordStore()
+        
     var records: Set<TrackerRecord> {
         guard let recordObjects = fetchedResultsController.fetchedObjects else {
             return []
@@ -36,37 +32,29 @@ final class TrackerRecordStore: NSObject {
     private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>!
     
     // MARK: - Initializers
-    convenience override init() {
-        let context = CoreDataStack.shared.context
-        
-        do {
-            let store = try TrackerStore(context: context)
-            try self.init(context: context, trackerStore: store)
-        } catch {
-            fatalError("Не удалось инициализировать TrackerRecordStore: \(error)")
-        }
-    }
-    
-    init(context: NSManagedObjectContext, trackerStore: TrackerStore) throws {
-        self.context = context
-        self.trackerStore = trackerStore
-        
-        super.init()
+    private override init() {
+        self.context = CoreDataStack.shared.context
+        self.trackerStore = TrackerStore.shared
         
         let fetchRequest = TrackerRecordCoreData.fetchRequest()
         fetchRequest.sortDescriptors = []
         
-        let fetchedResultsController = NSFetchedResultsController(
+        self.fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
         
-        fetchedResultsController.delegate = self
-        self.fetchedResultsController = fetchedResultsController
+        super.init()
         
-        try fetchedResultsController.performFetch()
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("Failed to fetch tracker records: \(error)")
+        }
     }
     
     // MARK: - Public Methods
@@ -87,6 +75,8 @@ final class TrackerRecordStore: NSObject {
         newRecord.tracker = try? trackerStore.tracker(from: record.trackerId)
         
         CoreDataStack.shared.saveContext()
+        
+        NotificationCenter.default.post(name: .trackerRecordsDidChange, object: nil)
     }
     
     func deleteRecord(_ record: TrackerRecord) {
@@ -95,7 +85,10 @@ final class TrackerRecordStore: NSObject {
         }) else { return }
         
         context.delete(recordToDelete)
+        
         CoreDataStack.shared.saveContext()
+        
+        NotificationCenter.default.post(name: .trackerRecordsDidChange, object: nil)
     }
     
     // MARK: - Private Methods
@@ -111,15 +104,9 @@ final class TrackerRecordStore: NSObject {
 
 // MARK: - extension NSFetchedResultsControllerDelegate
 extension TrackerRecordStore: NSFetchedResultsControllerDelegate {
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
-        
-    }
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {}
     
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
-        delegate?.store(self)
-    }
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {}
     
-    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-        
-    }
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {}
 }

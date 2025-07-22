@@ -32,7 +32,7 @@ final class CategoryListViewController: UIViewController {
     private var categoryListTableViewHeight: NSLayoutConstraint?
     
     private let emptyStateImage: UIImage? = UIImage(named: "TrackersEmpty")
-    private let emptyStateMessage: String = "Привычки и события можно объединить по смыслу"
+    private let emptyStateMessage: String = L10n.categoryTip
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
@@ -40,15 +40,15 @@ final class CategoryListViewController: UIViewController {
                 
         viewModel = CategoryListViewModel()
 
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = Colors.secondary
         navigationItem.hidesBackButton = true
         
         setupCategoryListLabel()
         setupCategoryButton(for: createNewCategoryButton,
-                            buttonText: "Добавить категорию",
+                            buttonText: L10n.addCategory,
                             using: #selector(createNewCategoryButtonTapped))
         setupCategoryButton(for: addCategoryButton,
-                            buttonText: "Готово",
+                            buttonText: L10n.done,
                             using: #selector(addCategoryButtonTapped))
 
         guard let viewModel else { return }
@@ -84,8 +84,8 @@ final class CategoryListViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = UIColor(named: "Black")
-        label.text = "Категория"
+        label.textColor = Colors.primary
+        label.text = L10n.category
         
         view.addSubview(label)
         
@@ -110,7 +110,7 @@ final class CategoryListViewController: UIViewController {
     private func setupCategoryListView() {
         categoryListTableView.translatesAutoresizingMaskIntoConstraints = false
         categoryListTableView.clipsToBounds = true
-        categoryListTableView.backgroundColor = UIColor(named: "InputBackground")
+        categoryListTableView.backgroundColor = Colors.inputBackground
         categoryListTableView.layer.cornerRadius = 16
         categoryListTableView.separatorStyle = .none
         categoryListTableView.delegate = self
@@ -136,8 +136,8 @@ final class CategoryListViewController: UIViewController {
         button.clipsToBounds = true
         button.setTitle(buttonText, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = UIColor(named: "Black")
-        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = Colors.primary
+        button.setTitleColor(Colors.secondary, for: .normal)
         button.layer.cornerRadius = 16
         button.addTarget(self, action: action, for: .touchUpInside)
         
@@ -241,7 +241,7 @@ extension CategoryListViewController: UITableViewDataSource {
             let separatorLineView = UIView()
             separatorLineView.translatesAutoresizingMaskIntoConstraints = false
             separatorLineView.clipsToBounds = true
-            separatorLineView.backgroundColor = UIColor(named: "Gray")
+            separatorLineView.backgroundColor = Colors.gray
             separatorLineView.tag = 999
             
             cell.contentView.addSubview(separatorLineView)

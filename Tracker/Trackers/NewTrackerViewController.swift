@@ -10,37 +10,48 @@ import UIKit
 final class NewTrackerViewController: UIViewController {
    
     // MARK: - Public Properties
+    var categoryStore: TrackerCategoryStore
   
-    var passHabitToTrackersList: ((Tracker, TrackerCategory) -> Void)?
+    var passHabitToTrackersList: (() -> Void)?
     
     // MARK: - Private Properties
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
-        label.text = "Создание трекера"
+        label.text = L10n.trackerCreation
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = UIColor(named: "Black")
+        label.textColor = Colors.primary
         return label
     }()
     
     private lazy var habitButton: UIButton = {
-        let button = createButton(title: "Привычка")
+        let button = createButton(title: L10n.habit)
         button.addTarget(self, action: #selector(habitButtonTappedWrapper), for: .touchUpInside)
         return button
     }()
     
     private lazy var eventButton: UIButton = {
-        let button = createButton(title: "Нерегулярное событие")
+        let button = createButton(title: L10n.irregularEvent)
         button.addTarget(self, action: #selector(eventButtonTappedWrapper), for: .touchUpInside)
         return button
     }()
+    
+    // MARK: - Initializers
+    init(categoryStore: TrackerCategoryStore) {
+        self.categoryStore = categoryStore
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = Colors.secondary
         navigationItem.hidesBackButton = true
 
         view.addSubview(titleLabel)
@@ -61,8 +72,8 @@ final class NewTrackerViewController: UIViewController {
         button.clipsToBounds = true
         button.setTitle(title, for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = UIColor(named: "Black")
-        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = Colors.primary
+        button.setTitleColor(Colors.secondary, for: .normal)
         button.layer.cornerRadius = 16
         return button
     }
@@ -90,12 +101,13 @@ final class NewTrackerViewController: UIViewController {
     }
     
     @objc private func newTrackerButtonTapped(showScheduleOption: Bool) {
-        let createTrackerViewController = CreateTrackerViewController(showScheduleOption: showScheduleOption)
+        let createTrackerViewController = CreateTrackerViewController(categoryStore: categoryStore, showScheduleOption: showScheduleOption)
         
-        createTrackerViewController.onHabitCreated = { [weak self] newTracker, category in
-            self?.passHabitToTrackersList?(newTracker, category)
+        createTrackerViewController.onHabitCreated = { [weak self] in
+            self?.passHabitToTrackersList?()
             self?.dismiss(animated: true)
         }
+        
         createTrackerViewController.modalPresentationStyle = .pageSheet
         createTrackerViewController.view.layer.cornerRadius = 10
         present(createTrackerViewController, animated: true, completion: nil)

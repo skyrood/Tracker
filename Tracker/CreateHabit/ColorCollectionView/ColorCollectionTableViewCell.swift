@@ -30,27 +30,10 @@ final class ColorCollectionTableViewCell: UITableViewCell {
         return collectionView
     }()
     
-    private var colors: [String] = [
-        "Selection 1",
-        "Selection 2",
-        "Selection 3",
-        "Selection 4",
-        "Selection 5",
-        "Selection 6",
-        "Selection 7",
-        "Selection 8",
-        "Selection 9",
-        "Selection 10",
-        "Selection 11",
-        "Selection 12",
-        "Selection 13",
-        "Selection 14",
-        "Selection 15",
-        "Selection 16",
-        "Selection 17",
-        "Selection 18",
-    ]
-
+    private var colorNames: [String] {
+        Colors.sortedKeys
+    }
+    
     // MARK: - Overrides Methods
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: cellReuseIdentifier)
@@ -61,7 +44,24 @@ final class ColorCollectionTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
+    // MARK: - Public Methods
+    func configure(with selectedColor: String?) {
+        self.selectedColor = selectedColor
+        
+        if let colorKey = selectedColor,
+           let index = Colors.sortedKeys.firstIndex(of: colorKey) {
+            let indexPath = IndexPath(item: index, section: 0)
+            colorCollectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+            
+            DispatchQueue.main.async {
+                if let cell = self.colorCollectionView.cellForItem(at: indexPath) as? ColorCell {
+                    cell.isSelected = true
+                }
+            }
+        }
+    }
+    
     // MARK: - Private Methods
     private func setupColorCollectionView() {
         contentView.addSubview(colorCollectionView)
@@ -85,8 +85,8 @@ extension ColorCollectionTableViewCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let cell = collectionView.cellForItem(at: indexPath) as? ColorCell {
             cell.isSelected = true
-            selectedColor = colors[indexPath.row]
-            onColorSelected?(colors[indexPath.row])
+            selectedColor = colorNames[indexPath.row]
+            onColorSelected?(colorNames[indexPath.row])
         }
     }
     
@@ -101,15 +101,15 @@ extension ColorCollectionTableViewCell: UICollectionViewDelegate {
 // MARK: - extension UICollectionViewDataSource
 extension ColorCollectionTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        colors.count
+        colorNames.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = colorCollectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath) as? ColorCell
-        
         guard let cell else { return UICollectionViewCell() }
         
-        cell.colorView.backgroundColor = UIColor(named: colors[indexPath.row])
+        let key = colorNames[indexPath.row]
+        cell.colorView.backgroundColor = Colors.selection[key]
         
         return cell
     }
@@ -118,16 +118,16 @@ extension ColorCollectionTableViewCell: UICollectionViewDataSource {
 // MARK: - extension UICollectionViewDelegateFlowLayout
 extension ColorCollectionTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let emojiSize = (colorCollectionView.bounds.width - 25) / 6
-        return CGSize(width: emojiSize, height: emojiSize )
+        let colorCellSize = (colorCollectionView.bounds.width - 25) / 6
+        return CGSize(width: colorCellSize, height: colorCellSize )
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 5
+        5
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        0
     }
 }
 

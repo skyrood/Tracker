@@ -21,7 +21,7 @@ final class CreateNewCategoryViewController: UIViewController {
     var onCategoryCreated: ((TrackerCategory) -> Void)?
     
     // MARK: - Private Properties
-    private let categoryStore = TrackerCategoryStore()
+    private let categoryStore = TrackerCategoryStore.shared
     
     private var titleLabel: UILabel = UILabel()
     
@@ -34,9 +34,9 @@ final class CreateNewCategoryViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         
-        label.text = "Ограничение \(Constants.categoryNameMaxLength) символов"
+        label.text = L10n.categoryNameLimit(Constants.categoryNameMaxLength)
         label.font = .systemFont(ofSize: 17)
-        label.textColor = UIColor(named: "Red")
+        label.textColor = Colors.red
         return label
     }()
     
@@ -45,7 +45,7 @@ final class CreateNewCategoryViewController: UIViewController {
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(named: "White")
+        view.backgroundColor = Colors.secondary
         navigationItem.hidesBackButton = true
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -60,7 +60,7 @@ final class CreateNewCategoryViewController: UIViewController {
         toggleWarningMessage()
         
         createCategoryButton.isEnabled = false
-        createCategoryButton.alpha = 0.3
+        createCategoryButton.backgroundColor = Colors.gray
     }
     
     // MARK: - Private Methods
@@ -68,8 +68,8 @@ final class CreateNewCategoryViewController: UIViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.clipsToBounds = true
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        titleLabel.textColor = UIColor(named: "Black")
-        titleLabel.text = "Новая категория"
+        titleLabel.textColor = Colors.primary
+        titleLabel.text = L10n.newCategory
         
         view.addSubview(titleLabel)
         
@@ -82,10 +82,10 @@ final class CreateNewCategoryViewController: UIViewController {
     private func setupCategoryNameTextField() {
         categoryNameTextField.translatesAutoresizingMaskIntoConstraints = false
         categoryNameTextField.clipsToBounds = true
-        categoryNameTextField.placeholder = "Введите название категории"
+        categoryNameTextField.placeholder = L10n.enterCategoryName
         categoryNameTextField.font = .systemFont(ofSize: 17)
-        categoryNameTextField.textColor = UIColor(named: "Black")
-        categoryNameTextField.backgroundColor = UIColor(named: "InputBackground")
+        categoryNameTextField.textColor = Colors.primary
+        categoryNameTextField.backgroundColor = Colors.inputBackground
         categoryNameTextField.layer.cornerRadius = 16
         categoryNameTextField.layer.borderWidth = 0
         categoryNameTextField.delegate = self
@@ -123,10 +123,10 @@ final class CreateNewCategoryViewController: UIViewController {
     
     private func setupCreateCagegoryButton() {
         createCategoryButton.translatesAutoresizingMaskIntoConstraints = false
-        createCategoryButton.setTitle("Готово", for: .normal)
+        createCategoryButton.setTitle(L10n.done, for: .normal)
         createCategoryButton.setTitleColor(.white, for: .normal)
         createCategoryButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        createCategoryButton.backgroundColor = .black
+        createCategoryButton.backgroundColor = Colors.primary
         createCategoryButton.layer.cornerRadius = 16
         createCategoryButton.addTarget(self, action: #selector(createCategoryButtonTapped), for: .touchUpInside)
         
@@ -160,7 +160,13 @@ final class CreateNewCategoryViewController: UIViewController {
     @objc private func categoryNameTextFieldDidChange() {
         let hasText = !(categoryNameTextField.text?.isEmpty ?? true)
         createCategoryButton.isEnabled = hasText
-        createCategoryButton.alpha = hasText ? 1 : 0.3
+        if hasText {
+            createCategoryButton.backgroundColor = Colors.primary
+            createCategoryButton.setTitleColor(Colors.secondary, for: .normal)
+        } else {
+            createCategoryButton.backgroundColor = Colors.gray
+            createCategoryButton.setTitleColor(.white, for: .normal)
+        }
     }
     
     @objc private func dismissKeyboard() {

@@ -1,0 +1,89 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Rodion Kim on 2025/07/13.
+  
+*/
+
+/* StatisticsViewController */
+"statistics_title" = "Статистика";
+"nothing_to_analyze" = "Анализировать пока нечего";
+
+/* CreateScheduleViewController */
+"schedule_title" = "Расписание";
+"done" = "Готово";
+"monday" = "Понедельник";
+"tuesday" = "Вторник";
+"wednesday" = "Среда";
+"thursday" = "Четверг";
+"friday" = "Пятница";
+"saturday" = "Суббота";
+"sunday" = "Воскресенье";
+
+/* CreateNewCategoryViewController */
+"category_name_limit" = "Ограничение %@ символов";
+"new_category" = "Новая категория";
+"enter_category_name" = "Введите название категории";
+
+/* CategoryListViewController */
+"category_tip" = "Привычки и события можно объединить по смыслу";
+"add_category" = "Добавить категорию";
+"category" = "Категория";
+
+/* CreateTrackerViewController */
+"new_tracker" = "Новая привычка";
+"tracker_name_limit" = "Ограничение %@ символов";
+"cancel" = "Отменить";
+"create" = "Создать";
+"mon_short" = "Пн";
+"tue_short" = "Вт";
+"wed_short" = "Ср";
+"thu_short" = "Чт";
+"fri_short" = "Пт";
+"sat_short" = "Сб";
+"sun_short" = "Вс";
+"every_day" = "Каждый день";
+"emoji" = "Emoji";
+"color" = "Цвет";
+"enter_tracker_name" = "Введите название трекера";
+"save" = "Сохранить";
+
+/* TabBarViewController */
+"statistics_tab" = "Статистика";
+
+/* Onboarding */
+"onboarding_red" = "Даже если это не литры воды и йога";
+"onboarding_blue" = "Отслеживайте только то, что хотите";
+"onboarding_title" = "Вот это технологии!";
+
+/* TrackersViewController */
+"trackers_title" = "Трекеры";
+"what_to_track" = "Что будем отслеживать?";
+"category_tip_multiline" = "Привычки и события можно объединить по смыслу";
+"search" = "Поиск";
+"nothing_found" = "Ничего не найдено";
+"delete_tracker_confirmation" = "Уверены, что хотите удалить трекер?";
+"delete_tracker_button" = "Удалить";
+"cancel_button" = "Отменить";
+"filters" = "Фильтры";
+
+/* TrackerCollectionViewCell */
+"edit_button" = "Редактировать";
+
+/* NewTrackerViewController */
+"tracker_creation" = "Создание трекера";
+"habit" = "Привычка";
+"irregular_event" = "Нерегулярное событие";
+
+/* FiltersViewController */
+"all_trackers" = "Все трекеры";
+"trackers_for_today" = "Трекеры на сегодня";
+"completed_trackers" = "Завершенные";
+"uncompleted_trackers" = "Незавершенные";
+
+/* StatisticsViewController */
+"best_period" = "Лучший период";
+"perfect_days" = "Идеальные дни";
+"trackers_completed" = "Трекеров завершено";
+"completed_average" = "Среднее значение";

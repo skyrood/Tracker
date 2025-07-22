@@ -20,16 +20,18 @@ protocol TrackerCategoryStoreDelegate: AnyObject {
 final class TrackerCategoryStore: NSObject {
     
     // MARK: - Public Properties
+    static let shared = TrackerCategoryStore()
+    
     weak var delegate: TrackerCategoryStoreDelegate?
-
+    
     var categories: [TrackerCategory] {
         guard let categoryObjects = fetchedResultsController.fetchedObjects else { return [] }
-                
+        
         let trackersCoreDataList: [TrackerCoreData]
         do {
             trackersCoreDataList = try trackerStore.allTrackers()
         } catch {
-            print("Ошибка загрузки трекеров \(error)")
+            print("Error loading trackers: \(error)")
             return []
         }
         
@@ -50,37 +52,29 @@ final class TrackerCategoryStore: NSObject {
     private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>!
     
     // MARK: - Initializers
-    convenience override init() {
-        let context = CoreDataStack.shared.context
-        
-        do {
-            let store = try TrackerStore(context: context)
-            try self.init(context: context, trackerStore: store)
-        } catch {
-            fatalError("Не удалось инициализировать TrackerCategoryStore: \(error)")
-        }
-    }
-    
-    init(context: NSManagedObjectContext, trackerStore: TrackerStore) throws {
-        self.context = context
-        self.trackerStore = trackerStore
-        
-        super.init()
+    private override init() {
+        self.context = CoreDataStack.shared.context
+        self.trackerStore = TrackerStore.shared
         
         let fetchRequest = TrackerCategoryCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackerCategoryCoreData.name, ascending: true)]
         
-        let fetchedResultsController = NSFetchedResultsController(
+        self.fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
         
-        fetchedResultsController.delegate = self
-        self.fetchedResultsController = fetchedResultsController
+        super.init()
         
-        try fetchedResultsController.performFetch()
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("Failed to fetch tracker categories: \(error)")
+        }
     }
     
     // MARK: - Public Methods
@@ -101,9 +95,41 @@ final class TrackerCategoryStore: NSObject {
         }
     }
     
-    func addTracker(name: String, emoji: String, color: String, schedule: Weekday?, to category: TrackerCategory) throws -> Tracker {
+    func addOrUpdateTracker(
+        trackerID: UUID? = nil,
+        name: String,
+        emoji: String,
+        color: String,
+        schedule: Weekday?,
+        to category: TrackerCategory
+    ) throws {
         let coreDataCategory = try coreDataCategory(for: category)
-        return try trackerStore.addTracker(name: name, emoji: emoji, color: color, schedule: schedule, category: coreDataCategory)
+        
+        if let id = trackerID, (try? trackerStore.tracker(from: id)) != nil {
+            try trackerStore.updateTracker(
+                id: id,
+                name: name,
+                emoji: emoji,
+                color: color,
+                schedule: schedule,
+                category: coreDataCategory
+            )
+        } else {
+            try trackerStore.addTracker(
+                name: name,
+                emoji: emoji,
+                color: color,
+                schedule: schedule,
+                category: coreDataCategory
+            )
+        }
+        
+        delegate?.store(self)
+    }
+    
+    func deleteTracker(with id: UUID) throws {
+        try trackerStore.deleteTracker(with: id)
+        delegate?.store(self)
     }
     
     func refreshStore() throws {
@@ -116,7 +142,7 @@ final class TrackerCategoryStore: NSObject {
         guard let categoryName = trackerCategoryCoreData.name else {
             throw TrackerCategoryStoreError.decodingErrorInvalidCategoryName
         }
-
+        
         guard let trackersCoreData = trackerCategoryCoreData.trackers as? Set<TrackerCoreData> else {
             throw TrackerCategoryStoreError.decodingErrorInvalidTrackers
         }

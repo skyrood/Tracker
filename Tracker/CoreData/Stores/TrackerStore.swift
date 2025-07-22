@@ -15,74 +15,96 @@ enum TrackerStoreError: Error {
     case trackerNotFound
 }
 
-protocol TrackerStoreDelegate: AnyObject {
-    func store( _ store: TrackerStore)
-}
-
 final class TrackerStore: NSObject {
-
+    
     // MARK: - Public Properties
-    lazy var trackers: [Tracker] = {
+    static let shared = TrackerStore()
+    
+    var trackers: [Tracker] {
         guard let objects = self.fetchedResultsController.fetchedObjects,
               let trackers = try? objects.map({ try tracker(from: $0) })
         else { return [] }
         
         return trackers
-    }()
-    
-    weak var delegate: TrackerStoreDelegate?
-    
+    }
+        
     // MARK: - Private Properties
     private let context: NSManagedObjectContext
     private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>!
     
-    // MARK: - Initializers
-    convenience override init() {
-        let context = CoreDataStack.shared.context
-        
-        do {
-            try self.init(context: context)
-        } catch {
-            fatalError("Не удалось инициализировать TrackerStore: \(error)")
-        }
-    }
+    private let emptySchedule: Int = -1
     
-    init(context: NSManagedObjectContext) throws {
-        self.context = context
-        super.init()
+    // MARK: - Initializers
+    private override init() {
+        context = CoreDataStack.shared.context
         
         let fetchRequest = TrackerCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackerCoreData.name, ascending: true)]
         
-        let fetchedResultsController = NSFetchedResultsController(
+        fetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
         
-        fetchedResultsController.delegate = self
-        self.fetchedResultsController = fetchedResultsController
+        super.init()
         
-        try fetchedResultsController.performFetch()
-    }
-
-    // MARK: - Public Methods
-    func allTrackers() throws -> [TrackerCoreData] {
-         return fetchedResultsController.fetchedObjects ?? []
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            fatalError("Failed to fetch trackers: \(error)")
+        }
     }
     
-    func addTracker(name: String, emoji: String, color: String, schedule: Weekday?, category: TrackerCategoryCoreData) throws -> Tracker {
+    // MARK: - Public Methods
+    func allTrackers() throws -> [TrackerCoreData] {
+        return fetchedResultsController.fetchedObjects ?? []
+    }
+    
+    func addTracker(
+        name: String,
+        emoji: String,
+        color: String,
+        schedule: Weekday?,
+        category: TrackerCategoryCoreData
+    ) throws {
         let newTracker = TrackerCoreData(context: context)
+        
         newTracker.id = UUID()
         newTracker.name = name
         newTracker.emoji = emoji
         newTracker.colorName = color
-        newTracker.schedule = Int32(schedule?.rawValue ?? -1)
+        newTracker.schedule = Int32(schedule?.rawValue ?? emptySchedule)
         newTracker.category = category
         CoreDataStack.shared.saveContext()
+    }
+    
+    func updateTracker(
+        id: UUID,
+        name: String,
+        emoji: String,
+        color: String,
+        schedule: Weekday?,
+        category: TrackerCategoryCoreData
+    ) throws {
+        let updatedTracker = try tracker(from: id)
         
-        return try tracker(from: newTracker)
+        updatedTracker.name = name
+        updatedTracker.emoji = emoji
+        updatedTracker.colorName = color
+        updatedTracker.schedule = Int32(schedule?.rawValue ?? emptySchedule)
+        updatedTracker.category = category
+        
+        CoreDataStack.shared.saveContext()
+    }
+    
+    func deleteTracker(with id: UUID) throws {
+        let trackerToDelete = try tracker(from: id)
+        context.delete(trackerToDelete)
+        CoreDataStack.shared.saveContext()
     }
     
     func tracker(from coreData: TrackerCoreData) throws -> Tracker {
@@ -98,7 +120,7 @@ final class TrackerStore: NSObject {
             id: id,
             name: name,
             emoji: emoji,
-            color: UIColor(named: colorName) ?? .gray,
+            colorName: colorName,
             schedule: schedule
         )
     }
@@ -123,11 +145,11 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
     }
     
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
-        delegate?.store(self)
+
     }
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-    
+        
     }
 }
 

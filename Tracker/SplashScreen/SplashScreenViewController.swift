@@ -23,7 +23,7 @@ final class SplashScreenViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
                 
-        self.view.backgroundColor = UIColor(named: "Blue")
+        self.view.backgroundColor = Colors.blue
         
         self.view.addSubview(logoImageView)
         setConstraints(for: logoImageView)

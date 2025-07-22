@@ -12,6 +12,6 @@ struct TrackerCategory {
 
 extension TrackerCategory: Equatable {
     static func ==(lhs: TrackerCategory, rhs: TrackerCategory) -> Bool {
-        return lhs.name == rhs.name
+        lhs.name == rhs.name
     }
 }

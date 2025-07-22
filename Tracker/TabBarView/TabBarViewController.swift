@@ -12,7 +12,7 @@ final class TabBarViewController: UITabBarController {
     // MARK: - Private Properties
     private lazy var borderLine: UIView = {
         let borderLine = UIView()
-        borderLine.backgroundColor = UIColor(named: "Shadow")
+        borderLine.backgroundColor = Colors.shadow
         borderLine.translatesAutoresizingMaskIntoConstraints = false
         return borderLine
     }()
@@ -24,10 +24,17 @@ final class TabBarViewController: UITabBarController {
         let trackersNavController = UINavigationController(rootViewController: TrackersViewController())
         let statisticsViewController = StatisticsViewController()
         
-        trackersNavController.tabBarItem = UITabBarItem(title: "Трекеры", image: UIImage(named: "TrackersTabBarLogo"), tag: 0)
-        statisticsViewController.tabBarItem = UITabBarItem(title: "Статистика", image: UIImage(named: "StatisticsTabBarLogo"), tag: 0)
-        tabBar.barTintColor = UIColor(named: "White")
-        
+        trackersNavController.tabBarItem = UITabBarItem(title: L10n.trackersTitle, image: UIImage(named: "TrackersTabBarLogo"), tag: 0)
+        statisticsViewController.tabBarItem = UITabBarItem(title: L10n.statisticsTab, image: UIImage(named: "StatisticsTabBarLogo"), tag: 0)
+                
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = Colors.secondary
+        tabBar.standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            tabBar.scrollEdgeAppearance = appearance
+        }
+
         viewControllers = [trackersNavController, statisticsViewController]
         
         view.addSubview(borderLine)
@@ -40,7 +47,7 @@ final class TabBarViewController: UITabBarController {
             borderView.leadingAnchor.constraint(equalTo: tabBar.leadingAnchor),
             borderView.trailingAnchor.constraint(equalTo: tabBar.trailingAnchor),
             borderView.bottomAnchor.constraint(equalTo: tabBar.topAnchor),
-            borderView.heightAnchor.constraint(equalToConstant: 1)
+            borderView.heightAnchor.constraint(equalToConstant: 0.5)
         ])
     }
 }

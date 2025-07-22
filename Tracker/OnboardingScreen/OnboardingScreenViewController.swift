@@ -11,7 +11,7 @@ final class OnboardingScreenViewController: UIPageViewController {
     
     // MARK: - Private Properties
     private lazy var pages: [UIViewController] = {
-        return [
+        [
             OnboardingBlueViewController(),
             OnboardingRedViewController()
         ]
@@ -34,10 +34,10 @@ final class OnboardingScreenViewController: UIPageViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.clipsToBounds = true
         button.layer.cornerRadius = 16
-        button.backgroundColor = Colors.black
+        button.backgroundColor = Colors.primary
         button.setTitle(L10n.onboardingTitle, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.setTitleColor(Colors.white, for: .normal)
+        button.setTitleColor(Colors.secondary, for: .normal)
         button.addTarget(self, action: #selector(onboardButtonTapped), for: .touchUpInside)
         
         return button

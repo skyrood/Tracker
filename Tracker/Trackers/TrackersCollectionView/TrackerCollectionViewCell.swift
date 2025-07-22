@@ -19,7 +19,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
         
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 12, weight: .medium)
-        label.textColor = Colors.black
+        label.textColor = Colors.primary
         
         return label
     }()
@@ -197,7 +197,7 @@ final class TrackerCollectionViewCell: UICollectionViewCell {
     
     // MARK: - Private Methods
     private func completedDaysCount(for tracker: Tracker, completedTrackers: [TrackerRecord]) -> Int {
-        return completedTrackers.filter{ $0.trackerId == tracker.id }.count
+        completedTrackers.filter{ $0.trackerId == tracker.id }.count
     }
     
     @objc private func didTapCompleteTrackerButton(_ sender: UIButton) {

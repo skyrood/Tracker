@@ -22,7 +22,7 @@ final class StatisticsViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
-        label.textColor = Colors.black
+        label.textColor = Colors.primary
         label.text = L10n.statisticsTitle
         
         return label
@@ -31,7 +31,7 @@ final class StatisticsViewController: UIViewController {
     private lazy var statsTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.backgroundColor = Colors.white
+        tableView.backgroundColor = Colors.secondary
         tableView.separatorStyle = .none
         tableView.dataSource = self
         tableView.delegate = self
@@ -50,7 +50,7 @@ final class StatisticsViewController: UIViewController {
     override func viewDidLoad() {
         setupTitleLabel()
         
-        view.backgroundColor = Colors.white
+        view.backgroundColor = Colors.secondary
         
         statisticsService.onDidUpdate = { [weak self] in
             self?.updateStatistics()
@@ -129,7 +129,7 @@ final class StatisticsViewController: UIViewController {
 
 extension StatisticsViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        4
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -156,6 +156,6 @@ extension StatisticsViewController: UITableViewDataSource {
 
 extension StatisticsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 102
+        102
     }
 }

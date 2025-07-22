@@ -34,7 +34,7 @@ final class CreateTrackerViewController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.clipsToBounds = true
         tableView.showsVerticalScrollIndicator = false
-        tableView.backgroundColor = Colors.white
+        tableView.backgroundColor = Colors.secondary
         tableView.separatorStyle = .none
         return tableView
     }()
@@ -45,7 +45,7 @@ final class CreateTrackerViewController: UIViewController {
         label.clipsToBounds = true
         label.text = L10n.newTracker
         label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = Colors.black
+        label.textColor = Colors.primary
         return label
     }()
     
@@ -81,7 +81,7 @@ final class CreateTrackerViewController: UIViewController {
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Colors.white
+        view.backgroundColor = Colors.secondary
         navigationItem.hidesBackButton = true
         
         if let tracker = trackerToEdit {
@@ -150,8 +150,8 @@ final class CreateTrackerViewController: UIViewController {
             self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         
         createButton.setAttributedTitle(createButtonTitle, for: .normal)
-        createButton.setTitleColor(Colors.white, for: .normal)
-        createButton.backgroundColor = Colors.black
+        createButton.setTitleColor(Colors.secondary, for: .normal)
+        createButton.backgroundColor = Colors.primary
         createButton.layer.cornerRadius = 16
         createButton.translatesAutoresizingMaskIntoConstraints = false
         createButton.addTarget(
@@ -215,7 +215,7 @@ final class CreateTrackerViewController: UIViewController {
         }
         
         createButton.isEnabled = true
-        createButton.backgroundColor = Colors.black
+        createButton.backgroundColor = Colors.primary
     }
     
     @objc func cancelButtonTapped() {
@@ -320,7 +320,7 @@ extension CreateTrackerViewController: UITableViewDelegate {
         
         if section == 2 {
             let emojiLabel = UILabel()
-            emojiLabel.textColor = Colors.black
+            emojiLabel.textColor = Colors.primary
             emojiLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
             emojiLabel.translatesAutoresizingMaskIntoConstraints = false
             emojiLabel.text = "Emoji"
@@ -336,18 +336,18 @@ extension CreateTrackerViewController: UITableViewDelegate {
         }
         
         if section == 3 {
-            let emojiLabel = UILabel()
-            emojiLabel.textColor = Colors.black
-            emojiLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
-            emojiLabel.translatesAutoresizingMaskIntoConstraints = false
-            emojiLabel.text = L10n.color
+            let colorLabel = UILabel()
+            colorLabel.textColor = Colors.primary
+            colorLabel.font = UIFont.systemFont(ofSize: 19, weight: .bold)
+            colorLabel.translatesAutoresizingMaskIntoConstraints = false
+            colorLabel.text = L10n.color
             
-            headerView.addSubview(emojiLabel)
+            headerView.addSubview(colorLabel)
             
             NSLayoutConstraint.activate([
-                emojiLabel.topAnchor.constraint(
+                colorLabel.topAnchor.constraint(
                     equalTo: headerView.topAnchor, constant: 10),
-                emojiLabel.leadingAnchor.constraint(
+                colorLabel.leadingAnchor.constraint(
                     equalTo: headerView.leadingAnchor, constant: 14),
             ])
         }
@@ -408,7 +408,7 @@ extension CreateTrackerViewController: UITableViewDelegate {
 // MARK: - extension UITableViewDataSource
 extension CreateTrackerViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 4
+        4
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int)
@@ -494,7 +494,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
         habitNameField.clipsToBounds = true
         habitNameField.placeholder = L10n.enterTrackerName
         habitNameField.font = .systemFont(ofSize: 17)
-        habitNameField.textColor = Colors.black
+        habitNameField.textColor = Colors.primary
         habitNameField.backgroundColor = .clear
         habitNameField.layer.borderWidth = 0
         habitNameField.delegate = self
@@ -593,7 +593,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
         }
         
         cell.textLabel?.font = .systemFont(ofSize: 17)
-        cell.textLabel?.textColor = Colors.black
+        cell.textLabel?.textColor = Colors.primary
         
         if indexPath.row == 0 {
             cell.textLabel?.text = L10n.category

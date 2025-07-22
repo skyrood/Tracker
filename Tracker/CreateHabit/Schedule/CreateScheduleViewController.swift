@@ -26,7 +26,7 @@ final class CreatecreateScheduleViewController: UIViewController {
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Colors.white
+        view.backgroundColor = Colors.secondary
         
         setupTitleLabel()
         setupCreateScheduleButton()
@@ -38,7 +38,7 @@ final class CreatecreateScheduleViewController: UIViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.clipsToBounds = true
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        titleLabel.textColor = Colors.black
+        titleLabel.textColor = Colors.primary
         titleLabel.text = L10n.scheduleTitle
         
         view.addSubview(titleLabel)
@@ -52,9 +52,9 @@ final class CreatecreateScheduleViewController: UIViewController {
     private func setupCreateScheduleButton() {
         createScheduleButton.translatesAutoresizingMaskIntoConstraints = false
         createScheduleButton.setTitle(L10n.done, for: .normal)
-        createScheduleButton.setTitleColor(Colors.white, for: .normal)
+        createScheduleButton.setTitleColor(Colors.secondary, for: .normal)
         createScheduleButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        createScheduleButton.backgroundColor = Colors.black
+        createScheduleButton.backgroundColor = Colors.primary
         createScheduleButton.layer.cornerRadius = 16
         createScheduleButton.addTarget(self, action: #selector(createScheduleButtonTapped), for: .touchUpInside)
         
@@ -119,14 +119,14 @@ final class CreatecreateScheduleViewController: UIViewController {
 // MARK: - extension UITableViewDelegate
 extension CreatecreateScheduleViewController: UITableViewDelegate{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 75
+        75
     }
 }
 
 // MARK: - extension UITableViewDataSource
 extension CreatecreateScheduleViewController: UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 7
+        7
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

@@ -8,36 +8,34 @@
 import UIKit
 
 struct Colors {
-    static let background = UIColor(named: "Background") ?? .systemBackground
-    static let black = UIColor(named: "Black") ?? .black
-    static let blue = UIColor(named: "Blue") ?? .blue
-    static let gray = UIColor(named: "Gray") ?? .gray
-    static let inputBackground = UIColor(named: "InputBackground") ?? .darkGray
-    static let lightGray = UIColor(named: "LightGray") ?? .lightGray
-    static let red = UIColor(named: "Red") ?? .red
-    static let shadow = UIColor(named: "Shadow") ?? .shadow
-    static let white = UIColor(named: "White") ?? .white
-    
-    // selection colors
+    static let primary = requireColor("YPPrimaryColor")
+    static let secondary = requireColor("YPSecondaryColor")
+    static let inputBackground = requireColor("YPInputBackground")
+    static let blue = requireColor("YPBlue")
+    static let gray = requireColor("YPGray")
+    static let lightGray = requireColor("YPLightGray")
+    static let red = requireColor("YPRed")
+    static let shadow = requireColor("YPShadow")
+
     static let selection: [String: UIColor] = [
-        "Selection 1": UIColor(named: "Selection 1") ?? .red,
-        "Selection 2": UIColor(named: "Selection 2") ?? .orange,
-        "Selection 3": UIColor(named: "Selection 3") ?? .blue,
-        "Selection 4": UIColor(named: "Selection 4") ?? .purple,
-        "Selection 5": UIColor(named: "Selection 5") ?? .green,
-        "Selection 6": UIColor(named: "Selection 6") ?? .purple,
-        "Selection 7": UIColor(named: "Selection 7") ?? .systemPink,
-        "Selection 8": UIColor(named: "Selection 8") ?? .blue,
-        "Selection 9": UIColor(named: "Selection 9") ?? .green,
-        "Selection 10": UIColor(named: "Selection 10") ?? .blue,
-        "Selection 11": UIColor(named: "Selection 11") ?? .orange,
-        "Selection 12": UIColor(named: "Selection 12") ?? .systemPink,
-        "Selection 13": UIColor(named: "Selection 13") ?? .yellow,
-        "Selection 14": UIColor(named: "Selection 14") ?? .purple,
-        "Selection 15": UIColor(named: "Selection 15") ?? .purple,
-        "Selection 16": UIColor(named: "Selection 16") ?? .purple,
-        "Selection 17": UIColor(named: "Selection 17") ?? .purple,
-        "Selection 18": UIColor(named: "Selection 18") ?? .green
+        "Selection 1": requireColor("Selection 1"),
+        "Selection 2": requireColor("Selection 2"),
+        "Selection 3": requireColor("Selection 3"),
+        "Selection 4": requireColor("Selection 4"),
+        "Selection 5": requireColor("Selection 5"),
+        "Selection 6": requireColor("Selection 6"),
+        "Selection 7": requireColor("Selection 7"),
+        "Selection 8": requireColor("Selection 8"),
+        "Selection 9": requireColor("Selection 9"),
+        "Selection 10": requireColor("Selection 10"),
+        "Selection 11": requireColor("Selection 11"),
+        "Selection 12": requireColor("Selection 12"),
+        "Selection 13": requireColor("Selection 13"),
+        "Selection 14": requireColor("Selection 14"),
+        "Selection 15": requireColor("Selection 15"),
+        "Selection 16": requireColor("Selection 16"),
+        "Selection 17": requireColor("Selection 17"),
+        "Selection 18": requireColor("Selection 18")
     ]
     
     static let sortedKeys = Colors.selection.keys.sorted {
@@ -47,5 +45,12 @@ struct Colors {
     static private func extractNumber(from key: String) -> Int {
         let number = key.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
         return Int(number) ?? 0
+    }
+    
+    static private func requireColor(_ name: String) -> UIColor {
+        guard let color = UIColor(named: name) else {
+            fatalError("Missing expected color \(name)")
+        }
+        return color
     }
 }

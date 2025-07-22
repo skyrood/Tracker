@@ -86,7 +86,7 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
-        view.backgroundColor = Colors.white
+        view.backgroundColor = Colors.secondary
         
         NotificationCenter.default.addObserver(
             self,
@@ -151,7 +151,7 @@ final class TrackersViewController: UIViewController {
         let plusImage = UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(pointSize: 18, weight: .semibold))
 
         addButton.setImage(plusImage, for: .normal)
-        addButton.tintColor = Colors.black
+        addButton.tintColor = Colors.primary
         addButton.addTarget(self, action: #selector(addTrackerButtonTapped), for: .touchUpInside)
 
         let addTrackerButton = UIBarButtonItem(customView: addButton)
@@ -278,7 +278,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func completedDaysCount(for tracker: Tracker) -> Int {
-        return completedTrackers.filter{ $0.trackerId == tracker.id }.count
+        completedTrackers.filter{ $0.trackerId == tracker.id }.count
     }
     
     private func hasTrackersOnSelectedDate() -> Bool {
@@ -382,7 +382,7 @@ final class TrackersViewController: UIViewController {
     }
     
     private func completedTrackersDaysCountString(for completedCount: Int) -> String {
-        return L10n.daysCompleted(completedCount)
+        L10n.daysCompleted(completedCount)
     }
 }
 
@@ -483,13 +483,13 @@ extension TrackersViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 9
+        9
     }
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 46)
+        CGSize(width: collectionView.frame.width, height: 46)
     }
 }
 

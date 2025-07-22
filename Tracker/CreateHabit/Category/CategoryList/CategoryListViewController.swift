@@ -40,7 +40,7 @@ final class CategoryListViewController: UIViewController {
                 
         viewModel = CategoryListViewModel()
 
-        view.backgroundColor = Colors.white
+        view.backgroundColor = Colors.secondary
         navigationItem.hidesBackButton = true
         
         setupCategoryListLabel()
@@ -84,7 +84,7 @@ final class CategoryListViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.clipsToBounds = true
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textColor = Colors.black
+        label.textColor = Colors.primary
         label.text = L10n.category
         
         view.addSubview(label)
@@ -136,8 +136,8 @@ final class CategoryListViewController: UIViewController {
         button.clipsToBounds = true
         button.setTitle(buttonText, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = Colors.black
-        button.setTitleColor(Colors.white, for: .normal)
+        button.backgroundColor = Colors.primary
+        button.setTitleColor(Colors.secondary, for: .normal)
         button.layer.cornerRadius = 16
         button.addTarget(self, action: action, for: .touchUpInside)
         

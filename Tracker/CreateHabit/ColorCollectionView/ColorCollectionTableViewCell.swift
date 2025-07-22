@@ -31,7 +31,7 @@ final class ColorCollectionTableViewCell: UITableViewCell {
     }()
     
     private var colorNames: [String] {
-        return Colors.sortedKeys
+        Colors.sortedKeys
     }
     
     // MARK: - Overrides Methods
@@ -123,11 +123,11 @@ extension ColorCollectionTableViewCell: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 5
+        5
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        0
     }
 }
 

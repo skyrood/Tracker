@@ -7,6 +7,18 @@
 
 import UIKit
 
+enum GradientColors {
+    static let redAccent = UIColor(red: 253/255, green: 76/255, blue: 73/255, alpha: 1)
+    static let greenAccent = UIColor(red: 70/255, green: 230/255, blue: 157/255, alpha: 1)
+    static let blueAccent = UIColor(red: 0/255, green: 123/255, blue: 250/255, alpha: 1)
+
+    static let colors: [CGColor] = [
+        redAccent.cgColor,
+        greenAccent.cgColor,
+        blueAccent.cgColor
+    ]
+}
+
 final class StatisticsTableViewCell: UITableViewCell {
     
     // MARK: - Public Properties
@@ -28,7 +40,7 @@ final class StatisticsTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 34, weight: .bold)
-        label.textColor = Colors.black
+        label.textColor = Colors.primary
         
         return label
     }()
@@ -37,7 +49,7 @@ final class StatisticsTableViewCell: UITableViewCell {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 12, weight: .medium)
-        label.textColor = Colors.black
+        label.textColor = Colors.primary
         
         return label
     }()
@@ -84,11 +96,7 @@ final class StatisticsTableViewCell: UITableViewCell {
     }
     
     private func setupGradientBorder() {
-        gradientLayer.colors = [
-            UIColor(red: 253/255, green: 76/255, blue: 73/255, alpha: 1).cgColor,
-            UIColor(red: 70/255, green: 230/255, blue: 157/255, alpha: 1).cgColor,
-            UIColor(red: 0/255, green: 123/255, blue: 250/255, alpha: 1).cgColor
-        ]
+        gradientLayer.colors = GradientColors.colors
         gradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
         gradientLayer.endPoint = CGPoint(x: 1, y: 0.5)
         gradientLayer.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 32, height: 102 - 12)

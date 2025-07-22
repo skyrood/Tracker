@@ -17,7 +17,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = Colors.white
+        appearance.backgroundColor = Colors.secondary
         
         let tabBar = UITabBar.appearance()
         tabBar.standardAppearance = appearance

@@ -111,7 +111,7 @@ final class StatisticsService {
     }
     
     private func trackersCompleted(from records: Set<TrackerRecord>) -> Int {
-        return records.count
+        records.count
     }
     
     private func averageCompletionRate(from records: Set<TrackerRecord>) -> Int {

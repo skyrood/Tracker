@@ -29,7 +29,7 @@ final class TabBarViewController: UITabBarController {
                 
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = Colors.white
+        appearance.backgroundColor = Colors.secondary
         tabBar.standardAppearance = appearance
         if #available(iOS 15.0, *) {
             tabBar.scrollEdgeAppearance = appearance
@@ -47,7 +47,7 @@ final class TabBarViewController: UITabBarController {
             borderView.leadingAnchor.constraint(equalTo: tabBar.leadingAnchor),
             borderView.trailingAnchor.constraint(equalTo: tabBar.trailingAnchor),
             borderView.bottomAnchor.constraint(equalTo: tabBar.topAnchor),
-            borderView.heightAnchor.constraint(equalToConstant: 1)
+            borderView.heightAnchor.constraint(equalToConstant: 0.5)
         ])
     }
 }

@@ -45,7 +45,7 @@ final class CreateNewCategoryViewController: UIViewController {
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Colors.white
+        view.backgroundColor = Colors.secondary
         navigationItem.hidesBackButton = true
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -68,7 +68,7 @@ final class CreateNewCategoryViewController: UIViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.clipsToBounds = true
         titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        titleLabel.textColor = Colors.black
+        titleLabel.textColor = Colors.primary
         titleLabel.text = L10n.newCategory
         
         view.addSubview(titleLabel)
@@ -84,7 +84,7 @@ final class CreateNewCategoryViewController: UIViewController {
         categoryNameTextField.clipsToBounds = true
         categoryNameTextField.placeholder = L10n.enterCategoryName
         categoryNameTextField.font = .systemFont(ofSize: 17)
-        categoryNameTextField.textColor = Colors.black
+        categoryNameTextField.textColor = Colors.primary
         categoryNameTextField.backgroundColor = Colors.inputBackground
         categoryNameTextField.layer.cornerRadius = 16
         categoryNameTextField.layer.borderWidth = 0
@@ -126,7 +126,7 @@ final class CreateNewCategoryViewController: UIViewController {
         createCategoryButton.setTitle(L10n.done, for: .normal)
         createCategoryButton.setTitleColor(.white, for: .normal)
         createCategoryButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        createCategoryButton.backgroundColor = Colors.black
+        createCategoryButton.backgroundColor = Colors.primary
         createCategoryButton.layer.cornerRadius = 16
         createCategoryButton.addTarget(self, action: #selector(createCategoryButtonTapped), for: .touchUpInside)
         
@@ -161,8 +161,8 @@ final class CreateNewCategoryViewController: UIViewController {
         let hasText = !(categoryNameTextField.text?.isEmpty ?? true)
         createCategoryButton.isEnabled = hasText
         if hasText {
-            createCategoryButton.backgroundColor = Colors.black
-            createCategoryButton.setTitleColor(Colors.white, for: .normal)
+            createCategoryButton.backgroundColor = Colors.primary
+            createCategoryButton.setTitleColor(Colors.secondary, for: .normal)
         } else {
             createCategoryButton.backgroundColor = Colors.gray
             createCategoryButton.setTitleColor(.white, for: .normal)
